@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Stack } from '@chakra-ui/react';
 import { Tabs } from '@chakra-ui/react';
+import { useSearchParams } from 'react-router-dom';
 import { EventHeader } from '../../components/assessment';
 import { TeamsTab } from './tabs/TeamsTab';
 import { ExpertsTab } from './tabs/ExpertsTab';
@@ -9,6 +10,9 @@ import { StatisticsTab } from './tabs/StatisticsTab';
 import { Top3Tab } from './tabs/Top3Tab';
 
 export const AssessmentAdminPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('eventId') || '';
+
   return (
     <Box minH="100vh" bg="#0A0A0A">
       <EventHeader />
@@ -128,23 +132,23 @@ export const AssessmentAdminPage: React.FC = () => {
 
           <Stack gap={6}>
             <Tabs.Content value="teams">
-              <TeamsTab />
+              <TeamsTab eventId={eventId} />
             </Tabs.Content>
 
             <Tabs.Content value="experts">
-              <ExpertsTab />
+              <ExpertsTab eventId={eventId} />
             </Tabs.Content>
 
             <Tabs.Content value="criteria">
-              <CriteriaTab />
+              <CriteriaTab eventId={eventId} />
             </Tabs.Content>
 
             <Tabs.Content value="statistics">
-              <StatisticsTab />
+              <StatisticsTab eventId={eventId} />
             </Tabs.Content>
 
             <Tabs.Content value="top3">
-              <Top3Tab />
+              <Top3Tab eventId={eventId} />
             </Tabs.Content>
           </Stack>
         </Tabs.Root>

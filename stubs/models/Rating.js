@@ -19,6 +19,11 @@ const ratingItemSchema = new mongoose.Schema({
 }, { _id: false });
 
 const ratingSchema = new mongoose.Schema({
+  eventId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event',
+    required: true
+  },
   expertId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Expert',

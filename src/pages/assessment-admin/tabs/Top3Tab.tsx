@@ -3,9 +3,13 @@ import { Box, Grid, HStack, Stack, Text } from '@chakra-ui/react';
 import { RadioGroup, Radio } from '../../../components/ui/radio';
 import { useGetTop3Query } from '../../../__data__/api';
 
-export const Top3Tab: React.FC = () => {
+interface Top3TabProps {
+  eventId: string;
+}
+
+export const Top3Tab: React.FC<Top3TabProps> = ({ eventId }) => {
   const [filterType, setFilterType] = useState<string>('');
-  const { data: top3 = [], isLoading } = useGetTop3Query({ type: filterType });
+  const { data: top3 = [], isLoading } = useGetTop3Query({ eventId, type: filterType });
 
   const placeColors = ['#D4FF00', '#AFAFAF', '#FF6B00'];
   const placeLabels = ['1 МЕСТО', '2 МЕСТО', '3 МЕСТО'];

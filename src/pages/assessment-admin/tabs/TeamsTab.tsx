@@ -6,8 +6,12 @@ import { useGetTeamsQuery, useCreateTeamMutation, useUpdateTeamMutation, useDele
 import type { Team, TeamType } from '../../../types';
 import { LuPlay, LuSquare, LuPencil, LuTrash2 } from 'react-icons/lu';
 
-export const TeamsTab: React.FC = () => {
-  const { data: teams = [], isLoading } = useGetTeamsQuery({});
+interface TeamsTabProps {
+  eventId: string;
+}
+
+export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
+  const { data: teams = [], isLoading } = useGetTeamsQuery({ eventId });
   const [createTeam] = useCreateTeamMutation();
   const [updateTeam] = useUpdateTeamMutation();
   const [deleteTeam] = useDeleteTeamMutation();
@@ -38,7 +42,7 @@ export const TeamsTab: React.FC = () => {
         }).unwrap();
         setEditingId(null);
       } else {
-        await createTeam(formData).unwrap();
+        await createTeam({ ...formData, eventId }).unwrap();
       }
       
       setFormData({
@@ -109,7 +113,7 @@ export const TeamsTab: React.FC = () => {
   const handleStopAllVoting = async () => {
     if (confirm('Вы уверены, что хотите остановить все оценивания?')) {
       try {
-        await stopAllVoting().unwrap();
+        await stopAllVoting({ eventId }).unwrap();
       } catch (error) {
         console.error('Error stopping all voting:', error);
       }

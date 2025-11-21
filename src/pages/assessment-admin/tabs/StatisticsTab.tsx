@@ -3,9 +3,13 @@ import { Box, Grid, HStack, Stack, Text, Badge } from '@chakra-ui/react';
 import { RadioGroup, Radio } from '../../../components/ui/radio';
 import { useGetStatisticsQuery } from '../../../__data__/api';
 
-export const StatisticsTab: React.FC = () => {
+interface StatisticsTabProps {
+  eventId: string;
+}
+
+export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId }) => {
   const [filterType, setFilterType] = useState<string>('');
-  const { data: statistics = [], isLoading } = useGetStatisticsQuery({ type: filterType });
+  const { data: statistics = [], isLoading } = useGetStatisticsQuery({ eventId, type: filterType });
 
   if (isLoading) {
     return <Text color="#B0B0B0">Загрузка...</Text>;

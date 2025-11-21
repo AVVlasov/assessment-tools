@@ -3,8 +3,12 @@ import { Box, Button, Grid, HStack, Input, Stack, Text, IconButton } from '@chak
 import { useGetCriteriaQuery, useCreateCriteriaMutation, useLoadDefaultCriteriaMutation, useUpdateCriteriaMutation, useDeleteCriteriaMutation } from '../../../__data__/api';
 import type { CriterionItem } from '../../../types';
 
-export const CriteriaTab: React.FC = () => {
-  const { data: criteriaBlocks = [], isLoading } = useGetCriteriaQuery();
+interface CriteriaTabProps {
+  eventId: string;
+}
+
+export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
+  const { data: criteriaBlocks = [], isLoading } = useGetCriteriaQuery({ eventId });
   const [createCriteria] = useCreateCriteriaMutation();
   const [loadDefault] = useLoadDefaultCriteriaMutation();
   const [updateCriteria] = useUpdateCriteriaMutation();
@@ -46,7 +50,7 @@ export const CriteriaTab: React.FC = () => {
         }).unwrap();
         setEditingId(null);
       } else {
-        await createCriteria({ blockName, criteria }).unwrap();
+        await createCriteria({ eventId, blockName, criteria }).unwrap();
       }
       
       setBlockName('');
@@ -59,7 +63,7 @@ export const CriteriaTab: React.FC = () => {
   const handleLoadDefault = async () => {
     if (confirm('Это заменит все существующие критерии. Продолжить?')) {
       try {
-        await loadDefault().unwrap();
+        await loadDefault({ eventId }).unwrap();
         alert('Критерии по умолчанию загружены');
       } catch (error) {
         console.error('Error loading default criteria:', error);

@@ -4,7 +4,10 @@ const { Expert } = require('../models');
 // GET /api/experts - список экспертов
 router.get('/', async (req, res) => {
   try {
-    const experts = await Expert.find().sort({ createdAt: -1 });
+    const { eventId } = req.query;
+    const filter = {};
+    if (eventId) filter.eventId = eventId;
+    const experts = await Expert.find(filter).sort({ createdAt: -1 });
     res.json(experts);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -40,14 +43,15 @@ router.get('/:id', async (req, res) => {
 // POST /api/experts - создать эксперта (с генерацией уникальной ссылки)
 router.post('/', async (req, res) => {
   try {
-    const { fullName } = req.body;
+    const { eventId, fullName } = req.body;
     
-    if (!fullName) {
-      return res.status(400).json({ error: 'Full name is required' });
+    if (!eventId || !fullName) {
+      return res.status(400).json({ error: 'EventId and full name are required' });
     }
     
     // Создаем нового эксперта
     const expert = new Expert({
+      eventId,
       fullName
     });
     

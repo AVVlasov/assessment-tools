@@ -8,7 +8,7 @@ export const teamsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
   tagTypes: ['Teams'],
   endpoints: (builder) => ({
-    getTeams: builder.query<Team[], { type?: string }>({
+    getTeams: builder.query<Team[], { eventId?: string; type?: string }>({
       query: (params) => ({
         url: '/teams',
         params
@@ -63,15 +63,19 @@ export const teamsApi = createApi({
       }),
       invalidatesTags: ['Teams']
     }),
-    stopAllVoting: builder.mutation<{ message: string; modifiedCount: number }, void>({
-      query: () => ({
+    stopAllVoting: builder.mutation<{ message: string; modifiedCount: number }, { eventId: string }>({
+      query: (body) => ({
         url: '/teams/stop-all-voting/global',
-        method: 'PATCH'
+        method: 'PATCH',
+        body
       }),
       invalidatesTags: ['Teams']
     }),
-    getActiveTeamForVoting: builder.query<Team | null, void>({
-      query: () => '/teams/active/voting',
+    getActiveTeamForVoting: builder.query<Team | null, { eventId?: string }>({
+      query: (params) => ({
+        url: '/teams/active/voting',
+        params
+      }),
       providesTags: ['Teams']
     })
   })

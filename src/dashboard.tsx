@@ -6,6 +6,7 @@ import { MainPage } from './pages'
 
 const AssessmentAdminPage = lazy(() => import('./pages/assessment-admin'))
 const AssessmentExpertPage = lazy(() => import('./pages/assessment-expert'))
+const EventCreatePage = lazy(() => import('./pages/event-create'))
 
 const PageWrapper = ({ children }: React.PropsWithChildren) => (
   <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
@@ -35,6 +36,14 @@ export const Dashboard = () => {
         element={
           <PageWrapper>
             <AssessmentExpertPage />
+          </PageWrapper>
+        }
+      />
+      <Route
+        path="/assessment-tools/events/create"
+        element={
+          <PageWrapper>
+            <EventCreatePage />
           </PageWrapper>
         }
       />

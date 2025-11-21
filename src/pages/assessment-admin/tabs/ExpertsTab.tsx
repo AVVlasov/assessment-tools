@@ -4,11 +4,15 @@ import { Dialog } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useGetExpertsQuery, useCreateExpertMutation, useDeleteExpertMutation, useGetActiveTeamForVotingQuery, useGetCriteriaQuery, useGetRatingsQuery } from '../../../__data__/api';
 
-export const ExpertsTab: React.FC = () => {
-  const { data: experts = [], isLoading } = useGetExpertsQuery();
-  const { data: activeTeam } = useGetActiveTeamForVotingQuery();
-  const { data: criteriaBlocks = [] } = useGetCriteriaQuery();
-  const { data: allRatings = [] } = useGetRatingsQuery({});
+interface ExpertsTabProps {
+  eventId: string;
+}
+
+export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
+  const { data: experts = [], isLoading } = useGetExpertsQuery({ eventId });
+  const { data: activeTeam } = useGetActiveTeamForVotingQuery({ eventId });
+  const { data: criteriaBlocks = [] } = useGetCriteriaQuery({ eventId });
+  const { data: allRatings = [] } = useGetRatingsQuery({ eventId });
   const [createExpert] = useCreateExpertMutation();
   const [deleteExpert] = useDeleteExpertMutation();
 
@@ -40,7 +44,7 @@ export const ExpertsTab: React.FC = () => {
     if (!fullName) return;
 
     try {
-      await createExpert({ fullName }).unwrap();
+      await createExpert({ eventId, fullName }).unwrap();
       setFullName('');
     } catch (error) {
       console.error('Error creating expert:', error);

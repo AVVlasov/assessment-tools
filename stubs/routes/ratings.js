@@ -4,11 +4,12 @@ const { Rating, Team, Expert, Criteria } = require('../models');
 // GET /api/ratings - получить все оценки (с фильтрами)
 router.get('/', async (req, res) => {
   try {
-    const { expertId, teamId } = req.query;
+    const { expertId, teamId, eventId } = req.query;
     const filter = {};
     
     if (expertId) filter.expertId = expertId;
     if (teamId) filter.teamId = teamId;
+    if (eventId) filter.eventId = eventId;
     
     const ratings = await Rating.find(filter)
       .populate('expertId', 'fullName')
@@ -49,14 +50,18 @@ router.get('/expert/:expertId', async (req, res) => {
 // GET /api/ratings/statistics - статистика с группировкой по командам
 router.get('/statistics', async (req, res) => {
   try {
-    const { type } = req.query;
+    const { type, eventId } = req.query;
     
     // Получаем все команды
-    const teamFilter = type ? { type, isActive: true } : { isActive: true };
+    const teamFilter = { isActive: true };
+    if (type) teamFilter.type = type;
+    if (eventId) teamFilter.eventId = eventId;
     const teams = await Team.find(teamFilter);
     
     // Получаем все оценки
-    const ratings = await Rating.find()
+    const ratingFilter = {};
+    if (eventId) ratingFilter.eventId = eventId;
+    const ratings = await Rating.find(ratingFilter)
       .populate('expertId', 'fullName')
       .populate('teamId', 'name type projectName');
     
@@ -117,13 +122,17 @@ router.get('/statistics', async (req, res) => {
 // GET /api/ratings/top3 - топ-3 команды/участники
 router.get('/top3', async (req, res) => {
   try {
-    const { type } = req.query;
+    const { type, eventId } = req.query;
     
     // Получаем статистику
-    const teamFilter = type ? { type, isActive: true } : { isActive: true };
+    const teamFilter = { isActive: true };
+    if (type) teamFilter.type = type;
+    if (eventId) teamFilter.eventId = eventId;
     const teams = await Team.find(teamFilter);
     
-    const ratings = await Rating.find()
+    const ratingFilter = {};
+    if (eventId) ratingFilter.eventId = eventId;
+    const ratings = await Rating.find(ratingFilter)
       .populate('teamId', 'name type projectName');
     
     // Группируем и считаем средние баллы
@@ -161,10 +170,10 @@ router.get('/top3', async (req, res) => {
 // POST /api/ratings - создать/обновить оценку эксперта
 router.post('/', async (req, res) => {
   try {
-    const { expertId, teamId, ratings } = req.body;
+    const { eventId, expertId, teamId, ratings } = req.body;
     
-    if (!expertId || !teamId || !ratings || !Array.isArray(ratings)) {
-      return res.status(400).json({ error: 'Expert ID, team ID, and ratings array are required' });
+    if (!eventId || !expertId || !teamId || !ratings || !Array.isArray(ratings)) {
+      return res.status(400).json({ error: 'EventId, expert ID, team ID, and ratings array are required' });
     }
     
     // Проверяем существование эксперта и команды
@@ -185,7 +194,7 @@ router.post('/', async (req, res) => {
     }
     
     // Ищем существующую оценку
-    let rating = await Rating.findOne({ expertId, teamId });
+    let rating = await Rating.findOne({ eventId, expertId, teamId });
     
     if (rating) {
       // Обновляем существующую оценку
@@ -194,6 +203,7 @@ router.post('/', async (req, res) => {
     } else {
       // Создаем новую оценку
       rating = await Rating.create({
+        eventId,
         expertId,
         teamId,
         ratings

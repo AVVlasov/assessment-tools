@@ -23,7 +23,10 @@ const DEFAULT_CRITERIA = [
 // GET /api/criteria - получить все блоки критериев
 router.get('/', async (req, res) => {
   try {
-    const criteria = await Criteria.find().sort({ order: 1 });
+    const { eventId } = req.query;
+    const filter = {};
+    if (eventId) filter.eventId = eventId;
+    const criteria = await Criteria.find(filter).sort({ order: 1 });
     res.json(criteria);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,13 +49,14 @@ router.get('/:id', async (req, res) => {
 // POST /api/criteria - создать блок критериев
 router.post('/', async (req, res) => {
   try {
-    const { blockName, criteria, order } = req.body;
+    const { eventId, blockName, criteria, order } = req.body;
     
-    if (!blockName || !criteria || !Array.isArray(criteria)) {
-      return res.status(400).json({ error: 'Block name and criteria array are required' });
+    if (!eventId || !blockName || !criteria || !Array.isArray(criteria)) {
+      return res.status(400).json({ error: 'EventId, block name and criteria array are required' });
     }
     
     const criteriaBlock = await Criteria.create({
+      eventId,
       blockName,
       criteria,
       order: order !== undefined ? order : 0
@@ -67,11 +71,21 @@ router.post('/', async (req, res) => {
 // POST /api/criteria/default - загрузить критерии по умолчанию из hack.md
 router.post('/default', async (req, res) => {
   try {
-    // Удаляем все существующие критерии
-    await Criteria.deleteMany({});
+    const { eventId } = req.body;
     
-    // Создаем критерии по умолчанию
-    const createdCriteria = await Criteria.insertMany(DEFAULT_CRITERIA);
+    if (!eventId) {
+      return res.status(400).json({ error: 'EventId is required' });
+    }
+    
+    // Удаляем все существующие критерии для этого мероприятия
+    await Criteria.deleteMany({ eventId });
+    
+    // Создаем критерии по умолчанию с eventId
+    const criteriaWithEventId = DEFAULT_CRITERIA.map(c => ({
+      ...c,
+      eventId
+    }));
+    const createdCriteria = await Criteria.insertMany(criteriaWithEventId);
     
     res.status(201).json(createdCriteria);
   } catch (error) {

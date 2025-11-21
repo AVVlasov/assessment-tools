@@ -12,6 +12,7 @@ module.exports = {
     'assessment-tools.main': '/assessment-tools',
     'assessment-tools.admin': '/assessment-tools/admin',
     'assessment-tools.expert': '/assessment-tools/expert',
+    'assessment-tools.event-create': '/assessment-tools/events/create',
     'link.assessment-tools.auth': '/auth'
   },
   features: {

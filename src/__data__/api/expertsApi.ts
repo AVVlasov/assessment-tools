@@ -8,8 +8,11 @@ export const expertsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
   tagTypes: ['Experts'],
   endpoints: (builder) => ({
-    getExperts: builder.query<Expert[], void>({
-      query: () => '/experts',
+    getExperts: builder.query<Expert[], { eventId?: string }>({
+      query: (params) => ({
+        url: '/experts',
+        params
+      }),
       providesTags: ['Experts']
     }),
     getExpertByToken: builder.query<Expert, string>({

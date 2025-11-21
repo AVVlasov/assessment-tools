@@ -14,6 +14,11 @@ const criterionItemSchema = new mongoose.Schema({
 }, { _id: false });
 
 const criteriaSchema = new mongoose.Schema({
+  eventId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event',
+    required: true
+  },
   blockName: {
     type: String,
     required: true

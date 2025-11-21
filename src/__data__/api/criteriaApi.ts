@@ -8,8 +8,11 @@ export const criteriaApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
   tagTypes: ['Criteria'],
   endpoints: (builder) => ({
-    getCriteria: builder.query<Criteria[], void>({
-      query: () => '/criteria',
+    getCriteria: builder.query<Criteria[], { eventId?: string }>({
+      query: (params) => ({
+        url: '/criteria',
+        params
+      }),
       providesTags: ['Criteria']
     }),
     getCriteriaBlock: builder.query<Criteria, string>({
@@ -24,10 +27,11 @@ export const criteriaApi = createApi({
       }),
       invalidatesTags: ['Criteria']
     }),
-    loadDefaultCriteria: builder.mutation<Criteria[], void>({
-      query: () => ({
+    loadDefaultCriteria: builder.mutation<Criteria[], { eventId: string }>({
+      query: (body) => ({
         url: '/criteria/default',
-        method: 'POST'
+        method: 'POST',
+        body
       }),
       invalidatesTags: ['Criteria']
     }),

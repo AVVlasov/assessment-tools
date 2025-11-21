@@ -32,6 +32,7 @@ export type TeamType = 'team' | 'participant';
 
 export interface Team {
   _id: string;
+  eventId: string;
   type: TeamType;
   name: string;
   projectName: string;
@@ -44,6 +45,7 @@ export interface Team {
 }
 
 export interface CreateTeamRequest {
+  eventId: string;
   type: TeamType;
   name: string;
   projectName?: string;
@@ -60,6 +62,7 @@ export interface UpdateTeamRequest {
 // Expert types
 export interface Expert {
   _id: string;
+  eventId: string;
   fullName: string;
   token: string;
   qrCodeUrl: string;
@@ -68,6 +71,7 @@ export interface Expert {
 }
 
 export interface CreateExpertRequest {
+  eventId: string;
   fullName: string;
 }
 
@@ -83,6 +87,7 @@ export interface CriterionItem {
 
 export interface Criteria {
   _id: string;
+  eventId: string;
   blockName: string;
   criteria: CriterionItem[];
   order: number;
@@ -91,6 +96,7 @@ export interface Criteria {
 }
 
 export interface CreateCriteriaRequest {
+  eventId: string;
   blockName: string;
   criteria: CriterionItem[];
   order?: number;
@@ -111,6 +117,7 @@ export interface RatingItem {
 
 export interface Rating {
   _id: string;
+  eventId: string;
   expertId: string | Expert;
   teamId: string | Team;
   ratings: RatingItem[];
@@ -120,6 +127,7 @@ export interface Rating {
 }
 
 export interface CreateRatingRequest {
+  eventId: string;
   expertId: string;
   teamId: string;
   ratings: RatingItem[];

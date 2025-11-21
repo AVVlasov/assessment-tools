@@ -4,8 +4,10 @@ const { Team } = require('../models');
 // GET /api/teams - список всех команд
 router.get('/', async (req, res) => {
   try {
-    const { type } = req.query;
-    const filter = type ? { type } : {};
+    const { type, eventId } = req.query;
+    const filter = {};
+    if (type) filter.type = type;
+    if (eventId) filter.eventId = eventId;
     const teams = await Team.find(filter).sort({ createdAt: -1 });
     res.json(teams);
   } catch (error) {
@@ -16,7 +18,10 @@ router.get('/', async (req, res) => {
 // GET /api/teams/active/voting - получить активную для оценки команду (ДОЛЖЕН БЫТЬ ПЕРЕД /:id)
 router.get('/active/voting', async (req, res) => {
   try {
-    const team = await Team.findOne({ isActiveForVoting: true });
+    const { eventId } = req.query;
+    const filter = { isActiveForVoting: true };
+    if (eventId) filter.eventId = eventId;
+    const team = await Team.findOne(filter);
     res.json(team);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -26,9 +31,13 @@ router.get('/active/voting', async (req, res) => {
 // PATCH /api/teams/stop-all-voting/global - остановить все оценивания (ДОЛЖЕН БЫТЬ ПЕРЕД /:id)
 router.patch('/stop-all-voting/global', async (req, res) => {
   try {
+    const { eventId } = req.body;
     // Находим все команды, которые сейчас оцениваются
+    const filter = { isActiveForVoting: true };
+    if (eventId) filter.eventId = eventId;
+    
     const result = await Team.updateMany(
-      { isActiveForVoting: true },
+      filter,
       { 
         isActiveForVoting: false,
         votingStatus: 'evaluated'
@@ -60,13 +69,14 @@ router.get('/:id', async (req, res) => {
 // POST /api/teams - создать команду/участника
 router.post('/', async (req, res) => {
   try {
-    const { type, name, projectName, caseDescription } = req.body;
+    const { eventId, type, name, projectName, caseDescription } = req.body;
     
-    if (!type || !name) {
-      return res.status(400).json({ error: 'Type and name are required' });
+    if (!eventId || !type || !name) {
+      return res.status(400).json({ error: 'EventId, type and name are required' });
     }
     
     const team = await Team.create({
+      eventId,
       type,
       name,
       projectName: projectName || '',
@@ -118,8 +128,17 @@ router.delete('/:id', async (req, res) => {
 // PATCH /api/teams/:id/activate-for-voting - активировать команду для оценки
 router.patch('/:id/activate-for-voting', async (req, res) => {
   try {
-    // Деактивируем все команды и сохраняем их статус
-    const previouslyActive = await Team.findOne({ isActiveForVoting: true });
+    // Получаем команду для активации
+    const team = await Team.findById(req.params.id);
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+    
+    // Деактивируем все команды этого мероприятия
+    const previouslyActive = await Team.findOne({ 
+      isActiveForVoting: true,
+      eventId: team.eventId
+    });
     if (previouslyActive) {
       previouslyActive.isActiveForVoting = false;
       previouslyActive.votingStatus = 'evaluated';
@@ -127,11 +146,6 @@ router.patch('/:id/activate-for-voting', async (req, res) => {
     }
     
     // Активируем выбранную команду
-    const team = await Team.findById(req.params.id);
-    if (!team) {
-      return res.status(404).json({ error: 'Team not found' });
-    }
-    
     team.isActiveForVoting = true;
     team.votingStatus = 'evaluating';
     await team.save();

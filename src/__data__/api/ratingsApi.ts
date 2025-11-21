@@ -8,7 +8,7 @@ export const ratingsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
   tagTypes: ['Ratings', 'Statistics'],
   endpoints: (builder) => ({
-    getRatings: builder.query<Rating[], { expertId?: string; teamId?: string }>({
+    getRatings: builder.query<Rating[], { eventId?: string; expertId?: string; teamId?: string }>({
       query: (params) => ({
         url: '/ratings',
         params
@@ -23,14 +23,14 @@ export const ratingsApi = createApi({
       query: (expertId) => `/ratings/expert/${expertId}`,
       providesTags: ['Ratings']
     }),
-    getStatistics: builder.query<TeamStatistics[], { type?: string }>({
+    getStatistics: builder.query<TeamStatistics[], { eventId?: string; type?: string }>({
       query: (params) => ({
         url: '/ratings/statistics',
         params
       }),
       providesTags: ['Statistics']
     }),
-    getTop3: builder.query<Top3Item[], { type?: string }>({
+    getTop3: builder.query<Top3Item[], { eventId?: string; type?: string }>({
       query: (params) => ({
         url: '/ratings/top3',
         params

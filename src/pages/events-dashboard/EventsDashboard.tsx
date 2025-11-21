@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import {
   Box,
   Container,
@@ -10,8 +10,9 @@ import {
   Spinner
 } from '@chakra-ui/react'
 import { FiPlus } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
 import { useGetEventsQuery } from '../../__data__/api/eventApi'
-import { EventWizard, EventCard } from '../../components/events'
+import { EventCard } from '../../components/events'
 import { Event } from '../../types'
 
 interface GroupedEvents {
@@ -26,8 +27,8 @@ const monthNames = [
 ]
 
 export const EventsDashboard: React.FC = () => {
-  const { data, isLoading, refetch } = useGetEventsQuery()
-  const [isWizardOpen, setIsWizardOpen] = useState(false)
+  const navigate = useNavigate()
+  const { data, isLoading } = useGetEventsQuery()
 
   // Ensure events is always an array
   const events = useMemo(() => {
@@ -59,10 +60,6 @@ export const EventsDashboard: React.FC = () => {
   }, [events])
 
   const sortedYears = Object.keys(groupedEvents).sort((a, b) => parseInt(b) - parseInt(a))
-
-  const handleWizardSuccess = () => {
-    refetch()
-  }
 
   if (isLoading) {
     return (
@@ -99,7 +96,7 @@ export const EventsDashboard: React.FC = () => {
               size="lg"
               px={6}
               _hover={{ bg: '#C4EF00' }}
-              onClick={() => setIsWizardOpen(true)}
+              onClick={() => navigate('/assessment-tools/events/create')}
             >
               Создать мероприятие
             </Button>
@@ -126,7 +123,7 @@ export const EventsDashboard: React.FC = () => {
                 color="#0A0A0A"
                 fontWeight="bold"
                 _hover={{ bg: '#C4EF00' }}
-                onClick={() => setIsWizardOpen(true)}
+                onClick={() => navigate('/assessment-tools/events/create')}
               >
                 Создать мероприятие
               </Button>
@@ -182,12 +179,6 @@ export const EventsDashboard: React.FC = () => {
           )}
         </Stack>
       </Container>
-
-      <EventWizard
-        isOpen={isWizardOpen}
-        onClose={() => setIsWizardOpen(false)}
-        onSuccess={handleWizardSuccess}
-      />
     </Box>
   )
 }
