@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Team, CreateTeamRequest, UpdateTeamRequest } from '../../types';
-
-const API_BASE = '/api';
+import { URLs } from '../urls';
 
 export const teamsApi = createApi({
   reducerPath: 'teamsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
+  baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Teams'],
   endpoints: (builder) => ({
     getTeams: builder.query<Team[], { eventId?: string; type?: string }>({

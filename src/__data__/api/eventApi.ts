@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Event, CreateEventRequest, UpdateEventRequest } from '../../types';
-
-const API_BASE = '/api';
+import { URLs } from '../urls';
 
 export const eventApi = createApi({
   reducerPath: 'eventApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
+  baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Event'],
   endpoints: (builder) => ({
     getEvents: builder.query<Event[], void>({

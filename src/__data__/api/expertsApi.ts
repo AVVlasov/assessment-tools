@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Expert, CreateExpertRequest, UpdateExpertRequest } from '../../types';
-
-const API_BASE = '/api';
+import { URLs } from '../urls';
 
 export const expertsApi = createApi({
   reducerPath: 'expertsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
+  baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Experts'],
   endpoints: (builder) => ({
     getExperts: builder.query<Expert[], { eventId?: string }>({

@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Rating, CreateRatingRequest, TeamStatistics, Top3Item } from '../../types';
-
-const API_BASE = '/api';
+import { URLs } from '../urls';
 
 export const ratingsApi = createApi({
   reducerPath: 'ratingsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
+  baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Ratings', 'Statistics'],
   endpoints: (builder) => ({
     getRatings: builder.query<Rating[], { eventId?: string; expertId?: string; teamId?: string }>({

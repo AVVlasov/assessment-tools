@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Criteria, CreateCriteriaRequest, UpdateCriteriaRequest } from '../../types';
-
-const API_BASE = '/api';
+import { URLs } from '../urls';
 
 export const criteriaApi = createApi({
   reducerPath: 'criteriaApi',
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE }),
+  baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Criteria'],
   endpoints: (builder) => ({
     getCriteria: builder.query<Criteria[], { eventId?: string }>({
