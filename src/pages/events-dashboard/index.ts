@@ -1,0 +1,2 @@
+export { EventsDashboard } from './EventsDashboard'
+

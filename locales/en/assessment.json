@@ -1,0 +1,188 @@
+{
+  "header": {
+    "eventName": "Tatar san",
+    "status": {
+      "draft": "Draft",
+      "ready": "Ready",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "voting": "Voting",
+    "votingEnabled": "Enabled",
+    "votingDisabled": "Disabled"
+  },
+  "tabs": {
+    "teams": "Teams",
+    "experts": "Experts",
+    "criteria": "Evaluation Criteria",
+    "statistics": "Voting Statistics",
+    "top3": "Top 3"
+  },
+  "teams": {
+    "title": "Teams and Participants",
+    "addButton": "Add",
+    "type": {
+      "label": "Type",
+      "team": "Team",
+      "participant": "Participant"
+    },
+    "name": "Team Name",
+    "fullName": "Participant Full Name",
+    "projectName": "Project Name",
+    "caseDescription": "Case Description",
+    "isActive": "Active",
+    "isInactive": "Stopped",
+    "edit": "Edit",
+    "delete": "Delete",
+    "toggleActive": "Stop Evaluation"
+  },
+  "experts": {
+    "title": "Experts",
+    "addButton": "Add and Generate QR Code",
+    "fullName": "Expert Full Name",
+    "downloadQR": "Download QR",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied",
+    "delete": "Delete"
+  },
+  "criteria": {
+    "title": "Evaluation Criteria",
+    "loadDefault": "Load Default Criteria",
+    "blockName": "Block Name",
+    "criterionName": "Criterion Name",
+    "maxScore": "Maximum Score",
+    "addCriterion": "Add Criterion",
+    "removeCriterion": "Remove",
+    "save": "Save Block",
+    "edit": "Edit",
+    "delete": "Delete Block",
+    "defaultLoaded": "Default criteria loaded",
+    "defaultCriteria": {
+      "blockName": "Project Evaluation",
+      "criteria": [
+        "Compliance with the task",
+        "Originality - use of non-standard technical and project approaches",
+        "Solution performance",
+        "Technological complexity of the solution",
+        "Volume of functional capabilities",
+        "Argumentation of the chosen solution",
+        "Quality of information presentation",
+        "Availability of convenient UX/UI",
+        "Availability of at least 5 AI agents"
+      ]
+    }
+  },
+  "statistics": {
+    "title": "Voting Statistics",
+    "filter": {
+      "all": "All",
+      "teams": "Teams only",
+      "participants": "Participants only"
+    },
+    "totalScore": "Total Score",
+    "averageScore": "Average Score",
+    "ratingsCount": "Number of Ratings",
+    "expertName": "Expert",
+    "noRatings": "No ratings"
+  },
+  "top3": {
+    "title": "Top 3",
+    "filter": {
+      "all": "All",
+      "teams": "Teams only",
+      "participants": "Participants only"
+    },
+    "place": {
+      "first": "1st place",
+      "second": "2nd place",
+      "third": "3rd place"
+    },
+    "score": "Points",
+    "noData": "Insufficient data to display"
+  },
+  "control": {
+    "title": "Evaluation Control",
+    "stopAll": "Stop All Evaluation",
+    "selectTeam": "Select team/participant",
+    "stopSelected": "Stop Selected Team Evaluation"
+  },
+  "expertPage": {
+    "title": "Team Evaluation",
+    "expertName": "Expert",
+    "selectTeam": "Select team to evaluate",
+    "teamName": "Team",
+    "criteria": "Evaluation Criteria",
+    "score": "Score",
+    "saveButton": "Save Evaluation",
+    "saving": "Saving...",
+    "saved": "Evaluation saved",
+    "error": "Error saving",
+    "allCriteriaRequired": "All criteria must be evaluated",
+    "teamInactive": "Evaluation for this team is stopped"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "noData": "No data"
+  },
+  "events": {
+    "title": "Events",
+    "createNew": "Create Event",
+    "noEvents": "No events",
+    "name": "Event Name",
+    "description": "Description",
+    "eventDate": "Event Date",
+    "location": "Location",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Are you sure you want to delete this event?",
+    "openEvent": "Open",
+    "wizard": {
+      "title": "Create Event",
+      "step1": "Basic Information",
+      "step2": "Details",
+      "step3": "Confirmation",
+      "next": "Next",
+      "back": "Back",
+      "finish": "Create",
+      "nameLabel": "Event Name",
+      "namePlaceholder": "Enter name",
+      "dateLabel": "Event Date",
+      "datePlaceholder": "Select date",
+      "descriptionLabel": "Event Description",
+      "descriptionPlaceholder": "Enter description",
+      "locationLabel": "Location",
+      "locationPlaceholder": "Enter location",
+      "statusLabel": "Status",
+      "reviewTitle": "Review Information",
+      "creating": "Creating...",
+      "created": "Event created!"
+    },
+    "grouping": {
+      "byMonth": "By Month",
+      "byYear": "By Year"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    }
+  }
+}
+
