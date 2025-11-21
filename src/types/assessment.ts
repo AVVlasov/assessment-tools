@@ -175,3 +175,8 @@ export interface Top3Item {
   ratingsCount: number;
 }
 
+export interface Top3Response {
+  teams?: Top3Item[];
+  participants?: Top3Item[];
+}
+

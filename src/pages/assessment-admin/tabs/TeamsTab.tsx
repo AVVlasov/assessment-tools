@@ -28,6 +28,9 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
   });
 
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [typeFilter, setTypeFilter] = useState<'all' | TeamType>('all');
+  const [showEvaluated, setShowEvaluated] = useState<boolean>(true);
+  const [showNotEvaluated, setShowNotEvaluated] = useState<boolean>(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +153,29 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
     return <Text color="#B0B0B0">Загрузка...</Text>;
   }
 
-  const hasActiveVoting = teams.some(team => team.isActiveForVoting);
+  const hasActiveVoting = teams.some((team) => team.isActiveForVoting);
+
+  const filteredTeams = teams.filter((team) => {
+    if (typeFilter === 'team' && team.type !== 'team') {
+      return false;
+    }
+
+    if (typeFilter === 'participant' && team.type !== 'participant') {
+      return false;
+    }
+
+    const isEvaluated = team.votingStatus === 'evaluated';
+
+    if (!showEvaluated && isEvaluated) {
+      return false;
+    }
+
+    if (!showNotEvaluated && !isEvaluated) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <Stack gap={6}>
@@ -179,6 +204,61 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
           </HStack>
         </Box>
       )}
+
+      <Box
+        bg="#1F1F1F"
+        p={4}
+        border="3px solid #333333"
+        borderRadius="8px"
+      >
+        <Stack gap={3}>
+          <Text fontSize="md" fontWeight="700" color="#B0B0B0">
+            Фильтры отображения
+          </Text>
+
+          <HStack justify="space-between" align="flex-start" flexWrap="wrap" gap={4}>
+            <Stack gap={2}>
+              <Text fontSize="sm" fontWeight="600" color="#D4FF00" textTransform="uppercase">
+                Тип
+              </Text>
+              <RadioGroup
+                value={typeFilter}
+                onValueChange={(e) => setTypeFilter(e.value as 'all' | TeamType)}
+              >
+                <HStack gap={4}>
+                  <Radio value="all">Все</Radio>
+                  <Radio value="team">Только команды</Radio>
+                  <Radio value="participant">Только участники</Radio>
+                </HStack>
+              </RadioGroup>
+            </Stack>
+
+            <Stack gap={2}>
+              <Text fontSize="sm" fontWeight="600" color="#D4FF00" textTransform="uppercase">
+                Статус оценки
+              </Text>
+              <HStack gap={4}>
+                <Switch
+                  size="sm"
+                  checked={showEvaluated}
+                  onCheckedChange={() => setShowEvaluated((prev) => !prev)}
+                  colorPalette="green"
+                >
+                  Оцененные
+                </Switch>
+                <Switch
+                  size="sm"
+                  checked={showNotEvaluated}
+                  onCheckedChange={() => setShowNotEvaluated((prev) => !prev)}
+                  colorPalette="pink"
+                >
+                  Не оцененные
+                </Switch>
+              </HStack>
+            </Stack>
+          </HStack>
+        </Stack>
+      </Box>
 
       <Box
         bg="#1F1F1F"
@@ -267,7 +347,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
       </Box>
 
       <Grid templateColumns="repeat(auto-fill, minmax(350px, 1fr))" gap={4}>
-        {teams.map((team) => (
+        {filteredTeams.map((team) => (
           <Box
             key={team._id}
             bg="#1F1F1F"
@@ -423,10 +503,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId }) => {
         ))}
       </Grid>
 
-      {teams.length === 0 && (
+      {filteredTeams.length === 0 && (
         <Box textAlign="center" py={10}>
           <Text color="#B0B0B0" fontSize="lg">
-            Нет добавленных команд или участников
+            Нет команд или участников по выбранным фильтрам
           </Text>
         </Box>
       )}

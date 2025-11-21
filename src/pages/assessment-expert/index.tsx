@@ -71,11 +71,12 @@ export const AssessmentExpertPage: React.FC = () => {
       try {
         setSaveStatus('saving');
         await createRating({
+          eventId: activeTeam.eventId,
           expertId: expert._id,
           teamId: activeTeam._id,
           ratings: ratingsArray
         }).unwrap();
-        
+
         setSaveStatus('saved');
         setTimeout(() => setSaveStatus('idle'), 2000);
       } catch (error) {
@@ -85,10 +86,10 @@ export const AssessmentExpertPage: React.FC = () => {
       }
     };
 
-    // Debounce автосохранения
+    // Debounce автосохранения (0.5 секунды перед сохранением)
     const timeoutId = setTimeout(() => {
       saveRatings();
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [ratings, activeTeam, expert, criteriaBlocks, createRating]);

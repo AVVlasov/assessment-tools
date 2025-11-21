@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Rating, CreateRatingRequest, TeamStatistics, Top3Item } from '../../types';
+import { Rating, CreateRatingRequest, TeamStatistics, Top3Response } from '../../types';
 import { URLs } from '../urls';
 
 export const ratingsApi = createApi({
@@ -29,7 +29,7 @@ export const ratingsApi = createApi({
       }),
       providesTags: ['Statistics']
     }),
-    getTop3: builder.query<Top3Item[], { eventId?: string; type?: string }>({
+    getTop3: builder.query<Top3Response, { eventId?: string; type?: string }>({
       query: (params) => ({
         url: '/ratings/top3',
         params

@@ -11,6 +11,9 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId }) => {
   const [filterType, setFilterType] = useState<string>('');
   const { data: statistics = [], isLoading } = useGetStatisticsQuery({ eventId, type: filterType });
 
+  // В статистике отображаем только тех, у кого есть хотя бы одна оценка
+  const evaluatedStatistics = statistics.filter((stat) => stat.ratingsCount > 0);
+
   if (isLoading) {
     return <Text color="#B0B0B0">Загрузка...</Text>;
   }
@@ -31,7 +34,7 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId }) => {
       </HStack>
 
       <Grid templateColumns="repeat(auto-fill, minmax(400px, 1fr))" gap={4}>
-        {statistics.map((stat) => (
+        {evaluatedStatistics.map((stat) => (
           <Box
             key={stat.team._id}
             bg="#1F1F1F"
@@ -133,7 +136,7 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId }) => {
         ))}
       </Grid>
 
-      {statistics.length === 0 && (
+      {evaluatedStatistics.length === 0 && (
         <Box textAlign="center" py={10}>
           <Text color="#B0B0B0" fontSize="lg">
             Нет данных для отображения

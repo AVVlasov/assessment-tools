@@ -119,49 +119,64 @@ router.get('/statistics', async (req, res) => {
   }
 });
 
-// GET /api/ratings/top3 - топ-3 команды/участники
+// GET /api/ratings/top3 - топ-3 команды и топ-3 участники отдельно
+// ВАЖНО: всегда возвращаем объект вида { teams: Top3Item[], participants: Top3Item[] },
+// чтобы фронтенд мог безопасно работать с data.teams / data.participants
 router.get('/top3', async (req, res) => {
   try {
     const { type, eventId } = req.query;
-    
-    // Получаем статистику
+
+    // Получаем все активные команды/участников
     const teamFilter = { isActive: true };
-    if (type) teamFilter.type = type;
     if (eventId) teamFilter.eventId = eventId;
     const teams = await Team.find(teamFilter);
-    
+
     const ratingFilter = {};
     if (eventId) ratingFilter.eventId = eventId;
-    const ratings = await Rating.find(ratingFilter)
-      .populate('teamId', 'name type projectName');
-    
-    // Группируем и считаем средние баллы
-    const teamScores = teams.map(team => {
-      const teamRatings = ratings.filter(r => r.teamId && r.teamId._id.toString() === team._id.toString());
-      
-      const totalScore = teamRatings.length > 0
-        ? teamRatings.reduce((sum, r) => sum + r.totalScore, 0) / teamRatings.length
-        : 0;
-      
-      return {
-        team: {
-          _id: team._id,
-          name: team.name,
-          type: team.type,
-          projectName: team.projectName
-        },
-        totalScore: totalScore,
-        ratingsCount: teamRatings.length
-      };
-    });
-    
-    // Сортируем по баллам и берем топ-3
-    const top3 = teamScores
-      .filter(t => t.ratingsCount > 0)
-      .sort((a, b) => b.totalScore - a.totalScore)
-      .slice(0, 3);
-    
-    res.json(top3);
+    const ratings = await Rating.find(ratingFilter).populate('teamId', 'name type projectName');
+
+    const calculateTop3 = (sourceTeams) => {
+      const teamScores = sourceTeams.map((team) => {
+        const teamRatings = ratings.filter(
+          (r) => r.teamId && r.teamId._id.toString() === team._id.toString()
+        );
+
+        const totalScore =
+          teamRatings.length > 0
+            ? teamRatings.reduce((sum, r) => sum + r.totalScore, 0) / teamRatings.length
+            : 0;
+
+        return {
+          team: {
+            _id: team._id,
+            name: team.name,
+            type: team.type,
+            projectName: team.projectName
+          },
+          totalScore,
+          ratingsCount: teamRatings.length
+        };
+      });
+
+      return teamScores
+        .filter((t) => t.ratingsCount > 0)
+        .sort((a, b) => b.totalScore - a.totalScore)
+        .slice(0, 3);
+    };
+
+    const teamEntities = teams.filter((t) => t.type === 'team');
+    const participantEntities = teams.filter((t) => t.type === 'participant');
+
+    const teamTop3 = calculateTop3(teamEntities);
+    const participantTop3 = calculateTop3(participantEntities);
+
+    // Параметр type управляет только содержимым, но не форматом ответа
+    const response = {
+      teams: !type || type === 'team' ? teamTop3 : [],
+      participants: !type || type === 'participant' ? participantTop3 : []
+    };
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
