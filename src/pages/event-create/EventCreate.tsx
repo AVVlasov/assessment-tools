@@ -70,31 +70,69 @@ export const EventCreate: React.FC = () => {
   }
 
   return (
-    <Box minH="100vh" bg="#0A0A0A" color="white" py={8}>
-      <Container maxW="1000px">
-        <Stack gap={8}>
+    <Box minH="100vh" bg="#0A0A0A" color="white" py={{ base: 4, md: 8 }}>
+      <Container maxW="1000px" px={{ base: 4, md: 6 }}>
+        <Stack gap={{ base: 6, md: 8 }}>
           {/* Header with back button */}
-          <Stack direction="row" align="center" gap={4}>
+          <Stack direction="row" align="center" gap={{ base: 2, md: 4 }}>
             <IconButton
               aria-label="Назад к списку"
               onClick={() => navigate('/assessment-tools')}
               variant="ghost"
               color="white"
+              size={{ base: 'sm', md: 'md' }}
               _hover={{ bg: '#1A1A1A' }}
             >
               <FiArrowLeft size={24} />
             </IconButton>
-            <Heading fontSize="3xl" fontWeight="bold" color="#D4FF00">
+            <Heading 
+              fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }} 
+              fontWeight="bold" 
+              color="#D4FF00"
+            >
               Создание мероприятия
             </Heading>
           </Stack>
 
           {/* Steps Progress */}
-          <Box bg="#1A1A1A" p={6} borderRadius="lg" border="1px solid #333333">
-            <Stack direction="row" gap={4} align="stretch">
-              {steps.map((stepInfo, index) => (
-                <React.Fragment key={index}>
-                  <Stack flex={1} gap={3}>
+          <Box bg="#1A1A1A" p={{ base: 4, md: 6 }} borderRadius="lg" border="1px solid #333333">
+            {/* Mobile: Show only current step */}
+            <Box display={{ base: 'block', md: 'none' }}>
+              <Stack direction="row" align="center" gap={3}>
+                <Box
+                  w={10}
+                  h={10}
+                  borderRadius="full"
+                  bg="#D4FF00"
+                  color="#0A0A0A"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontWeight="bold"
+                  fontSize="lg"
+                  flexShrink={0}
+                >
+                  {currentStep + 1}
+                </Box>
+                <Box flex={1}>
+                  <Text fontSize="md" fontWeight="bold" color="white">
+                    {steps[currentStep].title}
+                  </Text>
+                  <Text fontSize="sm" color="#D0D0D0">
+                    {steps[currentStep].description}
+                  </Text>
+                </Box>
+              </Stack>
+              <Text fontSize="xs" color="#999999" mt={3} textAlign="center">
+                Шаг {currentStep + 1} из {steps.length}
+              </Text>
+            </Box>
+
+            {/* Desktop: Show all steps horizontally */}
+            <Box display={{ base: 'none', md: 'block' }}>
+              <Stack direction="row" gap={6} align="stretch">
+                {steps.map((stepInfo, index) => (
+                  <Stack key={index} flex={1} gap={3}>
                     <Stack direction="row" align="center" gap={3}>
                       <Box
                         w={10}
@@ -121,22 +159,19 @@ export const EventCreate: React.FC = () => {
                       </Box>
                     </Stack>
                   </Stack>
-                  {index < steps.length - 1 && (
-                    <Box
-                      w="40px"
-                      h="2px"
-                      bg={index < currentStep ? '#D4FF00' : '#333333'}
-                      alignSelf="center"
-                      mt={2}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
-            </Stack>
+                ))}
+              </Stack>
+            </Box>
           </Box>
 
           {/* Step Content */}
-          <Box bg="#1A1A1A" p={8} borderRadius="lg" border="1px solid #333333" minH="400px">
+          <Box 
+            bg="#1A1A1A" 
+            p={{ base: 4, md: 6, lg: 8 }} 
+            borderRadius="lg" 
+            border="1px solid #333333" 
+            minH={{ base: '300px', md: '400px' }}
+          >
             {currentStep === 0 && (
               <Stack gap={6}>
                 <Field.Root required>
@@ -270,14 +305,19 @@ export const EventCreate: React.FC = () => {
           </Box>
 
           {/* Navigation Buttons */}
-          <Stack direction="row" gap={4} justify="flex-end">
+          <Stack 
+            direction={{ base: 'column', md: 'row' }} 
+            gap={3}
+            justify="flex-end"
+          >
             {currentStep > 0 && (
               <Button
                 variant="outline"
                 onClick={handleBack}
                 disabled={isLoading}
-                size="lg"
-                px={8}
+                size={{ base: 'md', md: 'lg' }}
+                px={{ base: 6, md: 8 }}
+                width={{ base: 'full', md: 'auto' }}
                 borderColor="#666666"
                 color="white"
                 _hover={{ bg: '#1A1A1A', borderColor: '#D4FF00' }}
@@ -290,8 +330,9 @@ export const EventCreate: React.FC = () => {
               onClick={() => navigate('/assessment-tools')}
               variant="outline"
               disabled={isLoading}
-              size="lg"
-              px={8}
+              size={{ base: 'md', md: 'lg' }}
+              px={{ base: 6, md: 8 }}
+              width={{ base: 'full', md: 'auto' }}
               borderColor="#666666"
               color="white"
               _hover={{ bg: '#1A1A1A', borderColor: '#FF4444' }}
@@ -305,8 +346,9 @@ export const EventCreate: React.FC = () => {
                 color="#0A0A0A"
                 onClick={handleNext}
                 disabled={!canProceed()}
-                size="lg"
-                px={8}
+                size={{ base: 'md', md: 'lg' }}
+                px={{ base: 6, md: 8 }}
+                width={{ base: 'full', md: 'auto' }}
                 fontWeight="bold"
                 _hover={{ bg: '#C4EF00' }}
                 _disabled={{ bg: '#666666', color: '#333333', cursor: 'not-allowed' }}
@@ -320,8 +362,9 @@ export const EventCreate: React.FC = () => {
                 onClick={handleSubmit}
                 disabled={isLoading}
                 loading={isLoading}
-                size="lg"
-                px={8}
+                size={{ base: 'md', md: 'lg' }}
+                px={{ base: 6, md: 8 }}
+                width={{ base: 'full', md: 'auto' }}
                 fontWeight="bold"
                 _hover={{ bg: '#C4EF00' }}
               >
