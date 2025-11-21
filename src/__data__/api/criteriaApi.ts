@@ -7,7 +7,7 @@ export const criteriaApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['Criteria'],
   endpoints: (builder) => ({
-    getCriteria: builder.query<Criteria[], { eventId?: string }>({
+    getCriteria: builder.query<Criteria[], { eventId?: string; criteriaType?: string }>({
       query: (params) => ({
         url: '/criteria',
         params

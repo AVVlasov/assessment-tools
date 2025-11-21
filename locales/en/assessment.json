@@ -57,6 +57,12 @@
     "edit": "Edit",
     "delete": "Delete Block",
     "defaultLoaded": "Default criteria loaded",
+    "criteriaType": {
+      "label": "Criteria Type",
+      "all": "For all",
+      "team": "Teams only",
+      "participant": "Participants only"
+    },
     "defaultCriteria": {
       "blockName": "Project Evaluation",
       "criteria": [

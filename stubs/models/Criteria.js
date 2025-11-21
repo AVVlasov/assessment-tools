@@ -23,6 +23,12 @@ const criteriaSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  criteriaType: {
+    type: String,
+    enum: ['team', 'participant', 'all'],
+    default: 'all',
+    required: true
+  },
   criteria: [criterionItemSchema],
   order: {
     type: Number,

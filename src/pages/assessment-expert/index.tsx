@@ -15,7 +15,10 @@ export const AssessmentExpertPage: React.FC = () => {
   });
   
   const { data: activeTeam, isLoading: teamLoading } = useGetActiveTeamForVotingQuery();
-  const { data: criteriaBlocks = [], isLoading: criteriaLoading } = useGetCriteriaQuery();
+  const { data: criteriaBlocks = [], isLoading: criteriaLoading } = useGetCriteriaQuery(
+    activeTeam ? { criteriaType: activeTeam.type } : undefined,
+    { skip: !activeTeam }
+  );
   const [createRating, { isLoading: isSaving }] = useCreateRatingMutation();
   const { data: expertRatings = [] } = useGetExpertRatingsQuery(expert?._id || '', {
     skip: !expert
@@ -38,8 +41,12 @@ export const AssessmentExpertPage: React.FC = () => {
         });
         setRatings(ratingsMap);
       } else {
+        // Сброс рейтингов при смене команды/участника
         setRatings({});
       }
+    } else {
+      // Сброс рейтингов если нет активной команды
+      setRatings({});
     }
   }, [activeTeam, expert, expertRatings]);
 
@@ -161,6 +168,11 @@ export const AssessmentExpertPage: React.FC = () => {
                 borderRadius="8px"
                 textAlign="center"
               >
+                <HStack justify="center" mb={2}>
+                  <Text fontSize="sm" fontWeight="700" color="#FF0080" px={3} py={1} bg="#2A2A2A" borderRadius="20px">
+                    {activeTeam.type === 'team' ? '🏆 Команда' : '👤 Участник'}
+                  </Text>
+                </HStack>
                 <Text fontSize="2xl" fontWeight="900" color="#FFFFFF" textTransform="uppercase" mb={2}>
                   {activeTeam.name}
                 </Text>

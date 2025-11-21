@@ -57,6 +57,12 @@
     "edit": "Редактировать",
     "delete": "Удалить блок",
     "defaultLoaded": "Критерии по умолчанию загружены",
+    "criteriaType": {
+      "label": "Тип критериев",
+      "all": "Для всех",
+      "team": "Только для команд",
+      "participant": "Только для участников"
+    },
     "defaultCriteria": {
       "blockName": "Оценка проекта",
       "criteria": [

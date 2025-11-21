@@ -80,6 +80,8 @@ export interface UpdateExpertRequest {
 }
 
 // Criteria types
+export type CriteriaType = 'team' | 'participant' | 'all';
+
 export interface CriterionItem {
   name: string;
   maxScore: number;
@@ -89,6 +91,7 @@ export interface Criteria {
   _id: string;
   eventId: string;
   blockName: string;
+  criteriaType: CriteriaType;
   criteria: CriterionItem[];
   order: number;
   createdAt: string;
@@ -98,12 +101,14 @@ export interface Criteria {
 export interface CreateCriteriaRequest {
   eventId: string;
   blockName: string;
+  criteriaType: CriteriaType;
   criteria: CriterionItem[];
   order?: number;
 }
 
 export interface UpdateCriteriaRequest {
   blockName?: string;
+  criteriaType?: CriteriaType;
   criteria?: CriterionItem[];
   order?: number;
 }

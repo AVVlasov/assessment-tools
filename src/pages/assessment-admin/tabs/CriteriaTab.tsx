@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Button, Grid, HStack, Input, Stack, Text, IconButton } from '@chakra-ui/react';
+import { Box, Button, Grid, HStack, Input, Stack, Text, IconButton, NativeSelect } from '@chakra-ui/react';
 import { useGetCriteriaQuery, useCreateCriteriaMutation, useLoadDefaultCriteriaMutation, useUpdateCriteriaMutation, useDeleteCriteriaMutation } from '../../../__data__/api';
-import type { CriterionItem } from '../../../types';
+import type { CriterionItem, CriteriaType } from '../../../types';
 
 interface CriteriaTabProps {
   eventId: string;
@@ -15,6 +15,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
   const [deleteCriteria] = useDeleteCriteriaMutation();
 
   const [blockName, setBlockName] = useState('');
+  const [criteriaType, setCriteriaType] = useState<CriteriaType>('all');
   const [criteria, setCriteria] = useState<CriterionItem[]>([
     { name: '', maxScore: 5 }
   ]);
@@ -46,14 +47,15 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
       if (editingId) {
         await updateCriteria({
           id: editingId,
-          data: { blockName, criteria }
+          data: { blockName, criteriaType, criteria }
         }).unwrap();
         setEditingId(null);
       } else {
-        await createCriteria({ eventId, blockName, criteria }).unwrap();
+        await createCriteria({ eventId, blockName, criteriaType, criteria }).unwrap();
       }
       
       setBlockName('');
+      setCriteriaType('all');
       setCriteria([{ name: '', maxScore: 5 }]);
     } catch (error) {
       console.error('Error saving criteria:', error);
@@ -73,6 +75,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
 
   const handleEdit = (block: any) => {
     setBlockName(block.blockName);
+    setCriteriaType(block.criteriaType || 'all');
     setCriteria(block.criteria);
     setEditingId(block._id);
   };
@@ -80,6 +83,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
   const handleCancelEdit = () => {
     setEditingId(null);
     setBlockName('');
+    setCriteriaType('all');
     setCriteria([{ name: '', maxScore: 5 }]);
   };
 
@@ -135,6 +139,27 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
               _focus={{ borderColor: '#D4FF00' }}
               required
             />
+
+            <Box>
+              <Text fontSize="md" fontWeight="700" color="#B0B0B0" mb={2}>
+                Тип критериев:
+              </Text>
+              <NativeSelect.Root
+                value={criteriaType}
+                onChange={(e) => setCriteriaType(e.target.value as CriteriaType)}
+              >
+                <NativeSelect.Field
+                  bg="#1A1A1A"
+                  border="2px solid #333333"
+                  color="#FFFFFF"
+                  _focus={{ borderColor: '#D4FF00' }}
+                >
+                  <option value="all" style={{ background: '#1A1A1A' }}>Для всех</option>
+                  <option value="team" style={{ background: '#1A1A1A' }}>Только для команд</option>
+                  <option value="participant" style={{ background: '#1A1A1A' }}>Только для участников</option>
+                </NativeSelect.Field>
+              </NativeSelect.Root>
+            </Box>
 
             <Text fontSize="md" fontWeight="700" color="#B0B0B0" mt={2}>
               Критерии:
@@ -238,9 +263,16 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
             _hover={{ borderColor: '#D4FF00' }}
           >
             <HStack justify="space-between" mb={3}>
-              <Text fontSize="lg" fontWeight="900" color="#FFFFFF" textTransform="uppercase">
-                {'{ '}{block.blockName}{' }'}
-              </Text>
+              <Box>
+                <Text fontSize="lg" fontWeight="900" color="#FFFFFF" textTransform="uppercase">
+                  {'{ '}{block.blockName}{' }'}
+                </Text>
+                <Text fontSize="xs" color="#B0B0B0" mt={1}>
+                  {block.criteriaType === 'team' ? '🏆 Для команд' : 
+                   block.criteriaType === 'participant' ? '👤 Для участников' : 
+                   '🌐 Для всех'}
+                </Text>
+              </Box>
               
               <HStack gap={2}>
                 <Button

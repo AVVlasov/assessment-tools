@@ -4,7 +4,8 @@ const { Criteria } = require('../models');
 // Критерии по умолчанию из hack.md
 const DEFAULT_CRITERIA = [
   {
-    blockName: 'Оценка проекта',
+    blockName: 'Оценка проекта команды',
+    criteriaType: 'team',
     criteria: [
       { name: 'Соответствие решения поставленной задаче', maxScore: 5 },
       { name: 'Оригинальность - использование нестандартных технических и проектных подходов', maxScore: 5 },
@@ -17,15 +18,33 @@ const DEFAULT_CRITERIA = [
       { name: 'Наличие не менее 5 AI-агентов', maxScore: 5 }
     ],
     order: 0
+  },
+  {
+    blockName: 'Оценка выступления участника',
+    criteriaType: 'participant',
+    criteria: [
+      { name: 'Качество презентации и донесения идеи', maxScore: 5 },
+      { name: 'Понимание технологии и решения', maxScore: 5 },
+      { name: 'Аргументация выбранного подхода', maxScore: 5 },
+      { name: 'Ответы на вопросы жюри', maxScore: 5 },
+      { name: 'Коммуникативные навыки', maxScore: 5 }
+    ],
+    order: 1
   }
 ];
 
 // GET /api/criteria - получить все блоки критериев
 router.get('/', async (req, res) => {
   try {
-    const { eventId } = req.query;
+    const { eventId, criteriaType } = req.query;
     const filter = {};
     if (eventId) filter.eventId = eventId;
+    if (criteriaType && criteriaType !== 'all') {
+      filter.$or = [
+        { criteriaType: criteriaType },
+        { criteriaType: 'all' }
+      ];
+    }
     const criteria = await Criteria.find(filter).sort({ order: 1 });
     res.json(criteria);
   } catch (error) {
@@ -49,7 +68,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/criteria - создать блок критериев
 router.post('/', async (req, res) => {
   try {
-    const { eventId, blockName, criteria, order } = req.body;
+    const { eventId, blockName, criteriaType, criteria, order } = req.body;
     
     if (!eventId || !blockName || !criteria || !Array.isArray(criteria)) {
       return res.status(400).json({ error: 'EventId, block name and criteria array are required' });
@@ -58,6 +77,7 @@ router.post('/', async (req, res) => {
     const criteriaBlock = await Criteria.create({
       eventId,
       blockName,
+      criteriaType: criteriaType || 'all',
       criteria,
       order: order !== undefined ? order : 0
     });
@@ -96,7 +116,7 @@ router.post('/default', async (req, res) => {
 // PUT /api/criteria/:id - редактировать блок
 router.put('/:id', async (req, res) => {
   try {
-    const { blockName, criteria, order } = req.body;
+    const { blockName, criteriaType, criteria, order } = req.body;
     
     const criteriaBlock = await Criteria.findById(req.params.id);
     if (!criteriaBlock) {
@@ -104,6 +124,7 @@ router.put('/:id', async (req, res) => {
     }
     
     if (blockName !== undefined) criteriaBlock.blockName = blockName;
+    if (criteriaType !== undefined) criteriaBlock.criteriaType = criteriaType;
     if (criteria !== undefined) criteriaBlock.criteria = criteria;
     if (order !== undefined) criteriaBlock.order = order;
     
