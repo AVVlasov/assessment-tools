@@ -59,7 +59,16 @@ router.post('/', async (req, res) => {
     await expert.save();
     
     // Формируем URL для QR кода ПОСЛЕ сохранения, когда токен уже сгенерирован
-    const baseUrl = req.protocol + '://' + req.get('host');
+    // Приоритеты:
+    // 1) Явная переменная окружения FRONTEND_BASE_URL (например, https://platform.brojs.ru)
+    // 2) Проксируемые заголовки x-forwarded-proto / x-forwarded-host
+    // 3) Локальные req.protocol + req.get('host')
+    const forwardedProto = req.get('x-forwarded-proto');
+    const forwardedHost = req.get('x-forwarded-host');
+    const protocol = forwardedProto || req.protocol;
+    const host = forwardedHost || req.get('host');
+    const baseUrl = process.env.FRONTEND_BASE_URL || `${protocol}://${host}`;
+    
     expert.qrCodeUrl = `${baseUrl}/assessment-tools/expert/${expert.token}`;
     
     // Сохраняем еще раз с обновленным qrCodeUrl
