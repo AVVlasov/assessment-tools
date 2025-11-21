@@ -19,6 +19,15 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
   const [fullName, setFullName] = useState('');
   const [selectedExpert, setSelectedExpert] = useState<any>(null);
 
+  const getExpertLink = (token: string) => {
+    if (!token) {
+      return '';
+    }
+
+    const origin = window.location.origin;
+    return `${origin}/assessment-tools/expert/${token}`;
+  };
+
   // Функция расчета прогресса эксперта для активной команды
   const calculateExpertProgress = (expertId: string) => {
     if (!activeTeam) return 0;
@@ -192,7 +201,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
             >
               <QRCodeSVG
                 id={`qr-${expert._id}`}
-                value={expert.qrCodeUrl}
+                value={getExpertLink(expert.token)}
                 size={150}
                 level="H"
                 includeMargin={true}
@@ -218,7 +227,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                 color="#FF6B00"
                 border="2px solid #FF6B00"
                 _hover={{ bg: '#FF6B00', color: '#000000' }}
-                onClick={() => handleCopyLink(expert.qrCodeUrl)}
+                onClick={() => handleCopyLink(getExpertLink(expert.token))}
                 width="100%"
               >
                 Копировать ссылку
@@ -298,7 +307,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                     onClick={() => setSelectedExpert(null)}
                   >
                     <QRCodeSVG
-                      value={selectedExpert.qrCodeUrl}
+                      value={getExpertLink(selectedExpert.token)}
                       size={300}
                       level="H"
                       includeMargin={true}
@@ -313,7 +322,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                     wordBreak="break-all"
                     px={{ base: 4, md: 0 }}
                   >
-                    {selectedExpert.qrCodeUrl}
+                    {getExpertLink(selectedExpert.token)}
                   </Text>
                 </Box>
               </Dialog.Body>
