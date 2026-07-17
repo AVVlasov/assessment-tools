@@ -191,6 +191,16 @@
     "editInvalid": "Check the name and date",
     "createFailed": "Failed to create event",
     "openEvent": "Open",
+    "hero": {
+      "dotsLabel": "Header slides",
+      "slideLabel": "Slide",
+      "slide1Title": "Events",
+      "slide1Sub": "Assessment Tools · hackathons, contests and conferences",
+      "slide2Title": "Live feedback",
+      "slide2Sub": "QR codes for halls, listeners and experts — no sign-up",
+      "slide3Title": "Organizer console",
+      "slide3Sub": "Halls, speaker schedule, stats and rating resets in one place"
+    },
     "types": {
       "label": "Event type",
       "hackathon": "Hackathon",
@@ -279,6 +289,11 @@
     "formatWorkshop": "Workshop",
     "addSpeaker": "Add speaker",
     "selectHall": "Hall",
+    "selectHallRequired": "Hall *",
+    "hallRequired": "Select a hall",
+    "speakerNameRequired": "Enter speaker name",
+    "speakerAdded": "Speaker added",
+    "speakerAddFailed": "Failed to add speaker",
     "pauseHall": "Pause",
     "restartHall": "Restart hall",
     "restartHallClear": "Restart + clear ratings",

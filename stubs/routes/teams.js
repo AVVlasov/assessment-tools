@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Team, Event } = require('../models');
+const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
 
 const ALLOWED_TYPES_BY_EVENT = {
   hackathon: ['team'],
@@ -87,6 +88,15 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'EventId, type and name are required' });
     }
 
+    if (
+      hasBrokenEncoding(name) ||
+      hasBrokenEncoding(projectName) ||
+      hasBrokenEncoding(caseDescription) ||
+      hasBrokenEncoding(org)
+    ) {
+      return res.status(400).json({ error: 'Text fields contain broken encoding (use UTF-8)' });
+    }
+
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
@@ -111,12 +121,12 @@ router.post('/', async (req, res) => {
     const team = await Team.create({
       eventId,
       type,
-      name,
-      projectName: projectName || '',
-      caseDescription: caseDescription || '',
+      name: sanitizeText(name),
+      projectName: sanitizeText(projectName || ''),
+      caseDescription: sanitizeText(caseDescription || ''),
       hallId: hallId || null,
-      scheduledTime: scheduledTime || '',
-      org: org || '',
+      scheduledTime: sanitizeText(scheduledTime || ''),
+      org: sanitizeText(org || ''),
       format: ['panel', 'workshop'].includes(format) ? format : 'talk',
       order: order ?? count,
       isActive: true
@@ -159,12 +169,21 @@ router.put('/:id', async (req, res) => {
       team.type = type;
     }
 
-    if (name !== undefined) team.name = name;
-    if (projectName !== undefined) team.projectName = projectName;
-    if (caseDescription !== undefined) team.caseDescription = caseDescription;
+    if (
+      hasBrokenEncoding(name) ||
+      hasBrokenEncoding(projectName) ||
+      hasBrokenEncoding(caseDescription) ||
+      hasBrokenEncoding(org) ||
+      hasBrokenEncoding(scheduledTime)
+    ) {
+      return res.status(400).json({ error: 'Text fields contain broken encoding (use UTF-8)' });
+    }
+    if (name !== undefined) team.name = sanitizeText(name);
+    if (projectName !== undefined) team.projectName = sanitizeText(projectName);
+    if (caseDescription !== undefined) team.caseDescription = sanitizeText(caseDescription);
     if (hallId !== undefined) team.hallId = hallId || null;
-    if (scheduledTime !== undefined) team.scheduledTime = scheduledTime;
-    if (org !== undefined) team.org = org;
+    if (scheduledTime !== undefined) team.scheduledTime = sanitizeText(scheduledTime);
+    if (org !== undefined) team.org = sanitizeText(org);
     if (format !== undefined) {
       team.format = ['panel', 'workshop'].includes(format) ? format : 'talk';
     }

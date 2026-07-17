@@ -1,5 +1,11 @@
 const router = require('express').Router();
 const { Hall, Team, Event, Criteria, ListenerRating } = require('../models');
+const {
+  hasBrokenEncoding,
+  isUsableText,
+  sanitizeStringArray,
+  sanitizeScores
+} = require('../utils/textEncoding');
 
 const SESSION_TARGET_TYPES = ['speaker', 'panel', 'workshop'];
 
@@ -130,11 +136,20 @@ router.post('/ratings', async (req, res) => {
       return res.status(400).json({ error: 'eventId, sessionId and scores are required' });
     }
 
+    const cleanedScores = sanitizeScores(scores);
+    if (!cleanedScores) {
+      return res.status(400).json({
+        error: 'scores contain invalid or broken encoding text (use UTF-8)'
+      });
+    }
+
+    const cleanedReactions = sanitizeStringArray(reactions);
+
     const filter = targetType === 'event'
       ? { sessionId, eventId, targetType: 'event' }
       : { sessionId, teamId, targetType };
 
-    const averageScore = scores.reduce((a, s) => a + s.score, 0) / scores.length;
+    const averageScore = cleanedScores.reduce((a, s) => a + s.score, 0) / cleanedScores.length;
 
     const rating = await ListenerRating.findOneAndUpdate(
       filter,
@@ -144,8 +159,8 @@ router.post('/ratings', async (req, res) => {
         teamId: teamId || null,
         targetType,
         sessionId,
-        scores,
-        reactions,
+        scores: cleanedScores,
+        reactions: cleanedReactions,
         elapsedSeconds,
         averageScore
       },
@@ -154,7 +169,7 @@ router.post('/ratings', async (req, res) => {
 
     const placeFilter = targetType === 'event'
       ? { eventId, targetType: 'event' }
-      : { teamId, targetType: { $in: ['speaker', 'panel'] } };
+      : { teamId, targetType: { $in: SESSION_TARGET_TYPES } };
     const place = await ListenerRating.countDocuments(placeFilter);
 
     res.status(201).json({ rating, place });
@@ -181,6 +196,13 @@ router.get('/stats', async (req, res) => {
     const speakers = await Team.find(speakerFilter).sort({ order: 1, scheduledTime: 1 });
     const halls = await Hall.find({ eventId }).sort({ order: 1, num: 1 });
     const hallMap = Object.fromEntries(halls.map((h) => [String(h._id), h]));
+    const criteriaBlocks = await Criteria.find({ eventId }).sort({ order: 1 });
+    const criteriaByType = {
+      speaker: flattenCriteria(criteriaBlocks, 'speaker').map((c) => c.name),
+      panel: flattenCriteria(criteriaBlocks, 'panel').map((c) => c.name),
+      workshop: flattenCriteria(criteriaBlocks, 'workshop').map((c) => c.name),
+      event: flattenCriteria(criteriaBlocks, 'event').map((c) => c.name)
+    };
 
     const leaderboard = [];
     const reactionCounts = {};
@@ -194,11 +216,17 @@ router.get('/stats', async (req, res) => {
 
       const criterionAgg = {};
       ratings.forEach((r) => {
-        (r.scores || []).forEach((s) => {
-          if (!criterionAgg[s.criterionName]) criterionAgg[s.criterionName] = [];
-          criterionAgg[s.criterionName].push(s.score);
+        const fallbackNames = criteriaByType[r.targetType] || criteriaByType.speaker;
+        (r.scores || []).forEach((s, idx) => {
+          const name = isUsableText(s.criterionName)
+            ? s.criterionName
+            : (fallbackNames[idx] || null);
+          if (!name || hasBrokenEncoding(name)) return;
+          if (!criterionAgg[name]) criterionAgg[name] = [];
+          criterionAgg[name].push(s.score);
         });
         (r.reactions || []).forEach((rx) => {
+          if (!isUsableText(rx)) return;
           reactionCounts[rx] = (reactionCounts[rx] || 0) + 1;
         });
       });

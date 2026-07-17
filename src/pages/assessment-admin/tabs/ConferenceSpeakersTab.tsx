@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Input, Text, NativeSelect } from '@chakra-ui/react'
+import { toaster } from '../../../components/ui/toaster'
 import {
   AvatarInitials,
   GradientButton,
@@ -57,9 +58,16 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
 
   const [form, setForm] = useState<EditState>(emptyForm())
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [hallError, setHallError] = useState(false)
 
   const rows = stats?.speakerRows || []
   const teamById = Object.fromEntries(teams.map((tm) => [tm._id, tm])) as Record<string, Team>
+
+  useEffect(() => {
+    if (!editingId && !form.hallId && halls.length === 1) {
+      setForm((f) => ({ ...f, hallId: halls[0]._id }))
+    }
+  }, [halls, editingId, form.hallId])
 
   const refresh = (): void => {
     void refetchHalls()
@@ -68,19 +76,37 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
   }
 
   const handleAdd = async (): Promise<void> => {
-    if (!form.name.trim() || !form.hallId) return
-    await createTeam({
-      eventId,
-      type: 'speaker',
-      name: form.name.trim(),
-      projectName: form.talk.trim(),
-      hallId: form.hallId,
-      scheduledTime: form.time.trim(),
-      org: form.org.trim(),
-      format: form.format,
-    }).unwrap()
-    setForm(emptyForm())
-    refresh()
+    if (!form.name.trim()) {
+      toaster.create({ title: t('admin.speakerNameRequired'), type: 'error' })
+      return
+    }
+    if (!form.hallId) {
+      setHallError(true)
+      toaster.create({ title: t('admin.hallRequired'), type: 'error' })
+      return
+    }
+    setHallError(false)
+    try {
+      await createTeam({
+        eventId,
+        type: 'speaker',
+        name: form.name.trim(),
+        projectName: form.talk.trim(),
+        hallId: form.hallId,
+        scheduledTime: form.time.trim(),
+        org: form.org.trim(),
+        format: form.format,
+      }).unwrap()
+      setForm({
+        ...emptyForm(),
+        hallId: halls.length === 1 ? halls[0]._id : '',
+      })
+      refresh()
+      toaster.create({ title: t('admin.speakerAdded'), type: 'success' })
+    } catch (error) {
+      console.error(error)
+      toaster.create({ title: t('admin.speakerAddFailed'), type: 'error' })
+    }
   }
 
   const startEdit = (teamId: string): void => {
@@ -168,24 +194,36 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
         h="42px"
         w="140px"
       />
-      <NativeSelect.Root size="sm" w="140px">
-        <NativeSelect.Field
-          value={form.hallId}
-          onChange={(e) => setForm((f) => ({ ...f, hallId: e.target.value }))}
-          bg={thColors.surface}
-          borderColor={thColors.border}
-          color="white"
-          borderRadius="14px"
-          h="42px"
-        >
-          <option value="">{t('admin.selectHall')}</option>
-          {halls.map((h) => (
-            <option key={h._id} value={h._id}>
-              {h.name}
-            </option>
-          ))}
-        </NativeSelect.Field>
-      </NativeSelect.Root>
+      <Box w="160px">
+        <NativeSelect.Root size="sm" w="100%">
+          <NativeSelect.Field
+            value={form.hallId}
+            onChange={(e) => {
+              setHallError(false)
+              setForm((f) => ({ ...f, hallId: e.target.value }))
+            }}
+            bg={thColors.surface}
+            borderColor={hallError ? '#FF4444' : thColors.border}
+            color="white"
+            borderRadius="14px"
+            h="42px"
+            required
+            aria-label={t('admin.selectHallRequired')}
+          >
+            <option value="">{t('admin.selectHallRequired')}</option>
+            {halls.map((h) => (
+              <option key={h._id} value={h._id}>
+                {h.name}
+              </option>
+            ))}
+          </NativeSelect.Field>
+        </NativeSelect.Root>
+        {hallError && (
+          <Text fontSize="11px" color="#FF6B6B" mt="4px">
+            {t('admin.hallRequired')}
+          </Text>
+        )}
+      </Box>
       <NativeSelect.Root size="sm" w="120px">
         <NativeSelect.Field
           value={form.format}

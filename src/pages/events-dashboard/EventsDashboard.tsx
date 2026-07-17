@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Box, Container, Flex, Grid, Spinner, Text } from '@chakra-ui/react'
 import { FiPlus } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useGetEventsQuery } from '../../__data__/api/eventApi'
 import { EventCard } from '../../components/events'
 import { Event } from '../../types'
-import { BrandMark, GradientButton, PageShell } from '../../components/tehnohub'
+import { GradientButton, PageShell } from '../../components/tehnohub'
 import { thColors } from '../../theme'
 import { t } from '../../utils/locale'
 
@@ -30,9 +30,25 @@ const monthNames = [
   t('events.months.december'),
 ]
 
+const HERO_SLIDES = [
+  {
+    titleKey: 'events.hero.slide1Title',
+    subKey: 'events.hero.slide1Sub',
+  },
+  {
+    titleKey: 'events.hero.slide2Title',
+    subKey: 'events.hero.slide2Sub',
+  },
+  {
+    titleKey: 'events.hero.slide3Title',
+    subKey: 'events.hero.slide3Sub',
+  },
+] as const
+
 export const EventsDashboard: React.FC = () => {
   const navigate = useNavigate()
   const { data, isLoading } = useGetEventsQuery()
+  const [heroIndex, setHeroIndex] = useState(0)
 
   const events = useMemo(() => {
     if (!data) return []
@@ -54,6 +70,7 @@ export const EventsDashboard: React.FC = () => {
   }, [events])
 
   const sortedYears = Object.keys(groupedEvents).sort((a, b) => parseInt(b) - parseInt(a))
+  const slide = HERO_SLIDES[heroIndex]
 
   if (isLoading) {
     return (
@@ -67,22 +84,45 @@ export const EventsDashboard: React.FC = () => {
     <PageShell>
       <Box bgImage={thColors.gradientAdmin} pb="28px" borderRadius="0 0 26px 26px">
         <Container maxW="1400px" pt="28px" px={{ base: 4, md: 6 }}>
-          <Flex justify="space-between" align="center" flexWrap="wrap" gap="16px">
-            <Flex align="center" gap="14px">
-              <BrandMark size={14} />
-              <Box>
-                <Text fontFamily="heading" fontSize={{ base: '22px', md: '28px' }} fontWeight="700">
-                  {t('events.title')}
-                </Text>
-                <Text fontSize="14px" color={thColors.textDim} mt="4px">
-                  {t('brand.name')} · хакатоны, конкурсы и конференции
-                </Text>
-              </Box>
-            </Flex>
-            <GradientButton
-              h="48px"
-              onClick={() => navigate('/assessment-tools/events/create')}
-            >
+          <Flex justify="space-between" align="flex-start" flexWrap="wrap" gap="16px">
+            <Box flex="1" minW="240px">
+              <Flex align="center" gap="10px" mb="14px" role="tablist" aria-label={t('events.hero.dotsLabel')}>
+                {HERO_SLIDES.map((_, i) => {
+                  const active = i === heroIndex
+                  return (
+                    <Box
+                      key={i}
+                      as="button"
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      aria-label={`${t('events.hero.slideLabel')} ${i + 1}`}
+                      w="11px"
+                      h="11px"
+                      borderRadius={active ? '4px' : '50%'}
+                      bg={active ? 'white' : 'transparent'}
+                      border="1.5px solid white"
+                      cursor="pointer"
+                      onClick={() => setHeroIndex(i)}
+                      transition="all 0.2s"
+                    />
+                  )
+                })}
+              </Flex>
+              <Text
+                fontFamily="heading"
+                fontSize={{ base: '22px', md: '28px' }}
+                fontWeight="700"
+                lineHeight="1.15"
+                key={`title-${heroIndex}`}
+              >
+                {t(slide.titleKey)}
+              </Text>
+              <Text fontSize="14px" color={thColors.textDim} mt="8px" maxW="520px" key={`sub-${heroIndex}`}>
+                {t(slide.subKey)}
+              </Text>
+            </Box>
+            <GradientButton h="48px" onClick={() => navigate('/assessment-tools/events/create')}>
               <FiPlus style={{ marginRight: 8 }} />
               {t('events.createNew')}
             </GradientButton>

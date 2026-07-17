@@ -24,6 +24,7 @@ import {
   toRuDateDots,
 } from '../../utils/date'
 import { toaster } from '../../components/ui/toaster'
+import { GradientButton } from '../../components/tehnohub'
 import { t } from '../../utils/locale'
 
 const TYPE_LABELS: Record<EventType, { title: string; description: string }> = {
@@ -52,7 +53,7 @@ export const EventCreate: React.FC = () => {
   const navigate = useNavigate()
   const [createEvent, { isLoading }] = useCreateEventMutation()
   const [currentStep, setCurrentStep] = useState(0)
-  const [dateText, setDateText] = useState(toDateInputValue())
+  const [dateText, setDateText] = useState(toRuDateDots(toDateInputValue()))
   const [formData, setFormData] = useState<CreateEventRequest>({
     name: '',
     eventType: 'conference',
@@ -70,7 +71,7 @@ export const EventCreate: React.FC = () => {
         return
       }
       setFormData((prev) => ({ ...prev, eventDate: parsed }))
-      setDateText(parsed)
+      setDateText(toRuDateDots(parsed))
     }
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -304,25 +305,15 @@ export const EventCreate: React.FC = () => {
                   </Field.Label>
                   <Stack gap={3}>
                     <Input
-                      type="date"
-                      value={formData.eventDate}
-                      onChange={(e) => handleDateChange(e.target.value)}
-                      size="lg"
-                      bg="#060B10"
-                      borderColor="rgba(255,255,255,0.12)"
-                      color="white"
-                      _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
-                    />
-                    <Input
                       type="text"
                       inputMode="numeric"
-                      placeholder="дд.мм.гггг"
-                      value={/^\d{4}-\d{2}-\d{2}$/.test(dateText) ? toRuDateDots(dateText) : dateText}
+                      placeholder="25.07.2026"
+                      value={dateText}
                       onChange={(e) => handleDateChange(e.target.value)}
                       onBlur={() => {
                         const parsed = parseDateInput(dateText)
                         if (parsed) {
-                          setDateText(parsed)
+                          setDateText(toRuDateDots(parsed))
                           handleChange('eventDate', parsed)
                         }
                       }}
@@ -333,8 +324,23 @@ export const EventCreate: React.FC = () => {
                       _placeholder={{ color: '#8FA6B8' }}
                       _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
                     />
+                    <Input
+                      type="date"
+                      value={formData.eventDate}
+                      onChange={(e) => {
+                        handleDateChange(e.target.value)
+                        const parsed = parseDateInput(e.target.value)
+                        if (parsed) setDateText(toRuDateDots(parsed))
+                      }}
+                      size="lg"
+                      bg="#060B10"
+                      borderColor="rgba(255,255,255,0.12)"
+                      color="white"
+                      _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
+                      aria-label="Календарь"
+                    />
                     <Text fontSize="xs" color="#8FA6B8">
-                      Можно выбрать в календаре или ввести вручную: 25.07.2026
+                      Введите дату цифрами в формате дд.мм.гггг или выберите в календаре ниже
                     </Text>
                   </Stack>
                 </Field.Root>
@@ -476,44 +482,28 @@ export const EventCreate: React.FC = () => {
             </Button>
 
             {currentStep < steps.length - 1 ? (
-              <Button
-                bg="#3DDC50"
-                color="#060B10"
+              <GradientButton
                 onClick={handleNext}
                 disabled={!canProceed()}
-                size={{ base: 'md', md: 'lg' }}
+                h={{ base: '48px', md: '52px' }}
                 px={{ base: 6, md: 8 }}
                 minW={{ base: 'full', md: '140px' }}
                 width={{ base: 'full', md: 'auto' }}
-                fontWeight="bold"
-                borderRadius="30px"
-                opacity={canProceed() ? 1 : 0.55}
-                _hover={{ bg: '#21A038' }}
-                _disabled={{
-                  bg: '#1D2833',
-                  color: '#8FA6B8',
-                  cursor: 'not-allowed',
-                  opacity: 1,
-                }}
+                fontSize="15px"
               >
                 {t('events.wizard.next')}
-              </Button>
+              </GradientButton>
             ) : (
-              <Button
-                bg="#3DDC50"
-                color="#060B10"
+              <GradientButton
                 onClick={() => void handleSubmit()}
                 disabled={isLoading}
-                loading={isLoading}
-                size={{ base: 'md', md: 'lg' }}
+                h={{ base: '48px', md: '52px' }}
                 px={{ base: 6, md: 8 }}
                 width={{ base: 'full', md: 'auto' }}
-                fontWeight="bold"
-                borderRadius="30px"
-                _hover={{ bg: '#21A038' }}
+                fontSize="15px"
               >
                 {isLoading ? t('events.wizard.creating') : t('events.wizard.finish')}
-              </Button>
+              </GradientButton>
             )}
           </Stack>
         </Stack>

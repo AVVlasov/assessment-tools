@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Expert } = require('../models');
+const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
 
 // GET /api/experts - список экспертов
 router.get('/', async (req, res) => {
@@ -48,11 +49,15 @@ router.post('/', async (req, res) => {
     if (!eventId || !fullName) {
       return res.status(400).json({ error: 'EventId and full name are required' });
     }
+
+    if (hasBrokenEncoding(fullName)) {
+      return res.status(400).json({ error: 'fullName contains broken encoding (use UTF-8)' });
+    }
     
     // Создаем нового эксперта
     const expert = new Expert({
       eventId,
-      fullName
+      fullName: sanitizeText(fullName)
     });
     
     // Сохраняем эксперта (токен генерируется в pre-save хуке)

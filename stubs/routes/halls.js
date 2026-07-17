@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Hall, Team, Event, ListenerRating } = require('../models');
+const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
 
 const avgOfScores = (scores) => {
   if (!scores || !scores.length) return 0;
@@ -48,6 +49,9 @@ router.post('/', async (req, res) => {
     if (!eventId || !name) {
       return res.status(400).json({ error: 'eventId and name are required' });
     }
+    if (hasBrokenEncoding(name) || hasBrokenEncoding(qrNote)) {
+      return res.status(400).json({ error: 'Text fields contain broken encoding (use UTF-8)' });
+    }
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
@@ -55,9 +59,9 @@ router.post('/', async (req, res) => {
     const count = await Hall.countDocuments({ eventId });
     const hall = await Hall.create({
       eventId,
-      name,
+      name: sanitizeText(name),
       num: num || count + 1,
-      qrNote: qrNote || 'сам переключается на текущего спикера',
+      qrNote: sanitizeText(qrNote || 'сам переключается на текущего спикера'),
       order: order ?? count,
       status: 'break',
       currentSpeakerIndex: 0

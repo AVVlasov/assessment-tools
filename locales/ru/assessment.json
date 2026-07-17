@@ -224,6 +224,16 @@
       "created": "Мероприятие создано!"
     },
     "createFailed": "Не удалось создать мероприятие",
+    "hero": {
+      "dotsLabel": "Слайды шапки",
+      "slideLabel": "Слайд",
+      "slide1Title": "Мероприятия",
+      "slide1Sub": "Assessment Tools · хакатоны, конкурсы и конференции",
+      "slide2Title": "Оценка в реальном времени",
+      "slide2Sub": "QR для залов, слушателей и экспертов — без регистрации",
+      "slide3Title": "Пульт организатора",
+      "slide3Sub": "Залы, сетка спикеров, статистика и сброс оценок в одном месте"
+    },
     "grouping": {
       "byMonth": "По месяцам",
       "byYear": "По годам"
@@ -279,6 +289,11 @@
     "formatWorkshop": "Воркшоп",
     "addSpeaker": "Добавить спикера",
     "selectHall": "Зал",
+    "selectHallRequired": "Зал *",
+    "hallRequired": "Выберите зал",
+    "speakerNameRequired": "Укажите ФИО спикера",
+    "speakerAdded": "Спикер добавлен",
+    "speakerAddFailed": "Не удалось добавить спикера",
     "pauseHall": "Пауза",
     "restartHall": "С начала зала",
     "restartHallClear": "С начала + сброс оценок",

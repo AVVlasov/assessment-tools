@@ -51,8 +51,8 @@ export const GradientButton = ({
   const base = disabled
     ? {
         bg: '#1D2833',
-        color: thColors.mutedDark,
-        border: 'none',
+        color: '#B0B0B0',
+        border: '1.5px solid rgba(255,255,255,0.18)',
         boxShadow: 'none',
         cursor: 'not-allowed',
       }

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Event, Team } = require('../models');
+const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
 
 const VALID_EVENT_TYPES = ['hackathon', 'queen_of_code', 'conference'];
 
@@ -54,14 +55,22 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'name is required' });
     }
 
+    if (
+      hasBrokenEncoding(name) ||
+      hasBrokenEncoding(description) ||
+      hasBrokenEncoding(location)
+    ) {
+      return res.status(400).json({ error: 'Text fields contain broken encoding (use UTF-8)' });
+    }
+
     const resolvedType = eventType;
     
     const event = await Event.create({
-      name: String(name).trim(),
+      name: sanitizeText(String(name)),
       eventType: resolvedType,
-      description: description || '',
+      description: sanitizeText(description || ''),
       eventDate: parseEventDate(eventDate),
-      location: location || '',
+      location: sanitizeText(location || ''),
       status: status || 'draft',
       votingEnabled: false
     });

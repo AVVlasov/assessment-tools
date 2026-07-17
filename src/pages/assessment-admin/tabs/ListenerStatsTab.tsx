@@ -130,6 +130,7 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
                 </Box>
               </Flex>
               {(l.bars.length ? l.bars : [1, 2, 3, 4].map(() => ({ name: '', val: 0, w: 0 })))
+                .filter((b) => !b.name || !/\uFFFD|�/.test(b.name))
                 .slice(0, 4)
                 .map((b, bi) => (
                   <Box key={bi}>
