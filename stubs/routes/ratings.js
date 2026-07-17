@@ -119,15 +119,13 @@ router.get('/statistics', async (req, res) => {
   }
 });
 
-// GET /api/ratings/top3 - топ-3 команды и топ-3 участники отдельно
-// ВАЖНО: всегда возвращаем объект вида { teams: Top3Item[], participants: Top3Item[] },
-// чтобы фронтенд мог безопасно работать с data.teams / data.participants
+// GET /api/ratings/top3 - топ-3 по группам (teams / participants / speakers)
+// event-сущность в подиум не попадает
 router.get('/top3', async (req, res) => {
   try {
     const { type, eventId } = req.query;
 
-    // Получаем все активные команды/участников
-    const teamFilter = { isActive: true };
+    const teamFilter = { isActive: true, type: { $ne: 'event' } };
     if (eventId) teamFilter.eventId = eventId;
     const teams = await Team.find(teamFilter);
 
@@ -166,14 +164,16 @@ router.get('/top3', async (req, res) => {
 
     const teamEntities = teams.filter((t) => t.type === 'team');
     const participantEntities = teams.filter((t) => t.type === 'participant');
+    const speakerEntities = teams.filter((t) => t.type === 'speaker');
 
     const teamTop3 = calculateTop3(teamEntities);
     const participantTop3 = calculateTop3(participantEntities);
+    const speakerTop3 = calculateTop3(speakerEntities);
 
-    // Параметр type управляет только содержимым, но не форматом ответа
     const response = {
       teams: !type || type === 'team' ? teamTop3 : [],
-      participants: !type || type === 'participant' ? participantTop3 : []
+      participants: !type || type === 'participant' ? participantTop3 : [],
+      speakers: !type || type === 'speaker' ? speakerTop3 : []
     };
 
     res.json(response);

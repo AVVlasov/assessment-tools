@@ -84,7 +84,7 @@ export const EventsDashboard: React.FC = () => {
                 Мероприятия
               </Heading>
               <Text fontSize="md" color="#B0B0B0" mt={2}>
-                Управление мероприятиями и оценкой команд
+                Хакатоны, конкурсы и конференции — в одном месте
               </Text>
             </Box>
 

@@ -60,5 +60,10 @@ ratingSchema.pre('save', function(next) {
 // Ensure unique combination of expert and team
 ratingSchema.index({ expertId: 1, teamId: 1 }, { unique: true });
 
+if (mongoose.models.Rating) {
+  delete mongoose.models.Rating;
+  delete mongoose.connection.models.Rating;
+}
+
 module.exports = mongoose.model('Rating', ratingSchema);
 

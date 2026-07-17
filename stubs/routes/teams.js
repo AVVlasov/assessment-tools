@@ -1,5 +1,14 @@
 const router = require('express').Router();
-const { Team } = require('../models');
+const { Team, Event } = require('../models');
+
+const ALLOWED_TYPES_BY_EVENT = {
+  hackathon: ['team', 'participant'],
+  queen_of_code: ['participant'],
+  conference: ['speaker', 'event']
+};
+
+const getAllowedTypes = (eventType) =>
+  ALLOWED_TYPES_BY_EVENT[eventType] || ALLOWED_TYPES_BY_EVENT.hackathon;
 
 // GET /api/teams - список всех команд
 router.get('/', async (req, res) => {
@@ -66,13 +75,32 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/teams - создать команду/участника
+// POST /api/teams - создать команду/участника/спикера
 router.post('/', async (req, res) => {
   try {
     const { eventId, type, name, projectName, caseDescription } = req.body;
     
     if (!eventId || !type || !name) {
       return res.status(400).json({ error: 'EventId, type and name are required' });
+    }
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    const allowedTypes = getAllowedTypes(event.eventType || 'hackathon');
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({
+        error: `Type "${type}" is not allowed for event type "${event.eventType}"`
+      });
+    }
+
+    if (type === 'event') {
+      const existing = await Team.findOne({ eventId, type: 'event' });
+      if (existing) {
+        return res.status(400).json({ error: 'Event rating entity already exists' });
+      }
     }
     
     const team = await Team.create({
@@ -99,8 +127,25 @@ router.put('/:id', async (req, res) => {
     if (!team) {
       return res.status(404).json({ error: 'Team not found' });
     }
-    
-    if (type !== undefined) team.type = type;
+
+    if (team.type === 'event' && type !== undefined && type !== 'event') {
+      return res.status(400).json({ error: 'Cannot change type of event rating entity' });
+    }
+
+    if (type !== undefined && type !== team.type) {
+      const event = await Event.findById(team.eventId);
+      if (!event) {
+        return res.status(404).json({ error: 'Event not found' });
+      }
+      const allowedTypes = getAllowedTypes(event.eventType || 'hackathon');
+      if (!allowedTypes.includes(type)) {
+        return res.status(400).json({
+          error: `Type "${type}" is not allowed for event type "${event.eventType}"`
+        });
+      }
+      team.type = type;
+    }
+
     if (name !== undefined) team.name = name;
     if (projectName !== undefined) team.projectName = projectName;
     if (caseDescription !== undefined) team.caseDescription = caseDescription;
@@ -115,10 +160,16 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/teams/:id - удалить команду
 router.delete('/:id', async (req, res) => {
   try {
-    const team = await Team.findByIdAndDelete(req.params.id);
+    const team = await Team.findById(req.params.id);
     if (!team) {
       return res.status(404).json({ error: 'Team not found' });
     }
+
+    if (team.type === 'event') {
+      return res.status(400).json({ error: 'Cannot delete event rating entity' });
+    }
+
+    await Team.findByIdAndDelete(req.params.id);
     res.json({ message: 'Team deleted successfully', team });
   } catch (error) {
     res.status(500).json({ error: error.message });

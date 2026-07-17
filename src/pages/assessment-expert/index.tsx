@@ -1,39 +1,102 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Button, Stack, Text, HStack, IconButton } from '@chakra-ui/react';
-import { FiArrowLeft } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
+import { Box, Stack, Text, HStack } from '@chakra-ui/react';
 import { StarRating } from '../../components/assessment';
-import { useGetExpertByTokenQuery, useGetActiveTeamForVotingQuery, useGetCriteriaQuery, useCreateRatingMutation, useGetExpertRatingsQuery } from '../../__data__/api';
-import type { RatingItem } from '../../types';
+import {
+  useGetExpertByTokenQuery,
+  useGetActiveTeamForVotingQuery,
+  useGetCriteriaQuery,
+  useCreateRatingMutation,
+  useGetExpertRatingsQuery,
+  useGetEventQuery
+} from '../../__data__/api';
+import type { EventType, RatingItem, TeamType } from '../../types';
+import { getEventTypeConfig } from '../../utils/eventTypeConfig';
+
+const TYPE_LABELS: Record<TeamType, string> = {
+  team: 'Команда',
+  participant: 'Участница',
+  speaker: 'Спикер',
+  event: 'Мероприятие'
+};
+
+const PAGE_TITLES: Record<EventType, string> = {
+  hackathon: 'Оценка',
+  queen_of_code: 'Оценка',
+  conference: 'Ваша оценка'
+};
+
+const WAITING_COPY: Record<EventType, { title: string; body: string; hint: string }> = {
+  hackathon: {
+    title: 'Ожидание',
+    body: 'Сейчас нет активной оценки.',
+    hint: 'Когда админ запустит оценку команды или участницы — форма появится здесь.'
+  },
+  queen_of_code: {
+    title: 'Ожидание',
+    body: 'Сейчас нет активной оценки.',
+    hint: 'Когда начнётся выступление участницы, админ откроет оценку.'
+  },
+  conference: {
+    title: 'Подождите, пожалуйста',
+    body: 'Оценка ещё не открыта.',
+    hint: 'Как только начнётся доклад или этап общей оценки мероприятия — форма появится сама. Обновлять страницу не нужно.'
+  }
+};
+
+const CONTEXT_HINTS: Record<TeamType, string> = {
+  team: 'Оцените проект по критериям ниже. Оценка сохраняется автоматически.',
+  participant: 'Оцените выступление по критериям ниже. Оценка сохраняется автоматически.',
+  speaker: 'Оцените доклад так, как вы его восприняли. Достаточно личного впечатления — без анализа всего зала.',
+  event: 'Оцените мероприятие в целом по своему опыту участия.'
+};
 
 export const AssessmentExpertPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
-  const navigate = useNavigate();
-  
+
   const { data: expert, isLoading: expertLoading } = useGetExpertByTokenQuery(token || '', {
     skip: !token
   });
-  
-  const { data: activeTeam, isLoading: teamLoading } = useGetActiveTeamForVotingQuery();
+
+  const { data: event } = useGetEventQuery(expert?.eventId || '', {
+    skip: !expert?.eventId
+  });
+
+  const { data: activeTeam, isLoading: teamLoading } = useGetActiveTeamForVotingQuery(
+    { eventId: expert?.eventId },
+    {
+      skip: !expert?.eventId,
+      pollingInterval: 3000
+    }
+  );
+
   const { data: criteriaBlocks = [], isLoading: criteriaLoading } = useGetCriteriaQuery(
-    activeTeam ? { criteriaType: activeTeam.type } : undefined,
+    activeTeam
+      ? { eventId: activeTeam.eventId, criteriaType: activeTeam.type }
+      : undefined,
     { skip: !activeTeam }
   );
-  const [createRating, { isLoading: isSaving }] = useCreateRatingMutation();
+
+  const [createRating] = useCreateRatingMutation();
   const { data: expertRatings = [] } = useGetExpertRatingsQuery(expert?._id || '', {
-    skip: !expert
+    skip: !expert,
+    pollingInterval: 10000
   });
 
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-  // Загружаем существующие оценки для активной команды
+  const eventType: EventType = event?.eventType || 'hackathon';
+  const config = getEventTypeConfig(eventType);
+  const pageTitle = PAGE_TITLES[eventType];
+  const waiting = WAITING_COPY[eventType];
+
   useEffect(() => {
     if (activeTeam && expert) {
-      const existingRating = expertRatings.find(r => 
+      const existingRating = expertRatings.find(r =>
         typeof r.teamId === 'object' && r.teamId._id === activeTeam._id
       );
-      
+
       if (existingRating) {
         const ratingsMap: Record<string, number> = {};
         existingRating.ratings.forEach(r => {
@@ -41,23 +104,19 @@ export const AssessmentExpertPage: React.FC = () => {
         });
         setRatings(ratingsMap);
       } else {
-        // Сброс рейтингов при смене команды/участника
         setRatings({});
       }
     } else {
-      // Сброс рейтингов если нет активной команды
       setRatings({});
     }
   }, [activeTeam, expert, expertRatings]);
 
-  // Автосохранение при изменении рейтинга
   useEffect(() => {
     if (!activeTeam || !expert) return;
-    
+
     const allCriteria = criteriaBlocks.flatMap(block => block.criteria);
     if (allCriteria.length === 0) return;
-    
-    // Проверяем есть ли хотя бы одна оценка
+
     const hasAnyRating = Object.values(ratings).some(r => r > 0);
     if (!hasAnyRating) return;
 
@@ -86,7 +145,6 @@ export const AssessmentExpertPage: React.FC = () => {
       }
     };
 
-    // Debounce автосохранения (0.5 секунды перед сохранением)
     const timeoutId = setTimeout(() => {
       saveRatings();
     }, 500);
@@ -98,19 +156,13 @@ export const AssessmentExpertPage: React.FC = () => {
     setRatings(prev => ({ ...prev, [criterionName]: score }));
   };
 
-  // Расчет прогресса оценивания
-  const calculateProgress = () => {
-    const allCriteria = criteriaBlocks.flatMap(block => block.criteria);
-    if (allCriteria.length === 0) return 0;
-    
-    const ratedCriteria = allCriteria.filter(c => ratings[c.name] > 0).length;
-    return Math.round((ratedCriteria / allCriteria.length) * 100);
-  };
+  const allCriteria = criteriaBlocks.flatMap(block => block.criteria);
+  const ratedCount = allCriteria.filter(c => ratings[c.name] > 0).length;
+  const totalCount = allCriteria.length;
+  const progress = totalCount === 0 ? 0 : Math.round((ratedCount / totalCount) * 100);
+  const isComplete = totalCount > 0 && ratedCount === totalCount;
 
-  const progress = calculateProgress();
-
-
-  if (expertLoading || teamLoading || criteriaLoading) {
+  if (expertLoading || (teamLoading && !activeTeam) || (criteriaLoading && activeTeam)) {
     return (
       <Box minH="100vh" bg="#0A0A0A" display="flex" alignItems="center" justifyContent="center">
         <Text color="#B0B0B0" fontSize="xl">Загрузка...</Text>
@@ -121,7 +173,7 @@ export const AssessmentExpertPage: React.FC = () => {
   if (!expert) {
     return (
       <Box minH="100vh" bg="#0A0A0A" display="flex" alignItems="center" justifyContent="center">
-        <Text color="#FF0080" fontSize="xl">Эксперт не найден</Text>
+        <Text color="#FF0080" fontSize="xl">Ссылка недействительна</Text>
       </Box>
     );
   }
@@ -131,77 +183,86 @@ export const AssessmentExpertPage: React.FC = () => {
       <Box
         bg="#1A1A1A"
         borderBottom="1px solid #333333"
-        p={6}
-        position="relative"
+        p={{ base: 4, md: 6 }}
       >
-        <IconButton
-          aria-label="Вернуться к дашборду"
-          onClick={() => navigate('/assessment-tools')}
-          size="md"
-          bg="#2A2A2A"
-          color="#D4FF00"
-          position="absolute"
-          left={6}
-          top="50%"
-          transform="translateY(-50%)"
-          _hover={{ bg: '#3A3A3A', color: '#FFFFFF' }}
-        >
-          <FiArrowLeft size={20} />
-        </IconButton>
         <Box textAlign="center">
-          <Text fontSize="3xl" fontWeight="900" textTransform="uppercase" letterSpacing="-1px" color="#D4FF00">
-            Оценка команд
+          <Text
+            fontSize={{ base: 'xl', md: '3xl' }}
+            fontWeight="900"
+            textTransform="uppercase"
+            letterSpacing="-1px"
+            color="#D4FF00"
+          >
+            {pageTitle}
           </Text>
-          <Text fontSize="lg" color="#FF0080" fontWeight="700" mt={2}>
-            Эксперт: {expert.fullName}
+          {event?.name && (
+            <Text fontSize="md" color="#E0E0E0" fontWeight="600" mt={2}>
+              {event.name}
+            </Text>
+          )}
+          <Text fontSize="sm" color="#B0B0B0" mt={1}>
+            {expert.fullName}
           </Text>
         </Box>
       </Box>
 
-      <Box maxW="800px" mx="auto" p={6}>
-        <Stack gap={6}>
+      <Box maxW="640px" mx="auto" p={{ base: 4, md: 6 }}>
+        <Stack gap={5}>
           {activeTeam && (
             <>
               <Box
                 bg="#1F1F1F"
-                p={6}
+                p={5}
                 border="3px solid #D4FF00"
                 borderRadius="8px"
                 textAlign="center"
               >
-                <HStack justify="center" mb={2}>
-                  <Text fontSize="sm" fontWeight="700" color="#FF0080" px={3} py={1} bg="#2A2A2A" borderRadius="20px">
-                    {activeTeam.type === 'team' ? '🏆 Команда' : '👤 Участник'}
-                  </Text>
-                </HStack>
-                <Text fontSize="2xl" fontWeight="900" color="#FFFFFF" textTransform="uppercase" mb={2}>
+                <Text
+                  fontSize="xs"
+                  fontWeight="700"
+                  color="#0A0A0A"
+                  bg="#D4FF00"
+                  display="inline-block"
+                  px={3}
+                  py={1}
+                  borderRadius="20px"
+                  mb={3}
+                  textTransform="uppercase"
+                >
+                  {TYPE_LABELS[activeTeam.type] || activeTeam.type}
+                </Text>
+                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="900" color="#FFFFFF" mb={2}>
                   {activeTeam.name}
                 </Text>
-                {activeTeam.projectName && (
-                  <Text color="#B0B0B0" fontSize="md">
+                <Text color="#B0B0B0" fontSize="sm" maxW="480px" mx="auto">
+                  {CONTEXT_HINTS[activeTeam.type]}
+                </Text>
+                {config.showProjectFields && activeTeam.projectName && (
+                  <Text color="#B0B0B0" fontSize="md" mt={3}>
                     <Text as="span" color="#D4FF00" fontWeight="700">Проект:</Text> {activeTeam.projectName}
                   </Text>
                 )}
-                {activeTeam.caseDescription && (
-                  <Text color="#B0B0B0" fontSize="sm" mt={2}>
-                    {activeTeam.caseDescription}
-                  </Text>
-                )}
               </Box>
+
+              <Text fontSize="sm" color="#B0B0B0" textAlign="center">
+                Шкала: 1 — слабо · 5 — отлично. Достаточно вашего личного впечатления.
+              </Text>
 
               {criteriaBlocks.map((block) => (
                 <Box
                   key={block._id}
                   bg="#1F1F1F"
-                  p={6}
-                  border="3px solid #333333"
+                  p={{ base: 4, md: 5 }}
+                  border="2px solid #333333"
                   borderRadius="8px"
                 >
-                  <Text fontSize="xl" fontWeight="900" mb={4} color="#D4FF00" textTransform="uppercase">
-                    {block.blockName}
-                  </Text>
+                  {criteriaBlocks.length > 1 && (
+                    <Text fontSize="md" fontWeight="800" mb={4} color="#D4FF00">
+                      {block.blockName}
+                    </Text>
+                  )}
 
-                  <Stack gap={4}>
+                  <Stack gap={3}>
                     {block.criteria.map((criterion) => (
                       <Box
                         key={criterion.name}
@@ -209,102 +270,93 @@ export const AssessmentExpertPage: React.FC = () => {
                         bg="#1A1A1A"
                         borderRadius="8px"
                       >
-                        <Text fontSize="md" color="#FFFFFF" mb={3} fontWeight="600">
+                        <Text fontSize="md" color="#FFFFFF" mb={3} fontWeight="600" lineHeight="1.4">
                           {criterion.name}
                         </Text>
 
-                        <HStack justify="space-between" align="center">
+                        <HStack justify="space-between" align="center" flexWrap="wrap" gap={3}>
                           <StarRating
                             value={ratings[criterion.name] || 0}
                             maxScore={criterion.maxScore}
                             onChange={(score) => handleRatingChange(criterion.name, score)}
                             size="lg"
                           />
-                          <Text fontSize="lg" color="#D4FF00" fontWeight="900">
-                            {ratings[criterion.name] || 0} / {criterion.maxScore}
+                          <Text fontSize="md" color="#D4FF00" fontWeight="900" minW="48px" textAlign="right">
+                            {ratings[criterion.name] || 0}/{criterion.maxScore}
                           </Text>
                         </HStack>
                       </Box>
+                    ))}
+                  </Stack>
+                </Box>
               ))}
-            </Stack>
-          </Box>
-        ))}
 
-        <Box
-          bg="#1F1F1F"
-          p={6}
-          border="3px solid #333333"
-          borderRadius="8px"
-          textAlign="center"
-        >
-          <Text fontSize="lg" fontWeight="700" mb={3} color="#D4FF00">
-            Прогресс оценивания
-          </Text>
-          
-          <Box position="relative" height="40px" bg="#1A1A1A" borderRadius="20px" overflow="hidden" mb={3}>
-            <Box
-              position="absolute"
-              height="100%"
-              width={`${progress}%`}
-              bg={progress === 100 ? '#00FF00' : '#D4FF00'}
-              transition="all 0.3s ease"
-              borderRadius="20px"
-            />
-            <Text
-              position="absolute"
-              width="100%"
-              lineHeight="40px"
-              fontWeight="900"
-              fontSize="xl"
-              color={progress > 50 ? '#000000' : '#FFFFFF'}
-            >
-              {progress}%
-            </Text>
-          </Box>
+              <Box
+                bg="#1F1F1F"
+                p={4}
+                border="2px solid #333333"
+                borderRadius="8px"
+                textAlign="center"
+              >
+                <Text fontSize="sm" color="#B0B0B0" mb={2}>
+                  Заполнено {ratedCount} из {totalCount}
+                </Text>
 
-          {saveStatus === 'saving' && (
-            <Text color="#FF6B00" fontSize="sm" fontWeight="700">
-              💾 Сохранение...
-            </Text>
-          )}
-          
-          {saveStatus === 'saved' && (
-            <Text color="#00FF00" fontSize="sm" fontWeight="700">
-              ✓ Автоматически сохранено
-            </Text>
-          )}
-          
-          {saveStatus === 'error' && (
-            <Text color="#FF0080" fontSize="sm" fontWeight="700">
-              ⚠️ Ошибка сохранения
-            </Text>
-          )}
+                <Box position="relative" height="28px" bg="#1A1A1A" borderRadius="20px" overflow="hidden" mb={2}>
+                  <Box
+                    position="absolute"
+                    height="100%"
+                    width={`${progress}%`}
+                    bg={isComplete ? '#4CAF50' : '#D4FF00'}
+                    transition="all 0.3s ease"
+                    borderRadius="20px"
+                  />
+                </Box>
 
-          {progress === 100 && saveStatus === 'saved' && (
-            <Text color="#00FF00" fontSize="lg" fontWeight="900" mt={2}>
-              🎉 Оценивание завершено!
-            </Text>
+                {saveStatus === 'saving' && (
+                  <Text color="#FF6B00" fontSize="sm" fontWeight="700">
+                    Сохранение...
+                  </Text>
+                )}
+
+                {saveStatus === 'saved' && (
+                  <Text color="#4CAF50" fontSize="sm" fontWeight="700">
+                    Сохранено
+                  </Text>
+                )}
+
+                {saveStatus === 'error' && (
+                  <Text color="#FF4444" fontSize="sm" fontWeight="700">
+                    Не удалось сохранить. Попробуйте ещё раз.
+                  </Text>
+                )}
+
+                {isComplete && (
+                  <Text color="#4CAF50" fontSize="md" fontWeight="800" mt={2}>
+                    Готово. Спасибо за оценку!
+                  </Text>
+                )}
+              </Box>
+            </>
           )}
-        </Box>
-      </>
-    )}
 
           {!activeTeam && (
-            <Box 
-              textAlign="center" 
-              py={20}
+            <Box
+              textAlign="center"
+              py={{ base: 12, md: 16 }}
+              px={4}
               bg="#1F1F1F"
-              border="3px solid #333333"
+              border="2px solid #333333"
               borderRadius="8px"
             >
-              <Text color="#D4FF00" fontSize="2xl" fontWeight="900" mb={4}>
-                ⏳ Ожидание
+              <Text color="#D4FF00" fontSize="2xl" fontWeight="900" mb={3}>
+                {waiting.title}
               </Text>
-              <Text color="#B0B0B0" fontSize="lg">
-                В данный момент нет команды для оценки.
+              <Text color="#FFFFFF" fontSize="lg" mb={2}>
+                {waiting.body}
               </Text>
-              <Text color="#B0B0B0" fontSize="md" mt={2}>
-                Администратор активирует команду, когда начнется выступление.
+              <Text color="#B0B0B0" fontSize="md" maxW="420px" mx="auto">
+                {waiting.hint}
               </Text>
             </Box>
           )}
@@ -315,4 +367,3 @@ export const AssessmentExpertPage: React.FC = () => {
 };
 
 export default AssessmentExpertPage;
-

@@ -1,5 +1,7 @@
 const router = require('express').Router();
-const { Event } = require('../models');
+const { Event, Team } = require('../models');
+
+const VALID_EVENT_TYPES = ['hackathon', 'queen_of_code', 'conference'];
 
 // GET /api/events - получить все мероприятия
 router.get('/', async (req, res) => {
@@ -29,16 +31,30 @@ router.get('/:id', async (req, res) => {
 // POST /api/events - создать новое мероприятие
 router.post('/', async (req, res) => {
   try {
-    const { name, description, eventDate, location, status } = req.body;
+    const { name, description, eventDate, location, status, eventType } = req.body;
+    
+    const resolvedType = VALID_EVENT_TYPES.includes(eventType) ? eventType : 'hackathon';
     
     const event = await Event.create({
       name: name || 'Новое мероприятие',
+      eventType: resolvedType,
       description: description || '',
       eventDate: eventDate || new Date(),
       location: location || '',
       status: status || 'draft',
       votingEnabled: false
     });
+
+    if (resolvedType === 'conference') {
+      await Team.create({
+        eventId: event._id,
+        type: 'event',
+        name: 'Общая оценка мероприятия',
+        projectName: '',
+        caseDescription: '',
+        isActive: true
+      });
+    }
     
     res.status(201).json(event);
   } catch (error) {
@@ -46,7 +62,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/events/:id - обновить мероприятие
+// PUT /api/events/:id - обновить мероприятие (eventType не меняется)
 router.put('/:id', async (req, res) => {
   try {
     const { name, description, eventDate, location, status } = req.body;
@@ -105,4 +121,3 @@ router.patch('/:id/toggle-voting', async (req, res) => {
 });
 
 module.exports = router;
-

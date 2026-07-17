@@ -1,7 +1,10 @@
 // Event types
+export type EventType = 'hackathon' | 'queen_of_code' | 'conference';
+
 export interface Event {
   _id: string;
   name: string;
+  eventType?: EventType;
   description: string;
   eventDate: string;
   location: string;
@@ -13,6 +16,7 @@ export interface Event {
 
 export interface CreateEventRequest {
   name: string;
+  eventType: EventType;
   description?: string;
   eventDate: string;
   location?: string;
@@ -27,8 +31,8 @@ export interface UpdateEventRequest {
   status?: 'draft' | 'ready' | 'active' | 'completed';
 }
 
-// Team types
-export type TeamType = 'team' | 'participant';
+// Team types (universal contestant entity)
+export type TeamType = 'team' | 'participant' | 'speaker' | 'event';
 
 export interface Team {
   _id: string;
@@ -80,7 +84,7 @@ export interface UpdateExpertRequest {
 }
 
 // Criteria types
-export type CriteriaType = 'team' | 'participant' | 'all';
+export type CriteriaType = 'team' | 'participant' | 'speaker' | 'event' | 'all';
 
 export interface CriterionItem {
   name: string;
@@ -178,5 +182,5 @@ export interface Top3Item {
 export interface Top3Response {
   teams?: Top3Item[];
   participants?: Top3Item[];
+  speakers?: Top3Item[];
 }
-

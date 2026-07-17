@@ -14,9 +14,26 @@ import {
 import { FiArrowLeft } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useCreateEventMutation } from '../../__data__/api/eventApi'
-import { CreateEventRequest } from '../../types'
+import { CreateEventRequest, EventType } from '../../types'
+import { EVENT_TYPES } from '../../utils/eventTypeConfig'
+
+const TYPE_LABELS: Record<EventType, { title: string; description: string }> = {
+  hackathon: {
+    title: 'Хакатон',
+    description: 'Оценка команд и участниц'
+  },
+  queen_of_code: {
+    title: 'Королева кода',
+    description: 'Оценка участниц конкурса'
+  },
+  conference: {
+    title: 'Конференция / митап',
+    description: 'Оценка спикеров и мероприятия'
+  }
+}
 
 const steps = [
+  { title: 'Тип мероприятия', description: 'Выберите формат оценки' },
   { title: 'Основная информация', description: 'Название и дата мероприятия' },
   { title: 'Детали', description: 'Описание и место проведения' },
   { title: 'Подтверждение', description: 'Проверьте данные' }
@@ -28,6 +45,7 @@ export const EventCreate: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState<CreateEventRequest>({
     name: '',
+    eventType: 'hackathon',
     description: '',
     eventDate: new Date().toISOString().split('T')[0],
     location: '',
@@ -35,7 +53,7 @@ export const EventCreate: React.FC = () => {
   })
 
   const handleNext = () => {
-    if (currentStep < 2) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -64,6 +82,9 @@ export const EventCreate: React.FC = () => {
 
   const canProceed = () => {
     if (currentStep === 0) {
+      return Boolean(formData.eventType)
+    }
+    if (currentStep === 1) {
       return formData.name.trim().length > 0 && formData.eventDate.length > 0
     }
     return true
@@ -73,7 +94,6 @@ export const EventCreate: React.FC = () => {
     <Box minH="100vh" bg="#0A0A0A" color="white" py={{ base: 4, md: 8 }}>
       <Container maxW="1000px" px={{ base: 4, md: 6 }}>
         <Stack gap={{ base: 6, md: 8 }}>
-          {/* Header with back button */}
           <Stack direction="row" align="center" gap={{ base: 2, md: 4 }}>
             <IconButton
               aria-label="Назад к списку"
@@ -85,18 +105,16 @@ export const EventCreate: React.FC = () => {
             >
               <FiArrowLeft size={24} />
             </IconButton>
-            <Heading 
-              fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }} 
-              fontWeight="bold" 
+            <Heading
+              fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }}
+              fontWeight="bold"
               color="#D4FF00"
             >
               Создание мероприятия
             </Heading>
           </Stack>
 
-          {/* Steps Progress */}
           <Box bg="#1A1A1A" p={{ base: 4, md: 6 }} borderRadius="lg" border="1px solid #333333">
-            {/* Mobile: Show only current step */}
             <Box display={{ base: 'block', md: 'none' }}>
               <Stack direction="row" align="center" gap={3}>
                 <Box
@@ -128,9 +146,8 @@ export const EventCreate: React.FC = () => {
               </Text>
             </Box>
 
-            {/* Desktop: Show all steps horizontally */}
             <Box display={{ base: 'none', md: 'block' }}>
-              <Stack direction="row" gap={6} align="stretch">
+              <Stack direction="row" gap={4} align="stretch">
                 {steps.map((stepInfo, index) => (
                   <Stack key={index} flex={1} gap={3}>
                     <Stack direction="row" align="center" gap={3}>
@@ -150,10 +167,10 @@ export const EventCreate: React.FC = () => {
                         {index + 1}
                       </Box>
                       <Box flex={1}>
-                        <Text fontSize="md" fontWeight="bold" color={index <= currentStep ? 'white' : '#999999'}>
+                        <Text fontSize="sm" fontWeight="bold" color={index <= currentStep ? 'white' : '#999999'}>
                           {stepInfo.title}
                         </Text>
-                        <Text fontSize="sm" color={index <= currentStep ? '#D0D0D0' : '#666666'}>
+                        <Text fontSize="xs" color={index <= currentStep ? '#D0D0D0' : '#666666'}>
                           {stepInfo.description}
                         </Text>
                       </Box>
@@ -164,15 +181,52 @@ export const EventCreate: React.FC = () => {
             </Box>
           </Box>
 
-          {/* Step Content */}
-          <Box 
-            bg="#1A1A1A" 
-            p={{ base: 4, md: 6, lg: 8 }} 
-            borderRadius="lg" 
-            border="1px solid #333333" 
+          <Box
+            bg="#1A1A1A"
+            p={{ base: 4, md: 6, lg: 8 }}
+            borderRadius="lg"
+            border="1px solid #333333"
             minH={{ base: '300px', md: '400px' }}
           >
             {currentStep === 0 && (
+              <Stack gap={4}>
+                <Text fontSize="lg" fontWeight="bold" color="white">
+                  Выберите тип мероприятия
+                </Text>
+                <Text fontSize="sm" color="#B0B0B0">
+                  Тип задаёт, что будут оценивать эксперты. После создания изменить его нельзя.
+                </Text>
+                <Stack gap={3}>
+                  {EVENT_TYPES.map((type) => {
+                    const selected = formData.eventType === type
+                    return (
+                      <Box
+                        key={type}
+                        as="button"
+                        textAlign="left"
+                        p={5}
+                        borderRadius="lg"
+                        border={selected ? '2px solid #D4FF00' : '2px solid #333333'}
+                        bg={selected ? '#222200' : '#0A0A0A'}
+                        cursor="pointer"
+                        onClick={() => handleChange('eventType', type)}
+                        _hover={{ borderColor: '#D4FF00' }}
+                        width="100%"
+                      >
+                        <Text fontSize="lg" fontWeight="900" color={selected ? '#D4FF00' : 'white'} mb={1}>
+                          {TYPE_LABELS[type].title}
+                        </Text>
+                        <Text fontSize="sm" color="#B0B0B0">
+                          {TYPE_LABELS[type].description}
+                        </Text>
+                      </Box>
+                    )
+                  })}
+                </Stack>
+              </Stack>
+            )}
+
+            {currentStep === 1 && (
               <Stack gap={6}>
                 <Field.Root required>
                   <Field.Label color="white" fontWeight="medium" fontSize="lg">
@@ -209,7 +263,7 @@ export const EventCreate: React.FC = () => {
               </Stack>
             )}
 
-            {currentStep === 1 && (
+            {currentStep === 2 && (
               <Stack gap={6}>
                 <Field.Root>
                   <Field.Label color="white" fontWeight="medium" fontSize="lg">
@@ -247,14 +301,26 @@ export const EventCreate: React.FC = () => {
               </Stack>
             )}
 
-            {currentStep === 2 && (
+            {currentStep === 3 && (
               <Stack gap={6}>
                 <Heading size="lg" color="#D4FF00" mb={4}>
                   Проверьте данные
                 </Heading>
-                
+
                 <Box bg="#0A0A0A" p={6} borderRadius="md" border="1px solid #333333">
                   <Stack gap={4}>
+                    <Box>
+                      <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                        Тип:
+                      </Text>
+                      <Text fontSize="xl" fontWeight="bold" color="#D4FF00">
+                        {TYPE_LABELS[formData.eventType].title}
+                      </Text>
+                      <Text fontSize="sm" color="#B0B0B0">
+                        {TYPE_LABELS[formData.eventType].description}
+                      </Text>
+                    </Box>
+
                     <Box>
                       <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
                         Название:
@@ -263,7 +329,7 @@ export const EventCreate: React.FC = () => {
                         {formData.name}
                       </Text>
                     </Box>
-                    
+
                     <Box>
                       <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
                         Дата:
@@ -276,7 +342,7 @@ export const EventCreate: React.FC = () => {
                         })}
                       </Text>
                     </Box>
-                    
+
                     {formData.description && (
                       <Box>
                         <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
@@ -287,7 +353,7 @@ export const EventCreate: React.FC = () => {
                         </Text>
                       </Box>
                     )}
-                    
+
                     {formData.location && (
                       <Box>
                         <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
@@ -304,9 +370,8 @@ export const EventCreate: React.FC = () => {
             )}
           </Box>
 
-          {/* Navigation Buttons */}
-          <Stack 
-            direction={{ base: 'column', md: 'row' }} 
+          <Stack
+            direction={{ base: 'column', md: 'row' }}
             gap={3}
             justify="flex-end"
           >
@@ -325,7 +390,7 @@ export const EventCreate: React.FC = () => {
                 Назад
               </Button>
             )}
-            
+
             <Button
               onClick={() => navigate('/assessment-tools')}
               variant="outline"
@@ -340,7 +405,7 @@ export const EventCreate: React.FC = () => {
               Отмена
             </Button>
 
-            {currentStep < 2 ? (
+            {currentStep < steps.length - 1 ? (
               <Button
                 bg="#D4FF00"
                 color="#0A0A0A"

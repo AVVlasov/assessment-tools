@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
-import { Box, Button, Grid, HStack, Input, Stack, Text, IconButton, NativeSelect } from '@chakra-ui/react';
-import { useGetCriteriaQuery, useCreateCriteriaMutation, useLoadDefaultCriteriaMutation, useUpdateCriteriaMutation, useDeleteCriteriaMutation } from '../../../__data__/api';
-import type { CriterionItem, CriteriaType } from '../../../types';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, HStack, Input, Stack, Text, NativeSelect } from '@chakra-ui/react';
+import {
+  useGetCriteriaQuery,
+  useCreateCriteriaMutation,
+  useLoadDefaultCriteriaMutation,
+  useUpdateCriteriaMutation,
+  useDeleteCriteriaMutation
+} from '../../../__data__/api';
+import type { CriteriaType, CriterionItem, EventType } from '../../../types';
+import { getEventTypeConfig } from '../../../utils/eventTypeConfig';
 
 interface CriteriaTabProps {
   eventId: string;
+  eventType: EventType;
 }
 
-export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
+const CRITERIA_TYPE_LABELS: Record<CriteriaType, string> = {
+  all: 'Для всех',
+  team: 'Только для команд',
+  participant: 'Только для участниц',
+  speaker: 'Только для спикеров',
+  event: 'Общая оценка мероприятия'
+};
+
+export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) => {
+  const config = getEventTypeConfig(eventType);
   const { data: criteriaBlocks = [], isLoading } = useGetCriteriaQuery({ eventId });
   const [createCriteria] = useCreateCriteriaMutation();
   const [loadDefault] = useLoadDefaultCriteriaMutation();
@@ -15,11 +32,15 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
   const [deleteCriteria] = useDeleteCriteriaMutation();
 
   const [blockName, setBlockName] = useState('');
-  const [criteriaType, setCriteriaType] = useState<CriteriaType>('all');
+  const [criteriaType, setCriteriaType] = useState<CriteriaType>(config.defaultCriteriaType);
   const [criteria, setCriteria] = useState<CriterionItem[]>([
     { name: '', maxScore: 5 }
   ]);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCriteriaType(config.defaultCriteriaType);
+  }, [config.defaultCriteriaType, eventType]);
 
   const handleAddCriterion = () => {
     setCriteria([...criteria, { name: '', maxScore: 5 }]);
@@ -35,9 +56,15 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
     setCriteria(updated);
   };
 
+  const resetForm = () => {
+    setBlockName('');
+    setCriteriaType(config.defaultCriteriaType);
+    setCriteria([{ name: '', maxScore: 5 }]);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!blockName || criteria.some(c => !c.name)) {
       alert('Заполните все поля');
       return;
@@ -53,10 +80,8 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
       } else {
         await createCriteria({ eventId, blockName, criteriaType, criteria }).unwrap();
       }
-      
-      setBlockName('');
-      setCriteriaType('all');
-      setCriteria([{ name: '', maxScore: 5 }]);
+
+      resetForm();
     } catch (error) {
       console.error('Error saving criteria:', error);
     }
@@ -73,18 +98,16 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
     }
   };
 
-  const handleEdit = (block: any) => {
+  const handleEdit = (block: { _id: string; blockName: string; criteriaType?: CriteriaType; criteria: CriterionItem[] }) => {
     setBlockName(block.blockName);
-    setCriteriaType(block.criteriaType || 'all');
+    setCriteriaType(block.criteriaType || config.defaultCriteriaType);
     setCriteria(block.criteria);
     setEditingId(block._id);
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setBlockName('');
-    setCriteriaType('all');
-    setCriteria([{ name: '', maxScore: 5 }]);
+    resetForm();
   };
 
   const handleDelete = async (id: string) => {
@@ -101,21 +124,43 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
     return <Text color="#B0B0B0">Загрузка...</Text>;
   }
 
+  const defaultsHint =
+    eventType === 'conference'
+      ? 'Для конференции загрузятся короткие критерии «глазами слушателя»: понятность, польза, логика — без метрик вроде «вовлечённости зала».'
+      : eventType === 'queen_of_code'
+        ? 'Для конкурса — компактный набор критериев по выступлению участницы.'
+        : 'Для хакатона — критерии оценки команды и участницы из положения.';
+
   return (
     <Stack gap={6}>
-      <HStack>
-        <Button
-          bg="#FF6B00"
-          color="#000000"
-          fontWeight="700"
-          px={8}
-          borderRadius="50px"
-          _hover={{ bg: '#0A0A0A', color: '#FF6B00', border: '3px solid #FF6B00' }}
-          onClick={handleLoadDefault}
-        >
-          Загрузить критерии по умолчанию
-        </Button>
-      </HStack>
+      <Box
+        bg="#1F1F1F"
+        p={4}
+        border="2px solid #333333"
+        borderRadius="8px"
+      >
+        <HStack justify="space-between" align="flex-start" flexWrap="wrap" gap={4}>
+          <Box flex={1} minW="240px">
+            <Text fontSize="md" fontWeight="700" color="#FFFFFF" mb={1}>
+              Критерии по умолчанию
+            </Text>
+            <Text fontSize="sm" color="#B0B0B0">
+              {defaultsHint}
+            </Text>
+          </Box>
+          <Button
+            bg="#FF6B00"
+            color="#000000"
+            fontWeight="700"
+            px={6}
+            borderRadius="50px"
+            _hover={{ bg: '#0A0A0A', color: '#FF6B00', border: '3px solid #FF6B00' }}
+            onClick={handleLoadDefault}
+          >
+            Загрузить критерии по умолчанию
+          </Button>
+        </HStack>
+      </Box>
 
       <Box
         bg="#1F1F1F"
@@ -124,13 +169,13 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
         borderRadius="8px"
       >
         <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#D4FF00">
-          {'{ '}{editingId ? 'Редактировать блок' : 'Создать блок критериев'}{' }'}
+          {editingId ? 'Редактировать блок' : 'Создать блок критериев'}
         </Text>
-        
+
         <form onSubmit={handleSubmit}>
           <Stack gap={4}>
             <Input
-              placeholder="Название блока (например: 'Оценка проекта')"
+              placeholder="Название блока"
               value={blockName}
               onChange={(e) => setBlockName(e.target.value)}
               bg="#1A1A1A"
@@ -154,9 +199,11 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
                   color="#FFFFFF"
                   _focus={{ borderColor: '#D4FF00' }}
                 >
-                  <option value="all" style={{ background: '#1A1A1A' }}>Для всех</option>
-                  <option value="team" style={{ background: '#1A1A1A' }}>Только для команд</option>
-                  <option value="participant" style={{ background: '#1A1A1A' }}>Только для участников</option>
+                  {config.allowedCriteriaTypes.map((type) => (
+                    <option key={type} value={type} style={{ background: '#1A1A1A' }}>
+                      {CRITERIA_TYPE_LABELS[type]}
+                    </option>
+                  ))}
                 </NativeSelect.Field>
               </NativeSelect.Root>
             </Box>
@@ -231,7 +278,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
               >
                 {editingId ? 'Обновить блок' : 'Сохранить блок'}
               </Button>
-              
+
               {editingId && (
                 <Button
                   onClick={handleCancelEdit}
@@ -265,15 +312,13 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
             <HStack justify="space-between" mb={3}>
               <Box>
                 <Text fontSize="lg" fontWeight="900" color="#FFFFFF" textTransform="uppercase">
-                  {'{ '}{block.blockName}{' }'}
+                  {block.blockName}
                 </Text>
                 <Text fontSize="xs" color="#B0B0B0" mt={1}>
-                  {block.criteriaType === 'team' ? '🏆 Для команд' : 
-                   block.criteriaType === 'participant' ? '👤 Для участников' : 
-                   '🌐 Для всех'}
+                  {CRITERIA_TYPE_LABELS[block.criteriaType] || CRITERIA_TYPE_LABELS.all}
                 </Text>
               </Box>
-              
+
               <HStack gap={2}>
                 <Button
                   size="sm"
@@ -285,7 +330,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
                 >
                   Редактировать
                 </Button>
-                
+
                 <Button
                   size="sm"
                   bg="transparent"
@@ -325,4 +370,3 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId }) => {
     </Stack>
   );
 };
-

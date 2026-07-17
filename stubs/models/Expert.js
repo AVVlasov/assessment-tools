@@ -39,5 +39,10 @@ expertSchema.pre('save', function(next) {
   next();
 });
 
+if (mongoose.models.Expert) {
+  delete mongoose.models.Expert;
+  delete mongoose.connection.models.Expert;
+}
+
 module.exports = mongoose.model('Expert', expertSchema);
 

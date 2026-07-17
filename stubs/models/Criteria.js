@@ -25,7 +25,7 @@ const criteriaSchema = new mongoose.Schema({
   },
   criteriaType: {
     type: String,
-    enum: ['team', 'participant', 'all'],
+    enum: ['team', 'participant', 'speaker', 'event', 'all'],
     default: 'all',
     required: true
   },
@@ -45,6 +45,11 @@ const criteriaSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+if (mongoose.models.Criteria) {
+  delete mongoose.models.Criteria;
+  delete mongoose.connection.models.Criteria;
+}
 
 module.exports = mongoose.model('Criteria', criteriaSchema);
 

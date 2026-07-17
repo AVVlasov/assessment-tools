@@ -1,37 +1,6 @@
 const router = require('express').Router();
-const { Criteria } = require('../models');
-
-// Критерии по умолчанию из hack.md
-const DEFAULT_CRITERIA = [
-  {
-    blockName: 'Оценка проекта команды',
-    criteriaType: 'team',
-    criteria: [
-      { name: 'Соответствие решения поставленной задаче', maxScore: 5 },
-      { name: 'Оригинальность - использование нестандартных технических и проектных подходов', maxScore: 5 },
-      { name: 'Работоспособность решения', maxScore: 1 },
-      { name: 'Технологическая сложность решения', maxScore: 2 },
-      { name: 'Объем функциональных возможностей решения', maxScore: 2 },
-      { name: 'Аргументация способа выбранного решения', maxScore: 5 },
-      { name: 'Качество предоставления информации', maxScore: 5 },
-      { name: 'Наличие удобного UX/UI', maxScore: 5 },
-      { name: 'Наличие не менее 5 AI-агентов', maxScore: 5 }
-    ],
-    order: 0
-  },
-  {
-    blockName: 'Оценка выступления участника',
-    criteriaType: 'participant',
-    criteria: [
-      { name: 'Качество презентации и донесения идеи', maxScore: 5 },
-      { name: 'Понимание технологии и решения', maxScore: 5 },
-      { name: 'Аргументация выбранного подхода', maxScore: 5 },
-      { name: 'Ответы на вопросы жюри', maxScore: 5 },
-      { name: 'Коммуникативные навыки', maxScore: 5 }
-    ],
-    order: 1
-  }
-];
+const { Criteria, Event } = require('../models');
+const { getDefaultCriteriaByEventType } = require('../api/defaultCriteria');
 
 // GET /api/criteria - получить все блоки критериев
 router.get('/', async (req, res) => {
@@ -88,7 +57,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// POST /api/criteria/default - загрузить критерии по умолчанию из hack.md
+// POST /api/criteria/default - загрузить критерии по умолчанию по типу мероприятия
 router.post('/default', async (req, res) => {
   try {
     const { eventId } = req.body;
@@ -96,12 +65,16 @@ router.post('/default', async (req, res) => {
     if (!eventId) {
       return res.status(400).json({ error: 'EventId is required' });
     }
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
     
-    // Удаляем все существующие критерии для этого мероприятия
     await Criteria.deleteMany({ eventId });
     
-    // Создаем критерии по умолчанию с eventId
-    const criteriaWithEventId = DEFAULT_CRITERIA.map(c => ({
+    const defaults = getDefaultCriteriaByEventType(event.eventType || 'hackathon');
+    const criteriaWithEventId = defaults.map(c => ({
       ...c,
       eventId
     }));
@@ -149,4 +122,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-

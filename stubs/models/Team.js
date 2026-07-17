@@ -8,7 +8,7 @@ const teamSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['team', 'participant'],
+    enum: ['team', 'participant', 'speaker', 'event'],
     required: true
   },
   name: {
@@ -47,6 +47,11 @@ const teamSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+if (mongoose.models.Team) {
+  delete mongoose.models.Team;
+  delete mongoose.connection.models.Team;
+}
 
 module.exports = mongoose.model('Team', teamSchema);
 

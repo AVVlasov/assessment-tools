@@ -6,12 +6,19 @@ import {
   Text,
   Heading,
   Input,
-  IconButton
+  IconButton,
+  Badge
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi'
-import { Event } from '../../types'
+import { Event, EventType } from '../../types'
 import { useUpdateEventMutation, useDeleteEventMutation } from '../../__data__/api/eventApi'
+
+const EVENT_TYPE_LABELS: Record<EventType, string> = {
+  hackathon: 'Хакатон',
+  queen_of_code: 'Королева кода',
+  conference: 'Конференция / митап'
+}
 
 interface EventCardProps {
   event: Event
@@ -103,10 +110,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                 </IconButton>
               </Stack>
             ) : (
-              <Stack direction="row" align="center" gap={2}>
+              <Stack direction="row" align="center" gap={2} flexWrap="wrap">
                 <Heading size="md" color="white">
                   {event.name}
                 </Heading>
+                <Badge
+                  bg="#2A2A2A"
+                  color="#D4FF00"
+                  border="1px solid #D4FF00"
+                  px={2}
+                  py={1}
+                  fontSize="xs"
+                  fontWeight="700"
+                  textTransform="uppercase"
+                >
+                  {EVENT_TYPE_LABELS[event.eventType || 'hackathon']}
+                </Badge>
                 <IconButton
                   aria-label="Редактировать название"
                   size="sm"

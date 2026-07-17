@@ -6,6 +6,12 @@ const eventSchema = new mongoose.Schema({
     required: true,
     default: 'Новое мероприятие'
   },
+  eventType: {
+    type: String,
+    enum: ['hackathon', 'queen_of_code', 'conference'],
+    required: true,
+    default: 'hackathon'
+  },
   description: {
     type: String,
     default: ''
@@ -39,6 +45,11 @@ const eventSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+if (mongoose.models.Event) {
+  delete mongoose.models.Event;
+  delete mongoose.connection.models.Event;
+}
 
 module.exports = mongoose.model('Event', eventSchema);
 
