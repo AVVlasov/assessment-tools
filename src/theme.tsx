@@ -1,6 +1,7 @@
 import React from 'react'
 import { ChakraProvider as ChacraProv, createSystem, defaultConfig } from '@chakra-ui/react'
 import type { PropsWithChildren } from 'react'
+import { Toaster } from './components/ui/toaster'
 
 const ChacraProvider: React.ElementType = ChacraProv
 
@@ -117,5 +118,8 @@ export const thColors = {
 } as const
 
 export const Provider = (props: PropsWithChildren) => (
-  <ChacraProvider value={system}>{props.children}</ChacraProvider>
+  <ChacraProvider value={system}>
+    {props.children}
+    <Toaster />
+  </ChacraProvider>
 )

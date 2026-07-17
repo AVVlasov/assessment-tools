@@ -2,7 +2,16 @@ import React, { useState } from 'react';
 import { Box, Button, Grid, HStack, Input, Stack, Text, IconButton } from '@chakra-ui/react';
 import { Dialog } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useGetExpertsQuery, useCreateExpertMutation, useDeleteExpertMutation, useGetActiveTeamForVotingQuery, useGetCriteriaQuery, useGetRatingsQuery } from '../../../__data__/api';
+import {
+  useGetExpertsQuery,
+  useCreateExpertMutation,
+  useDeleteExpertMutation,
+  useUpdateExpertMutation,
+  useGetActiveTeamForVotingQuery,
+  useGetCriteriaQuery,
+  useGetRatingsQuery,
+} from '../../../__data__/api';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 interface ExpertsTabProps {
   eventId: string;
@@ -15,9 +24,12 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
   const { data: allRatings = [] } = useGetRatingsQuery({ eventId });
   const [createExpert] = useCreateExpertMutation();
   const [deleteExpert] = useDeleteExpertMutation();
+  const [updateExpert] = useUpdateExpertMutation();
 
   const [fullName, setFullName] = useState('');
   const [selectedExpert, setSelectedExpert] = useState<any>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
 
   const getExpertLink = (token: string) => {
     if (!token) {
@@ -70,6 +82,22 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
     }
   };
 
+  const startEdit = (expert: { _id: string; fullName: string }) => {
+    setEditingId(expert._id);
+    setEditingName(expert.fullName);
+  };
+
+  const saveEdit = async () => {
+    if (!editingId || !editingName.trim()) return;
+    try {
+      await updateExpert({ id: editingId, data: { fullName: editingName.trim() } }).unwrap();
+      setEditingId(null);
+      setEditingName('');
+    } catch (error) {
+      console.error('Error updating expert:', error);
+    }
+  };
+
   const handleCopyLink = (url: string) => {
     navigator.clipboard.writeText(url);
     alert('Ссылка скопирована в буфер обмена');
@@ -112,7 +140,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
         borderRadius="8px"
       >
         <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#3DDC50">
-          {'{ '}Добавить эксперта{' }'}
+          Добавить эксперта
         </Text>
         
         <form onSubmit={handleSubmit}>
@@ -156,9 +184,59 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
             _hover={{ borderColor: '#3DDC50', transform: 'translateY(-5px)' }}
             textAlign="center"
           >
-            <Text fontSize="lg" fontWeight="900" mb={2} color="#FFFFFF">
-              {expert.fullName}
-            </Text>
+            {editingId === expert._id ? (
+              <HStack mb={3} gap={2}>
+                <Input
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
+                  color="#FFFFFF"
+                  _focus={{ borderColor: '#3DDC50' }}
+                />
+                <Button
+                  size="sm"
+                  bg="#3DDC50"
+                  color="#000"
+                  onClick={() => void saveEdit()}
+                >
+                  OK
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  color="#FFFFFF"
+                  borderColor="rgba(255,255,255,0.3)"
+                  onClick={() => setEditingId(null)}
+                >
+                  ✕
+                </Button>
+              </HStack>
+            ) : (
+              <HStack justify="center" mb={2} gap={2}>
+                <Text fontSize="lg" fontWeight="900" color="#FFFFFF">
+                  {expert.fullName}
+                </Text>
+                <IconButton
+                  aria-label="Редактировать"
+                  size="xs"
+                  variant="ghost"
+                  color="#3DDC50"
+                  onClick={() => startEdit(expert)}
+                >
+                  <FiEdit2 />
+                </IconButton>
+                <IconButton
+                  aria-label="Удалить"
+                  size="xs"
+                  variant="ghost"
+                  color="#FF4444"
+                  onClick={() => void handleDelete(expert._id)}
+                >
+                  <FiTrash2 />
+                </IconButton>
+              </HStack>
+            )}
 
             {activeTeam && (
               <Box mb={4}>
@@ -236,10 +314,10 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               <Button
                 size="sm"
                 bg="transparent"
-                color="#4FC9F0"
-                border="2px solid #4FC9F0"
-                _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
-                onClick={() => handleDelete(expert._id)}
+                color="#FF4444"
+                border="2px solid #FF4444"
+                _hover={{ bg: '#FF4444', color: '#FFFFFF' }}
+                onClick={() => void handleDelete(expert._id)}
                 width="100%"
               >
                 Удалить

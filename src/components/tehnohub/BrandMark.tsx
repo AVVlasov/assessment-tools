@@ -5,8 +5,15 @@ export interface BrandMarkProps {
   size?: number
 }
 
+/** Decorative brand mark (not a carousel control). */
 export const BrandMark = ({ size = 13 }: BrandMarkProps): React.ReactElement => (
-  <Flex align="center" gap="5px">
+  <Flex
+    align="center"
+    gap="5px"
+    aria-hidden="true"
+    pointerEvents="none"
+    title="Assessment Tools"
+  >
     <Box w={`${size}px`} h={`${size}px`} borderRadius="50%" bg="white" />
     <Box
       w={`${size}px`}

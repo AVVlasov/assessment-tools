@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, Grid, HStack, Stack, Text } from '@chakra-ui/react';
-import { RadioGroup, Radio } from '../../../components/ui/radio';
+import { Box, Grid, HStack, Stack, Text, Button } from '@chakra-ui/react';
 import { useGetTop3Query } from '../../../__data__/api';
 import type { EventType, Top3Item, Top3Response } from '../../../types';
 import { getEventTypeConfig } from '../../../utils/eventTypeConfig';
@@ -136,22 +135,27 @@ export const Top3Tab: React.FC<Top3TabProps> = ({ eventId, eventType }) => {
   return (
     <Stack gap={6}>
       {groups.length > 1 && (
-        <HStack>
-          <Text fontSize="md" fontWeight="700" color="#B0B0B0">
-            Вкладка:
-          </Text>
-          <RadioGroup
-            value={activeGroup}
-            onValueChange={(e) => setActiveGroup(e.value as Top3Group)}
-          >
-            <HStack gap={4}>
-              {groups.map((group) => (
-                <Radio key={group} value={group}>
-                  {GROUP_LABELS[group]}
-                </Radio>
-              ))}
-            </HStack>
-          </RadioGroup>
+        <HStack gap={2} flexWrap="wrap">
+          {groups.map((group) => {
+            const active = activeGroup === group
+            return (
+              <Button
+                key={group}
+                h="34px"
+                px="17px"
+                fontSize="12.5px"
+                borderRadius="30px"
+                bg={active ? 'white' : 'transparent'}
+                color={active ? '#060B10' : 'rgba(255,255,255,0.8)'}
+                border={active ? 'none' : '1.5px solid rgba(255,255,255,0.2)'}
+                fontWeight="700"
+                _hover={{ bg: active ? 'white' : 'rgba(255,255,255,0.08)' }}
+                onClick={() => setActiveGroup(group)}
+              >
+                {GROUP_LABELS[group]}
+              </Button>
+            )
+          })}
         </HStack>
       )}
 

@@ -28,18 +28,39 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+const parseEventDate = (value) => {
+  if (!value) return new Date();
+  if (value instanceof Date) return value;
+  const str = String(value);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return new Date(`${str}T12:00:00`);
+  }
+  const parsed = new Date(str);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
 // POST /api/events - создать новое мероприятие
 router.post('/', async (req, res) => {
   try {
     const { name, description, eventDate, location, status, eventType } = req.body;
-    
-    const resolvedType = VALID_EVENT_TYPES.includes(eventType) ? eventType : 'hackathon';
+
+    if (!eventType || !VALID_EVENT_TYPES.includes(eventType)) {
+      return res.status(400).json({
+        error: `eventType is required and must be one of: ${VALID_EVENT_TYPES.join(', ')}`
+      });
+    }
+
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({ error: 'name is required' });
+    }
+
+    const resolvedType = eventType;
     
     const event = await Event.create({
-      name: name || 'Новое мероприятие',
+      name: String(name).trim(),
       eventType: resolvedType,
       description: description || '',
-      eventDate: eventDate || new Date(),
+      eventDate: parseEventDate(eventDate),
       location: location || '',
       status: status || 'draft',
       votingEnabled: false
@@ -99,7 +120,7 @@ router.put('/:id', async (req, res) => {
     
     if (name !== undefined) event.name = name;
     if (description !== undefined) event.description = description;
-    if (eventDate !== undefined) event.eventDate = eventDate;
+    if (eventDate !== undefined) event.eventDate = parseEventDate(eventDate);
     if (location !== undefined) event.location = location;
     if (status !== undefined) event.status = status;
     
