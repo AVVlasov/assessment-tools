@@ -1,23 +1,17 @@
 import React, { useState } from 'react'
-import {
-  Box,
-  Button,
-  Stack,
-  Text,
-  Heading,
-  Input,
-  IconButton,
-  Badge
-} from '@chakra-ui/react'
+import { Box, Flex, Input, Text } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi'
 import { Event, EventType } from '../../types'
 import { useUpdateEventMutation, useDeleteEventMutation } from '../../__data__/api/eventApi'
+import { GradientButton, Pill, SurfaceCard } from '../tehnohub'
+import { thColors } from '../../theme'
+import { t } from '../../utils/locale'
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
-  hackathon: 'Хакатон',
-  queen_of_code: 'Королева кода',
-  conference: 'Конференция / митап'
+  hackathon: t('events.types.hackathon'),
+  queen_of_code: t('events.types.queen_of_code'),
+  conference: t('events.types.conference'),
 }
 
 interface EventCardProps {
@@ -31,13 +25,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState(event.name)
 
-  const handleSaveName = async () => {
+  const handleSaveName = async (): Promise<void> => {
     if (editedName.trim() && editedName !== event.name) {
       try {
-        await updateEvent({
-          id: event._id,
-          data: { name: editedName.trim() }
-        }).unwrap()
+        await updateEvent({ id: event._id, data: { name: editedName.trim() } }).unwrap()
       } catch (error) {
         console.error('Failed to update event name:', error)
       }
@@ -45,13 +36,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     setIsEditingName(false)
   }
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = (): void => {
     setEditedName(event.name)
     setIsEditingName(false)
   }
 
-  const handleDelete = async () => {
-    if (window.confirm('Вы уверены, что хотите удалить это мероприятие?')) {
+  const handleDelete = async (): Promise<void> => {
+    if (window.confirm(t('events.confirmDelete'))) {
       try {
         await deleteEvent(event._id).unwrap()
       } catch (error) {
@@ -60,144 +51,96 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     }
   }
 
-  const handleOpenEvent = () => {
-    navigate(`/assessment-tools/admin?eventId=${event._id}`)
-  }
-
   return (
-    <Box
-      bg="#1A1A1A"
-      p={6}
-      borderRadius="lg"
-      border="1px solid #333333"
+    <SurfaceCard
       _hover={{
-        borderColor: '#D4FF00',
+        borderColor: thColors.green,
         transform: 'translateY(-2px)',
-        transition: 'all 0.2s'
+        transition: 'all 0.2s',
       }}
-      position="relative"
     >
-      <Stack gap={4}>
-        <Stack direction="row" justify="space-between" align="flex-start">
-          <Box flex={1}>
-            {isEditingName ? (
-              <Stack direction="row" gap={2} align="center">
-                <Input
-                  value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                  size="md"
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSaveName()
-                    if (e.key === 'Escape') handleCancelEdit()
-                  }}
-                />
-                <IconButton
-                  aria-label="Сохранить"
-                  size="sm"
-                  colorScheme="green"
-                  onClick={handleSaveName}
-                >
-                  <FiCheck />
-                </IconButton>
-                <IconButton
-                  aria-label="Отмена"
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleCancelEdit}
-                >
-                  <FiX />
-                </IconButton>
-              </Stack>
-            ) : (
-              <Stack direction="row" align="center" gap={2} flexWrap="wrap">
-                <Heading size="md" color="white">
-                  {event.name}
-                </Heading>
-                <Badge
-                  bg="#2A2A2A"
-                  color="#D4FF00"
-                  border="1px solid #D4FF00"
-                  px={2}
-                  py={1}
-                  fontSize="xs"
-                  fontWeight="700"
-                  textTransform="uppercase"
-                >
-                  {EVENT_TYPE_LABELS[event.eventType || 'hackathon']}
-                </Badge>
-                <IconButton
-                  aria-label="Редактировать название"
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setIsEditingName(true)}
-                  color="#B0B0B0"
-                  _hover={{ color: '#D4FF00' }}
-                >
-                  <FiEdit2 />
-                </IconButton>
-              </Stack>
-            )}
-          </Box>
-        </Stack>
+      <Flex direction="column" gap="14px">
+        {isEditingName ? (
+          <Flex gap="8px" align="center">
+            <Input
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              autoFocus
+              bg={thColors.surface}
+              borderColor={thColors.border}
+              color="white"
+              borderRadius="14px"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') void handleSaveName()
+                if (e.key === 'Escape') handleCancelEdit()
+              }}
+            />
+            <GradientButton h="36px" px="12px" onClick={() => void handleSaveName()}>
+              <FiCheck />
+            </GradientButton>
+            <GradientButton variant="ghost" h="36px" px="12px" onClick={handleCancelEdit}>
+              <FiX />
+            </GradientButton>
+          </Flex>
+        ) : (
+          <Flex align="center" gap="8px" flexWrap="wrap">
+            <Text fontFamily="heading" fontSize="16px" fontWeight="700" flex="1">
+              {event.name}
+            </Text>
+            <Pill variant="cyan" fontSize="10.5px">
+              {EVENT_TYPE_LABELS[event.eventType || 'hackathon']}
+            </Pill>
+            <Box
+              as="button"
+              color={thColors.muted}
+              cursor="pointer"
+              _hover={{ color: thColors.greenLight }}
+              onClick={() => setIsEditingName(true)}
+              aria-label={t('events.edit')}
+            >
+              <FiEdit2 />
+            </Box>
+          </Flex>
+        )}
 
         {event.description && (
-          <Text color="#B0B0B0" fontSize="sm" noOfLines={2}>
+          <Text color={thColors.textDim} fontSize="13px" lineClamp={2}>
             {event.description}
           </Text>
         )}
 
-        <Stack gap={2}>
-          <Stack direction="row" align="center" gap={2}>
-            <Text fontSize="sm" color="#666666">
-              Дата:
-            </Text>
-            <Text fontSize="sm" color="#B0B0B0">
-              {new Date(event.eventDate).toLocaleDateString('ru-RU', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </Text>
-          </Stack>
+        <Box>
+          <Text fontSize="12px" color={thColors.textFaint}>
+            {new Date(event.eventDate).toLocaleDateString('ru-RU', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+            {event.location ? ` · ${event.location}` : ''}
+          </Text>
+        </Box>
 
-          {event.location && (
-            <Stack direction="row" align="center" gap={2}>
-              <Text fontSize="sm" color="#666666">
-                Место:
-              </Text>
-              <Text fontSize="sm" color="#B0B0B0">
-                {event.location}
-              </Text>
-            </Stack>
-          )}
-        </Stack>
-
-        <Stack direction="row" gap={2} mt={2}>
-          <Button
-            flex={1}
-            bg="#D4FF00"
-            color="#0A0A0A"
-            fontWeight="bold"
-            _hover={{ bg: '#C4EF00' }}
-            onClick={handleOpenEvent}
+        <Flex gap="8px" mt="4px">
+          <GradientButton
+            flex="1"
+            h="42px"
+            onClick={() => navigate(`/assessment-tools/admin?eventId=${event._id}`)}
           >
-            Открыть
-          </Button>
-          <IconButton
-            aria-label="Удалить мероприятие"
-            bg="#2A2A2A"
-            color="#FF4444"
-            borderColor="#FF4444"
-            borderWidth="1px"
-            _hover={{ bg: '#FF4444', color: 'white' }}
-            onClick={handleDelete}
+            {t('events.openEvent')}
+          </GradientButton>
+          <GradientButton
+            variant="ghost"
+            h="42px"
+            px="14px"
+            color="#FF6B6B"
+            borderColor="rgba(255,100,100,0.5)"
+            onClick={() => void handleDelete()}
+            aria-label={t('events.delete')}
           >
             <FiTrash2 />
-          </IconButton>
-        </Stack>
-      </Stack>
-    </Box>
+          </GradientButton>
+        </Flex>
+      </Flex>
+    </SurfaceCard>
   )
 }
-

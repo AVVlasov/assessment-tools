@@ -33,6 +33,7 @@ export interface UpdateEventRequest {
 
 // Team types (universal contestant entity)
 export type TeamType = 'team' | 'participant' | 'speaker' | 'event';
+export type SpeakerFormat = 'talk' | 'panel' | 'workshop';
 
 export interface Team {
   _id: string;
@@ -41,6 +42,11 @@ export interface Team {
   name: string;
   projectName: string;
   caseDescription: string;
+  hallId?: string | null;
+  scheduledTime?: string;
+  org?: string;
+  format?: SpeakerFormat;
+  order?: number;
   isActive: boolean;
   votingStatus: 'not_evaluated' | 'evaluating' | 'evaluated';
   isActiveForVoting: boolean;
@@ -54,6 +60,11 @@ export interface CreateTeamRequest {
   name: string;
   projectName?: string;
   caseDescription?: string;
+  hallId?: string | null;
+  scheduledTime?: string;
+  org?: string;
+  format?: SpeakerFormat;
+  order?: number;
 }
 
 export interface UpdateTeamRequest {
@@ -61,6 +72,49 @@ export interface UpdateTeamRequest {
   name?: string;
   projectName?: string;
   caseDescription?: string;
+  hallId?: string | null;
+  scheduledTime?: string;
+  org?: string;
+  format?: SpeakerFormat;
+  order?: number;
+}
+
+// Hall types
+export type HallStatus = 'live' | 'break';
+
+export interface Hall {
+  _id: string;
+  eventId: string;
+  name: string;
+  num: number;
+  token: string;
+  status: HallStatus;
+  currentSpeakerIndex: number;
+  qrNote?: string;
+  order?: number;
+  speakers?: Team[];
+  currentSpeaker?: Team | null;
+  ratingsCount?: number;
+  averageScore?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateHallRequest {
+  eventId: string;
+  name: string;
+  num?: number;
+  qrNote?: string;
+  order?: number;
+}
+
+export interface UpdateHallRequest {
+  name?: string;
+  num?: number;
+  qrNote?: string;
+  status?: HallStatus;
+  order?: number;
+  currentSpeakerIndex?: number;
 }
 
 // Expert types
@@ -84,11 +138,19 @@ export interface UpdateExpertRequest {
 }
 
 // Criteria types
-export type CriteriaType = 'team' | 'participant' | 'speaker' | 'event' | 'all';
+export type CriteriaType = 'team' | 'participant' | 'speaker' | 'panel' | 'workshop' | 'event' | 'all';
+
+export interface CriterionOption {
+  title: string;
+  subtitle?: string;
+}
 
 export interface CriterionItem {
   name: string;
+  tag?: string;
+  hint?: string;
   maxScore: number;
+  options?: CriterionOption[];
 }
 
 export interface Criteria {
@@ -140,6 +202,101 @@ export interface CreateRatingRequest {
   expertId: string;
   teamId: string;
   ratings: RatingItem[];
+}
+
+// Listener rating
+export type ListenerTargetType = 'speaker' | 'panel' | 'workshop' | 'event';
+
+export interface ListenerScoreItem {
+  criterionName: string;
+  tag?: string;
+  score: number;
+  optionTitle?: string;
+}
+
+export interface ListenerRating {
+  _id: string;
+  eventId: string;
+  hallId?: string | null;
+  teamId?: string | null;
+  targetType: ListenerTargetType;
+  sessionId: string;
+  scores: ListenerScoreItem[];
+  reactions: string[];
+  elapsedSeconds: number;
+  averageScore: number;
+}
+
+export interface CreateListenerRatingRequest {
+  eventId: string;
+  hallId?: string | null;
+  teamId?: string | null;
+  targetType: ListenerTargetType;
+  sessionId: string;
+  scores: ListenerScoreItem[];
+  reactions?: string[];
+  elapsedSeconds?: number;
+}
+
+export interface ListenerCriterion {
+  name: string;
+  tag: string;
+  hint: string;
+  maxScore: number;
+  options: CriterionOption[];
+}
+
+export interface ListenerHallPayload {
+  hall: Hall;
+  event: Event;
+  currentSpeaker: Team | null;
+  nextSpeaker: Team | null;
+  speakers: Team[];
+  isPanel: boolean;
+  isWorkshop: boolean;
+  criteria: {
+    speaker: ListenerCriterion[];
+    panel: ListenerCriterion[];
+    workshop: ListenerCriterion[];
+    event: ListenerCriterion[];
+  };
+  ratingsCount: number;
+  reactions: {
+    speaker: string[];
+    workshop: string[];
+    event: string[];
+  };
+}
+
+export interface ListenerStatsResponse {
+  totalRatings: number;
+  leaderboard: Array<{
+    teamId: string;
+    name: string;
+    talk: string;
+    hall: string;
+    hallId?: string;
+    n: number;
+    scores: number[];
+    bars: Array<{ name: string; val: number; w: number }>;
+    total: number;
+    topReaction: string;
+  }>;
+  topReactions: Array<{ label: string; count: number }>;
+  speakerRows: Array<{
+    _id: string;
+    time: string;
+    name: string;
+    talk: string;
+    hall: string;
+    hallId?: string;
+    status: 'live' | 'done' | 'waiting';
+    avg: number | null;
+    n: number;
+    format?: SpeakerFormat;
+    org?: string;
+  }>;
+  halls: Hall[];
 }
 
 // Statistics types

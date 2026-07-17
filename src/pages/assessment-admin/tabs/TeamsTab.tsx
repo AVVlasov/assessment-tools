@@ -29,20 +29,20 @@ const TYPE_LABELS: Record<TeamType, string> = {
 };
 
 const TYPE_BADGE_COLORS: Record<TeamType, string> = {
-  team: '#D4FF00',
-  participant: '#FF0080',
+  team: '#3DDC50',
+  participant: '#4FC9F0',
   speaker: '#4CAF50',
   event: '#FF6B00'
 };
 
 const FORM_TITLES: Record<EventType, string> = {
-  hackathon: 'Добавить команду/участницу',
+  hackathon: 'Добавить команду',
   queen_of_code: 'Добавить участницу',
   conference: 'Добавить спикера'
 };
 
 const EMPTY_MESSAGES: Record<EventType, string> = {
-  hackathon: 'Нет команд или участниц по выбранным фильтрам',
+  hackathon: 'Нет команд по выбранным фильтрам',
   queen_of_code: 'Нет участниц по выбранным фильтрам',
   conference: 'Нет спикеров по выбранным фильтрам'
 };
@@ -237,12 +237,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
   const renderContestantCard = (team: Team, options?: { hideDelete?: boolean; hideEdit?: boolean }) => (
     <Box
       key={team._id}
-      bg="#1F1F1F"
+      bg="#0C1218"
       p={5}
-      border="3px solid #333333"
+      border="3px solid rgba(255,255,255,0.12)"
       borderRadius="8px"
       transition="all 0.3s"
-      _hover={{ borderColor: '#FF0080', transform: 'translateY(-5px)' }}
+      _hover={{ borderColor: '#4FC9F0', transform: 'translateY(-5px)' }}
       opacity={team.isActive ? 1 : 0.6}
     >
       <Stack gap={2} mb={3}>
@@ -290,7 +290,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
 
       {config.showProjectFields && team.projectName && (
         <Text fontSize="sm" color="#B0B0B0" mb={1}>
-          <Text as="span" color="#D4FF00" fontWeight="700">Проект:</Text> {team.projectName}
+          <Text as="span" color="#3DDC50" fontWeight="700">Проект:</Text> {team.projectName}
         </Text>
       )}
 
@@ -304,10 +304,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
         {team.votingStatus === 'evaluating' ? (
           <Button
             size="sm"
-            bg="#FF0080"
+            bg="#4FC9F0"
             color="#FFFFFF"
             fontWeight="700"
-            _hover={{ bg: '#0A0A0A', color: '#FF0080', border: '2px solid #FF0080' }}
+            _hover={{ bg: '#060B10', color: '#4FC9F0', border: '2px solid #4FC9F0' }}
             onClick={() => handleStopVoting(team._id)}
             width="100%"
           >
@@ -319,10 +319,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
         ) : (
           <Button
             size="sm"
-            bg="#D4FF00"
+            bg="#3DDC50"
             color="#000000"
             fontWeight="700"
-            _hover={{ bg: '#C4EF00' }}
+            _hover={{ bg: '#21A038' }}
             onClick={() => handleActivateForVoting(team._id)}
             width="100%"
             disabled={!team.isActive}
@@ -339,9 +339,9 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
             <IconButton
               size="sm"
               variant="outline"
-              borderColor="#D4FF00"
-              color="#D4FF00"
-              _hover={{ bg: '#D4FF00', color: '#000000' }}
+              borderColor="#3DDC50"
+              color="#3DDC50"
+              _hover={{ bg: '#3DDC50', color: '#000000' }}
               onClick={() => handleEdit(team)}
               aria-label="Редактировать"
             >
@@ -383,22 +383,22 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
     <Stack gap={6}>
       {hasActiveVoting && (
         <Box
-          bg="#1F1F1F"
+          bg="#0C1218"
           p={4}
-          border="3px solid #FF0080"
+          border="3px solid #4FC9F0"
           borderRadius="8px"
         >
           <HStack justify="space-between" align="center">
-            <Text fontSize="lg" fontWeight="700" color="#FF0080">
+            <Text fontSize="lg" fontWeight="700" color="#4FC9F0">
               Идёт оценивание
             </Text>
             <Button
-              bg="#FF0080"
+              bg="#4FC9F0"
               color="#FFFFFF"
               fontWeight="700"
               px={8}
               borderRadius="50px"
-              _hover={{ bg: '#0A0A0A', color: '#FF0080', border: '3px solid #FF0080' }}
+              _hover={{ bg: '#060B10', color: '#4FC9F0', border: '3px solid #4FC9F0' }}
               onClick={handleStopAllVoting}
             >
               Остановить все оценивания
@@ -409,7 +409,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
 
       {config.showEventRatingCard && eventRatingEntity && (
         <Box
-          bg="#1F1F1F"
+          bg="#0C1218"
           p={4}
           border="2px solid #FF6B00"
           borderRadius="8px"
@@ -428,9 +428,9 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
       )}
 
       <Box
-        bg="#1F1F1F"
+        bg="#0C1218"
         p={4}
-        border="3px solid #333333"
+        border="3px solid rgba(255,255,255,0.12)"
         borderRadius="8px"
       >
         <Stack gap={3}>
@@ -441,7 +441,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
           <HStack justify="space-between" align="flex-start" flexWrap="wrap" gap={4}>
             {config.showTypeSelector && (
               <Stack gap={2}>
-                <Text fontSize="sm" fontWeight="600" color="#D4FF00" textTransform="uppercase">
+                <Text fontSize="sm" fontWeight="600" color="#3DDC50" textTransform="uppercase">
                   Тип
                 </Text>
                 <RadioGroup
@@ -458,7 +458,7 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
             )}
 
             <Stack gap={2}>
-              <Text fontSize="sm" fontWeight="600" color="#D4FF00" textTransform="uppercase">
+              <Text fontSize="sm" fontWeight="600" color="#3DDC50" textTransform="uppercase">
                 Статус оценки
               </Text>
               <HStack gap={4}>
@@ -485,12 +485,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
       </Box>
 
       <Box
-        bg="#1F1F1F"
+        bg="#0C1218"
         p={6}
-        border="3px solid #333333"
+        border="3px solid rgba(255,255,255,0.12)"
         borderRadius="8px"
       >
-        <Text fontSize="xl" fontWeight="900" mb={2} textTransform="uppercase" color="#D4FF00">
+        <Text fontSize="xl" fontWeight="900" mb={2} textTransform="uppercase" color="#3DDC50">
           {FORM_TITLES[eventType]}
         </Text>
         {eventType === 'conference' && (
@@ -523,10 +523,10 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
               placeholder={getNamePlaceholder()}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              bg="#1A1A1A"
-              border="2px solid #333333"
+              bg="#141C24"
+              border="2px solid rgba(255,255,255,0.12)"
               color="#FFFFFF"
-              _focus={{ borderColor: '#D4FF00' }}
+              _focus={{ borderColor: '#3DDC50' }}
               required
             />
 
@@ -536,20 +536,20 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
                   placeholder="Название проекта"
                   value={formData.projectName}
                   onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                  bg="#1A1A1A"
-                  border="2px solid #333333"
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
                   color="#FFFFFF"
-                  _focus={{ borderColor: '#D4FF00' }}
+                  _focus={{ borderColor: '#3DDC50' }}
                 />
 
                 <Textarea
                   placeholder="Описание кейса"
                   value={formData.caseDescription}
                   onChange={(e) => setFormData({ ...formData, caseDescription: e.target.value })}
-                  bg="#1A1A1A"
-                  border="2px solid #333333"
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
                   color="#FFFFFF"
-                  _focus={{ borderColor: '#D4FF00' }}
+                  _focus={{ borderColor: '#3DDC50' }}
                   rows={4}
                 />
               </>
@@ -558,12 +558,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
             <HStack gap={3}>
               <Button
                 type="submit"
-                bg="#D4FF00"
+                bg="#3DDC50"
                 color="#000000"
                 fontWeight="700"
                 px={8}
                 borderRadius="50px"
-                _hover={{ bg: '#0A0A0A', color: '#D4FF00', border: '3px solid #D4FF00' }}
+                _hover={{ bg: '#060B10', color: '#3DDC50', border: '3px solid #3DDC50' }}
               >
                 {editingId ? 'Обновить' : 'Добавить'}
               </Button>
@@ -572,12 +572,12 @@ export const TeamsTab: React.FC<TeamsTabProps> = ({ eventId, eventType }) => {
                 <Button
                   onClick={handleCancelEdit}
                   bg="transparent"
-                  color="#FF0080"
-                  border="3px solid #FF0080"
+                  color="#4FC9F0"
+                  border="3px solid #4FC9F0"
                   fontWeight="700"
                   px={8}
                   borderRadius="50px"
-                  _hover={{ bg: '#FF0080', color: '#FFFFFF' }}
+                  _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
                 >
                   Отмена
                 </Button>

@@ -23,6 +23,28 @@ const teamSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  hallId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Hall',
+    default: null
+  },
+  scheduledTime: {
+    type: String,
+    default: ''
+  },
+  org: {
+    type: String,
+    default: ''
+  },
+  format: {
+    type: String,
+    enum: ['talk', 'panel', 'workshop'],
+    default: 'talk'
+  },
+  order: {
+    type: Number,
+    default: 0
+  },
   isActive: {
     type: Boolean,
     default: true

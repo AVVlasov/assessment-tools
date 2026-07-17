@@ -1,19 +1,13 @@
 import React, { useMemo } from 'react'
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Stack,
-  Button,
-  Grid,
-  Spinner
-} from '@chakra-ui/react'
+import { Box, Container, Flex, Grid, Spinner, Text } from '@chakra-ui/react'
 import { FiPlus } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useGetEventsQuery } from '../../__data__/api/eventApi'
 import { EventCard } from '../../components/events'
 import { Event } from '../../types'
+import { BrandMark, GradientButton, PageShell } from '../../components/tehnohub'
+import { thColors } from '../../theme'
+import { t } from '../../utils/locale'
 
 interface GroupedEvents {
   [year: string]: {
@@ -22,15 +16,24 @@ interface GroupedEvents {
 }
 
 const monthNames = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+  t('events.months.january'),
+  t('events.months.february'),
+  t('events.months.march'),
+  t('events.months.april'),
+  t('events.months.may'),
+  t('events.months.june'),
+  t('events.months.july'),
+  t('events.months.august'),
+  t('events.months.september'),
+  t('events.months.october'),
+  t('events.months.november'),
+  t('events.months.december'),
 ]
 
 export const EventsDashboard: React.FC = () => {
   const navigate = useNavigate()
   const { data, isLoading } = useGetEventsQuery()
 
-  // Ensure events is always an array
   const events = useMemo(() => {
     if (!data) return []
     if (Array.isArray(data)) return data
@@ -39,23 +42,14 @@ export const EventsDashboard: React.FC = () => {
 
   const groupedEvents = useMemo(() => {
     const grouped: GroupedEvents = {}
-
     events.forEach((event) => {
       const date = new Date(event.eventDate)
       const year = date.getFullYear().toString()
       const month = date.getMonth()
-
-      if (!grouped[year]) {
-        grouped[year] = {}
-      }
-
-      if (!grouped[year][month]) {
-        grouped[year][month] = []
-      }
-
+      if (!grouped[year]) grouped[year] = {}
+      if (!grouped[year][month]) grouped[year][month] = []
       grouped[year][month].push(event)
     })
-
     return grouped
   }, [events])
 
@@ -63,123 +57,101 @@ export const EventsDashboard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box minH="100vh" bg="#0A0A0A" color="white" display="flex" alignItems="center" justifyContent="center">
-        <Spinner size="xl" color="#D4FF00" />
-      </Box>
+      <Flex minH="100vh" bg={thColors.bg} align="center" justify="center">
+        <Spinner size="xl" color={thColors.green} />
+      </Flex>
     )
   }
 
   return (
-    <Box minH="100vh" bg="#0A0A0A" color="white">
-      <Container maxW="1400px" py={8}>
-        <Stack gap={8}>
-          {/* Header */}
-          <Stack direction="row" justify="space-between" align="center">
-            <Box>
-              <Heading
-                fontSize={{ base: '2xl', md: '4xl' }}
-                fontWeight="bold"
-                color="#D4FF00"
-              >
-                Мероприятия
-              </Heading>
-              <Text fontSize="md" color="#B0B0B0" mt={2}>
-                Хакатоны, конкурсы и конференции — в одном месте
-              </Text>
-            </Box>
-
-            <Button
-              leftIcon={<FiPlus />}
-              bg="#D4FF00"
-              color="#0A0A0A"
-              fontWeight="bold"
-              size="lg"
-              px={6}
-              _hover={{ bg: '#C4EF00' }}
+    <PageShell>
+      <Box bgImage={thColors.gradientAdmin} pb="28px" borderRadius="0 0 26px 26px">
+        <Container maxW="1400px" pt="28px" px={{ base: 4, md: 6 }}>
+          <Flex justify="space-between" align="center" flexWrap="wrap" gap="16px">
+            <Flex align="center" gap="14px">
+              <BrandMark size={14} />
+              <Box>
+                <Text fontFamily="heading" fontSize={{ base: '22px', md: '28px' }} fontWeight="700">
+                  {t('events.title')}
+                </Text>
+                <Text fontSize="14px" color={thColors.textDim} mt="4px">
+                  {t('brand.name')} · хакатоны, конкурсы и конференции
+                </Text>
+              </Box>
+            </Flex>
+            <GradientButton
+              h="48px"
               onClick={() => navigate('/assessment-tools/events/create')}
             >
-              Создать мероприятие
-            </Button>
-          </Stack>
+              <FiPlus style={{ marginRight: 8 }} />
+              {t('events.createNew')}
+            </GradientButton>
+          </Flex>
+        </Container>
+      </Box>
 
-          {/* Events grouped by year and month */}
-          {events.length === 0 ? (
-            <Box
-              bg="#1A1A1A"
-              p={12}
-              borderRadius="lg"
-              border="1px solid #333333"
-              textAlign="center"
-            >
-              <Heading size="md" color="#666666" mb={4}>
-                Нет мероприятий
-              </Heading>
-              <Text color="#B0B0B0" mb={6}>
-                Создайте первое мероприятие, чтобы начать работу
-              </Text>
-              <Button
-                leftIcon={<FiPlus />}
-                bg="#D4FF00"
-                color="#0A0A0A"
-                fontWeight="bold"
-                _hover={{ bg: '#C4EF00' }}
-                onClick={() => navigate('/assessment-tools/events/create')}
-              >
-                Создать мероприятие
-              </Button>
-            </Box>
-          ) : (
-            <Stack gap={8}>
-              {sortedYears.map((year) => (
-                <Box key={year}>
-                  <Heading
-                    size="lg"
-                    color="#D4FF00"
-                    mb={6}
-                    pb={3}
-                    borderBottom="2px solid #333333"
-                  >
-                    {year}
-                  </Heading>
-
-                  <Stack gap={6}>
-                    {Object.keys(groupedEvents[year])
-                      .sort((a, b) => parseInt(b) - parseInt(a))
-                      .map((monthIndex) => {
-                        const monthEvents = groupedEvents[year][monthIndex]
-                        return (
-                          <Box key={`${year}-${monthIndex}`}>
-                            <Heading
-                              size="md"
-                              color="#B0B0B0"
-                              mb={4}
-                            >
-                              {monthNames[parseInt(monthIndex)]}
-                            </Heading>
-
-                            <Grid
-                              templateColumns={{
-                                base: '1fr',
-                                md: 'repeat(2, 1fr)',
-                                lg: 'repeat(3, 1fr)'
-                              }}
-                              gap={4}
-                            >
-                              {monthEvents.map((event) => (
-                                <EventCard key={event._id} event={event} />
-                              ))}
-                            </Grid>
-                          </Box>
-                        )
-                      })}
-                  </Stack>
-                </Box>
-              ))}
-            </Stack>
-          )}
-        </Stack>
+      <Container maxW="1400px" py={8} px={{ base: 4, md: 6 }}>
+        {events.length === 0 ? (
+          <Box
+            bg={thColors.card}
+            p={12}
+            borderRadius="22px"
+            border={`1px solid ${thColors.border}`}
+            textAlign="center"
+          >
+            <Text fontFamily="heading" fontSize="18px" color={thColors.muted} mb={4}>
+              {t('events.noEvents')}
+            </Text>
+            <Text color={thColors.textDim} mb={6}>
+              Создайте первое мероприятие, чтобы начать работу
+            </Text>
+            <GradientButton onClick={() => navigate('/assessment-tools/events/create')}>
+              {t('events.createNew')}
+            </GradientButton>
+          </Box>
+        ) : (
+          <Flex direction="column" gap={8}>
+            {sortedYears.map((year) => (
+              <Box key={year}>
+                <Text
+                  fontFamily="heading"
+                  fontSize="20px"
+                  fontWeight="700"
+                  color={thColors.greenLight}
+                  mb={6}
+                  pb={3}
+                  borderBottom={`1px solid ${thColors.border}`}
+                >
+                  {year}
+                </Text>
+                <Flex direction="column" gap={6}>
+                  {Object.keys(groupedEvents[year])
+                    .sort((a, b) => parseInt(b) - parseInt(a))
+                    .map((monthIndex) => (
+                      <Box key={`${year}-${monthIndex}`}>
+                        <Text fontSize="15px" fontWeight="700" color={thColors.muted} mb={4}>
+                          {monthNames[parseInt(monthIndex)]}
+                        </Text>
+                        <Grid
+                          templateColumns={{
+                            base: '1fr',
+                            md: 'repeat(2, 1fr)',
+                            lg: 'repeat(3, 1fr)',
+                          }}
+                          gap={4}
+                        >
+                          {groupedEvents[year][monthIndex].map((event) => (
+                            <EventCard key={event._id} event={event} />
+                          ))}
+                        </Grid>
+                      </Box>
+                    ))}
+                </Flex>
+              </Box>
+            ))}
+          </Flex>
+        )}
       </Container>
-    </Box>
+    </PageShell>
   )
 }
-

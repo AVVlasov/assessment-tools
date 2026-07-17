@@ -20,6 +20,8 @@ const CRITERIA_TYPE_LABELS: Record<CriteriaType, string> = {
   team: 'Только для команд',
   participant: 'Только для участниц',
   speaker: 'Только для спикеров',
+  panel: 'Только для панелей',
+  workshop: 'Только для воркшопов',
   event: 'Общая оценка мероприятия'
 };
 
@@ -129,14 +131,14 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
       ? 'Для конференции загрузятся короткие критерии «глазами слушателя»: понятность, польза, логика — без метрик вроде «вовлечённости зала».'
       : eventType === 'queen_of_code'
         ? 'Для конкурса — компактный набор критериев по выступлению участницы.'
-        : 'Для хакатона — критерии оценки команды и участницы из положения.';
+        : 'Для хакатона — критерии оценки команд из положения.';
 
   return (
     <Stack gap={6}>
       <Box
-        bg="#1F1F1F"
+        bg="#0C1218"
         p={4}
-        border="2px solid #333333"
+        border="2px solid rgba(255,255,255,0.12)"
         borderRadius="8px"
       >
         <HStack justify="space-between" align="flex-start" flexWrap="wrap" gap={4}>
@@ -154,7 +156,7 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
             fontWeight="700"
             px={6}
             borderRadius="50px"
-            _hover={{ bg: '#0A0A0A', color: '#FF6B00', border: '3px solid #FF6B00' }}
+            _hover={{ bg: '#060B10', color: '#FF6B00', border: '3px solid #FF6B00' }}
             onClick={handleLoadDefault}
           >
             Загрузить критерии по умолчанию
@@ -163,12 +165,12 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
       </Box>
 
       <Box
-        bg="#1F1F1F"
+        bg="#0C1218"
         p={6}
-        border="3px solid #333333"
+        border="3px solid rgba(255,255,255,0.12)"
         borderRadius="8px"
       >
-        <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#D4FF00">
+        <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#3DDC50">
           {editingId ? 'Редактировать блок' : 'Создать блок критериев'}
         </Text>
 
@@ -178,10 +180,10 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
               placeholder="Название блока"
               value={blockName}
               onChange={(e) => setBlockName(e.target.value)}
-              bg="#1A1A1A"
-              border="2px solid #333333"
+              bg="#141C24"
+              border="2px solid rgba(255,255,255,0.12)"
               color="#FFFFFF"
-              _focus={{ borderColor: '#D4FF00' }}
+              _focus={{ borderColor: '#3DDC50' }}
               required
             />
 
@@ -194,13 +196,13 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                 onChange={(e) => setCriteriaType(e.target.value as CriteriaType)}
               >
                 <NativeSelect.Field
-                  bg="#1A1A1A"
-                  border="2px solid #333333"
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
                   color="#FFFFFF"
-                  _focus={{ borderColor: '#D4FF00' }}
+                  _focus={{ borderColor: '#3DDC50' }}
                 >
                   {config.allowedCriteriaTypes.map((type) => (
-                    <option key={type} value={type} style={{ background: '#1A1A1A' }}>
+                    <option key={type} value={type} style={{ background: '#141C24' }}>
                       {CRITERIA_TYPE_LABELS[type]}
                     </option>
                   ))}
@@ -218,10 +220,10 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                   placeholder="Название критерия"
                   value={criterion.name}
                   onChange={(e) => handleCriterionChange(index, 'name', e.target.value)}
-                  bg="#1A1A1A"
-                  border="2px solid #333333"
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
                   color="#FFFFFF"
-                  _focus={{ borderColor: '#D4FF00' }}
+                  _focus={{ borderColor: '#3DDC50' }}
                   flex={3}
                   required
                 />
@@ -231,10 +233,10 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                   placeholder="Макс. балл"
                   value={criterion.maxScore}
                   onChange={(e) => handleCriterionChange(index, 'maxScore', parseInt(e.target.value) || 5)}
-                  bg="#1A1A1A"
-                  border="2px solid #333333"
+                  bg="#141C24"
+                  border="2px solid rgba(255,255,255,0.12)"
                   color="#FFFFFF"
-                  _focus={{ borderColor: '#D4FF00' }}
+                  _focus={{ borderColor: '#3DDC50' }}
                   flex={1}
                   min={0}
                   max={10}
@@ -244,9 +246,9 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                   <Button
                     onClick={() => handleRemoveCriterion(index)}
                     bg="transparent"
-                    color="#FF0080"
-                    border="2px solid #FF0080"
-                    _hover={{ bg: '#FF0080', color: '#FFFFFF' }}
+                    color="#4FC9F0"
+                    border="2px solid #4FC9F0"
+                    _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
                     size="sm"
                   >
                     Удалить
@@ -258,9 +260,9 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
             <Button
               onClick={handleAddCriterion}
               bg="transparent"
-              color="#D4FF00"
-              border="2px solid #D4FF00"
-              _hover={{ bg: '#D4FF00', color: '#000000' }}
+              color="#3DDC50"
+              border="2px solid #3DDC50"
+              _hover={{ bg: '#3DDC50', color: '#000000' }}
               width="fit-content"
             >
               + Добавить критерий
@@ -269,12 +271,12 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
             <HStack gap={3} mt={4}>
               <Button
                 type="submit"
-                bg="#D4FF00"
+                bg="#3DDC50"
                 color="#000000"
                 fontWeight="700"
                 px={8}
                 borderRadius="50px"
-                _hover={{ bg: '#0A0A0A', color: '#D4FF00', border: '3px solid #D4FF00' }}
+                _hover={{ bg: '#060B10', color: '#3DDC50', border: '3px solid #3DDC50' }}
               >
                 {editingId ? 'Обновить блок' : 'Сохранить блок'}
               </Button>
@@ -283,12 +285,12 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                 <Button
                   onClick={handleCancelEdit}
                   bg="transparent"
-                  color="#FF0080"
-                  border="3px solid #FF0080"
+                  color="#4FC9F0"
+                  border="3px solid #4FC9F0"
                   fontWeight="700"
                   px={8}
                   borderRadius="50px"
-                  _hover={{ bg: '#FF0080', color: '#FFFFFF' }}
+                  _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
                 >
                   Отмена
                 </Button>
@@ -302,12 +304,12 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
         {criteriaBlocks.map((block) => (
           <Box
             key={block._id}
-            bg="#1F1F1F"
+            bg="#0C1218"
             p={5}
-            border="3px solid #333333"
+            border="3px solid rgba(255,255,255,0.12)"
             borderRadius="8px"
             transition="all 0.3s"
-            _hover={{ borderColor: '#D4FF00' }}
+            _hover={{ borderColor: '#3DDC50' }}
           >
             <HStack justify="space-between" mb={3}>
               <Box>
@@ -323,9 +325,9 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                 <Button
                   size="sm"
                   bg="transparent"
-                  color="#D4FF00"
-                  border="2px solid #D4FF00"
-                  _hover={{ bg: '#D4FF00', color: '#000000' }}
+                  color="#3DDC50"
+                  border="2px solid #3DDC50"
+                  _hover={{ bg: '#3DDC50', color: '#000000' }}
                   onClick={() => handleEdit(block)}
                 >
                   Редактировать
@@ -334,9 +336,9 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
                 <Button
                   size="sm"
                   bg="transparent"
-                  color="#FF0080"
-                  border="2px solid #FF0080"
-                  _hover={{ bg: '#FF0080', color: '#FFFFFF' }}
+                  color="#4FC9F0"
+                  border="2px solid #4FC9F0"
+                  _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
                   onClick={() => handleDelete(block._id)}
                 >
                   Удалить
@@ -346,11 +348,11 @@ export const CriteriaTab: React.FC<CriteriaTabProps> = ({ eventId, eventType }) 
 
             <Stack gap={2}>
               {block.criteria.map((criterion, index) => (
-                <HStack key={index} justify="space-between" px={3} py={2} bg="#1A1A1A" borderRadius="4px">
+                <HStack key={index} justify="space-between" px={3} py={2} bg="#141C24" borderRadius="4px">
                   <Text color="#B0B0B0" fontSize="sm">
                     {index + 1}. {criterion.name}
                   </Text>
-                  <Text color="#D4FF00" fontSize="sm" fontWeight="700">
+                  <Text color="#3DDC50" fontSize="sm" fontWeight="700">
                     0-{criterion.maxScore} баллов
                   </Text>
                 </HStack>

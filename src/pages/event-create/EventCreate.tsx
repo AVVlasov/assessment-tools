@@ -20,7 +20,7 @@ import { EVENT_TYPES } from '../../utils/eventTypeConfig'
 const TYPE_LABELS: Record<EventType, { title: string; description: string }> = {
   hackathon: {
     title: 'Хакатон',
-    description: 'Оценка команд и участниц'
+    description: 'Оценка команд'
   },
   queen_of_code: {
     title: 'Королева кода',
@@ -91,7 +91,7 @@ export const EventCreate: React.FC = () => {
   }
 
   return (
-    <Box minH="100vh" bg="#0A0A0A" color="white" py={{ base: 4, md: 8 }}>
+    <Box minH="100vh" bg="#060B10" color="white" py={{ base: 4, md: 8 }}>
       <Container maxW="1000px" px={{ base: 4, md: 6 }}>
         <Stack gap={{ base: 6, md: 8 }}>
           <Stack direction="row" align="center" gap={{ base: 2, md: 4 }}>
@@ -101,28 +101,28 @@ export const EventCreate: React.FC = () => {
               variant="ghost"
               color="white"
               size={{ base: 'sm', md: 'md' }}
-              _hover={{ bg: '#1A1A1A' }}
+              _hover={{ bg: '#141C24' }}
             >
               <FiArrowLeft size={24} />
             </IconButton>
             <Heading
               fontSize={{ base: 'xl', md: '2xl', lg: '3xl' }}
               fontWeight="bold"
-              color="#D4FF00"
+              color="#3DDC50"
             >
               Создание мероприятия
             </Heading>
           </Stack>
 
-          <Box bg="#1A1A1A" p={{ base: 4, md: 6 }} borderRadius="lg" border="1px solid #333333">
+          <Box bg="#141C24" p={{ base: 4, md: 6 }} borderRadius="lg" border="1px solid rgba(255,255,255,0.12)">
             <Box display={{ base: 'block', md: 'none' }}>
               <Stack direction="row" align="center" gap={3}>
                 <Box
                   w={10}
                   h={10}
                   borderRadius="full"
-                  bg="#D4FF00"
-                  color="#0A0A0A"
+                  bg="#3DDC50"
+                  color="#060B10"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -136,12 +136,12 @@ export const EventCreate: React.FC = () => {
                   <Text fontSize="md" fontWeight="bold" color="white">
                     {steps[currentStep].title}
                   </Text>
-                  <Text fontSize="sm" color="#D0D0D0">
+                  <Text fontSize="sm" color="#E0E0E0">
                     {steps[currentStep].description}
                   </Text>
                 </Box>
               </Stack>
-              <Text fontSize="xs" color="#999999" mt={3} textAlign="center">
+              <Text fontSize="xs" color="#5E7280" mt={3} textAlign="center">
                 Шаг {currentStep + 1} из {steps.length}
               </Text>
             </Box>
@@ -155,8 +155,8 @@ export const EventCreate: React.FC = () => {
                         w={10}
                         h={10}
                         borderRadius="full"
-                        bg={index <= currentStep ? '#D4FF00' : '#333333'}
-                        color={index <= currentStep ? '#0A0A0A' : '#999999'}
+                        bg={index <= currentStep ? '#3DDC50' : 'rgba(255,255,255,0.12)'}
+                        color={index <= currentStep ? '#060B10' : '#5E7280'}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
@@ -167,10 +167,10 @@ export const EventCreate: React.FC = () => {
                         {index + 1}
                       </Box>
                       <Box flex={1}>
-                        <Text fontSize="sm" fontWeight="bold" color={index <= currentStep ? 'white' : '#999999'}>
+                        <Text fontSize="sm" fontWeight="bold" color={index <= currentStep ? 'white' : '#5E7280'}>
                           {stepInfo.title}
                         </Text>
-                        <Text fontSize="xs" color={index <= currentStep ? '#D0D0D0' : '#666666'}>
+                        <Text fontSize="xs" color={index <= currentStep ? '#E0E0E0' : '#8FA6B8'}>
                           {stepInfo.description}
                         </Text>
                       </Box>
@@ -182,10 +182,10 @@ export const EventCreate: React.FC = () => {
           </Box>
 
           <Box
-            bg="#1A1A1A"
+            bg="#141C24"
             p={{ base: 4, md: 6, lg: 8 }}
             borderRadius="lg"
-            border="1px solid #333333"
+            border="1px solid rgba(255,255,255,0.12)"
             minH={{ base: '300px', md: '400px' }}
           >
             {currentStep === 0 && (
@@ -193,7 +193,7 @@ export const EventCreate: React.FC = () => {
                 <Text fontSize="lg" fontWeight="bold" color="white">
                   Выберите тип мероприятия
                 </Text>
-                <Text fontSize="sm" color="#B0B0B0">
+                <Text fontSize="sm" color="rgba(255,255,255,0.65)">
                   Тип задаёт, что будут оценивать эксперты. После создания изменить его нельзя.
                 </Text>
                 <Stack gap={3}>
@@ -206,17 +206,17 @@ export const EventCreate: React.FC = () => {
                         textAlign="left"
                         p={5}
                         borderRadius="lg"
-                        border={selected ? '2px solid #D4FF00' : '2px solid #333333'}
-                        bg={selected ? '#222200' : '#0A0A0A'}
+                        border={selected ? '2px solid #3DDC50' : '2px solid rgba(255,255,255,0.12)'}
+                        bg={selected ? 'rgba(61,220,80,0.08)' : '#060B10'}
                         cursor="pointer"
                         onClick={() => handleChange('eventType', type)}
-                        _hover={{ borderColor: '#D4FF00' }}
+                        _hover={{ borderColor: '#3DDC50' }}
                         width="100%"
                       >
-                        <Text fontSize="lg" fontWeight="900" color={selected ? '#D4FF00' : 'white'} mb={1}>
+                        <Text fontSize="lg" fontWeight="900" color={selected ? '#3DDC50' : 'white'} mb={1}>
                           {TYPE_LABELS[type].title}
                         </Text>
-                        <Text fontSize="sm" color="#B0B0B0">
+                        <Text fontSize="sm" color="rgba(255,255,255,0.65)">
                           {TYPE_LABELS[type].description}
                         </Text>
                       </Box>
@@ -237,11 +237,11 @@ export const EventCreate: React.FC = () => {
                     onChange={(e) => handleChange('name', e.target.value)}
                     placeholder="Введите название"
                     size="lg"
-                    bg="#0A0A0A"
-                    borderColor="#333333"
+                    bg="#060B10"
+                    borderColor="rgba(255,255,255,0.12)"
                     color="white"
-                    _placeholder={{ color: '#666666' }}
-                    _focus={{ borderColor: '#D4FF00', boxShadow: '0 0 0 1px #D4FF00' }}
+                    _placeholder={{ color: '#8FA6B8' }}
+                    _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
                   />
                 </Field.Root>
 
@@ -254,10 +254,10 @@ export const EventCreate: React.FC = () => {
                     value={formData.eventDate}
                     onChange={(e) => handleChange('eventDate', e.target.value)}
                     size="lg"
-                    bg="#0A0A0A"
-                    borderColor="#333333"
+                    bg="#060B10"
+                    borderColor="rgba(255,255,255,0.12)"
                     color="white"
-                    _focus={{ borderColor: '#D4FF00', boxShadow: '0 0 0 1px #D4FF00' }}
+                    _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
                   />
                 </Field.Root>
               </Stack>
@@ -274,11 +274,11 @@ export const EventCreate: React.FC = () => {
                     onChange={(e) => handleChange('description', e.target.value)}
                     placeholder="Введите описание"
                     rows={6}
-                    bg="#0A0A0A"
-                    borderColor="#333333"
+                    bg="#060B10"
+                    borderColor="rgba(255,255,255,0.12)"
                     color="white"
-                    _placeholder={{ color: '#666666' }}
-                    _focus={{ borderColor: '#D4FF00', boxShadow: '0 0 0 1px #D4FF00' }}
+                    _placeholder={{ color: '#8FA6B8' }}
+                    _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
                   />
                 </Field.Root>
 
@@ -291,11 +291,11 @@ export const EventCreate: React.FC = () => {
                     onChange={(e) => handleChange('location', e.target.value)}
                     placeholder="Введите место проведения"
                     size="lg"
-                    bg="#0A0A0A"
-                    borderColor="#333333"
+                    bg="#060B10"
+                    borderColor="rgba(255,255,255,0.12)"
                     color="white"
-                    _placeholder={{ color: '#666666' }}
-                    _focus={{ borderColor: '#D4FF00', boxShadow: '0 0 0 1px #D4FF00' }}
+                    _placeholder={{ color: '#8FA6B8' }}
+                    _focus={{ borderColor: '#3DDC50', boxShadow: '0 0 0 1px #3DDC50' }}
                   />
                 </Field.Root>
               </Stack>
@@ -303,26 +303,26 @@ export const EventCreate: React.FC = () => {
 
             {currentStep === 3 && (
               <Stack gap={6}>
-                <Heading size="lg" color="#D4FF00" mb={4}>
+                <Heading size="lg" color="#3DDC50" mb={4}>
                   Проверьте данные
                 </Heading>
 
-                <Box bg="#0A0A0A" p={6} borderRadius="md" border="1px solid #333333">
+                <Box bg="#060B10" p={6} borderRadius="md" border="1px solid rgba(255,255,255,0.12)">
                   <Stack gap={4}>
                     <Box>
-                      <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                      <Text fontSize="sm" color="rgba(255,255,255,0.65)" fontWeight="medium" mb={1}>
                         Тип:
                       </Text>
-                      <Text fontSize="xl" fontWeight="bold" color="#D4FF00">
+                      <Text fontSize="xl" fontWeight="bold" color="#3DDC50">
                         {TYPE_LABELS[formData.eventType].title}
                       </Text>
-                      <Text fontSize="sm" color="#B0B0B0">
+                      <Text fontSize="sm" color="rgba(255,255,255,0.65)">
                         {TYPE_LABELS[formData.eventType].description}
                       </Text>
                     </Box>
 
                     <Box>
-                      <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                      <Text fontSize="sm" color="rgba(255,255,255,0.65)" fontWeight="medium" mb={1}>
                         Название:
                       </Text>
                       <Text fontSize="xl" fontWeight="bold" color="white">
@@ -331,7 +331,7 @@ export const EventCreate: React.FC = () => {
                     </Box>
 
                     <Box>
-                      <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                      <Text fontSize="sm" color="rgba(255,255,255,0.65)" fontWeight="medium" mb={1}>
                         Дата:
                       </Text>
                       <Text fontSize="lg" color="white">
@@ -345,7 +345,7 @@ export const EventCreate: React.FC = () => {
 
                     {formData.description && (
                       <Box>
-                        <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                        <Text fontSize="sm" color="rgba(255,255,255,0.65)" fontWeight="medium" mb={1}>
                           Описание:
                         </Text>
                         <Text fontSize="md" color="white">
@@ -356,7 +356,7 @@ export const EventCreate: React.FC = () => {
 
                     {formData.location && (
                       <Box>
-                        <Text fontSize="sm" color="#B0B0B0" fontWeight="medium" mb={1}>
+                        <Text fontSize="sm" color="rgba(255,255,255,0.65)" fontWeight="medium" mb={1}>
                           Место проведения:
                         </Text>
                         <Text fontSize="md" color="white">
@@ -383,9 +383,9 @@ export const EventCreate: React.FC = () => {
                 size={{ base: 'md', md: 'lg' }}
                 px={{ base: 6, md: 8 }}
                 width={{ base: 'full', md: 'auto' }}
-                borderColor="#666666"
+                borderColor="#8FA6B8"
                 color="white"
-                _hover={{ bg: '#1A1A1A', borderColor: '#D4FF00' }}
+                _hover={{ bg: '#141C24', borderColor: '#3DDC50' }}
               >
                 Назад
               </Button>
@@ -398,32 +398,32 @@ export const EventCreate: React.FC = () => {
               size={{ base: 'md', md: 'lg' }}
               px={{ base: 6, md: 8 }}
               width={{ base: 'full', md: 'auto' }}
-              borderColor="#666666"
+              borderColor="#8FA6B8"
               color="white"
-              _hover={{ bg: '#1A1A1A', borderColor: '#FF4444' }}
+              _hover={{ bg: '#141C24', borderColor: '#FF4444' }}
             >
               Отмена
             </Button>
 
             {currentStep < steps.length - 1 ? (
               <Button
-                bg="#D4FF00"
-                color="#0A0A0A"
+                bg="#3DDC50"
+                color="#060B10"
                 onClick={handleNext}
                 disabled={!canProceed()}
                 size={{ base: 'md', md: 'lg' }}
                 px={{ base: 6, md: 8 }}
                 width={{ base: 'full', md: 'auto' }}
                 fontWeight="bold"
-                _hover={{ bg: '#C4EF00' }}
-                _disabled={{ bg: '#666666', color: '#333333', cursor: 'not-allowed' }}
+                _hover={{ bg: '#21A038' }}
+                _disabled={{ bg: '#8FA6B8', color: 'rgba(255,255,255,0.12)', cursor: 'not-allowed' }}
               >
                 Далее
               </Button>
             ) : (
               <Button
-                bg="#D4FF00"
-                color="#0A0A0A"
+                bg="#3DDC50"
+                color="#060B10"
                 onClick={handleSubmit}
                 disabled={isLoading}
                 loading={isLoading}
@@ -431,7 +431,7 @@ export const EventCreate: React.FC = () => {
                 px={{ base: 6, md: 8 }}
                 width={{ base: 'full', md: 'auto' }}
                 fontWeight="bold"
-                _hover={{ bg: '#C4EF00' }}
+                _hover={{ bg: '#21A038' }}
               >
                 {isLoading ? 'Создание...' : 'Создать'}
               </Button>

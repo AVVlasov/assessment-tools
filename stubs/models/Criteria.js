@@ -1,15 +1,38 @@
 const mongoose = require('mongoose');
 
+const criterionOptionSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
+  subtitle: {
+    type: String,
+    default: ''
+  }
+}, { _id: false });
+
 const criterionItemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
+  },
+  tag: {
+    type: String,
+    default: ''
+  },
+  hint: {
+    type: String,
+    default: ''
   },
   maxScore: {
     type: Number,
     default: 5,
     min: 0,
     max: 10
+  },
+  options: {
+    type: [criterionOptionSchema],
+    default: []
   }
 }, { _id: false });
 
@@ -25,7 +48,7 @@ const criteriaSchema = new mongoose.Schema({
   },
   criteriaType: {
     type: String,
-    enum: ['team', 'participant', 'speaker', 'event', 'all'],
+    enum: ['team', 'participant', 'speaker', 'panel', 'workshop', 'event', 'all'],
     default: 'all',
     required: true
   },

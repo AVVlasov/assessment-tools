@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#0A0A0A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto",sans-serif}
+a{color:#D4FF00;text-decoration:none} a:hover{color:#C4EF00}
+input,textarea,select{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0A0A0A">
+  <div style="background:#1A1A1A;border-bottom:1px solid #333333;padding:24px;position:sticky;top:0;z-index:100">
+    <div style="display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:16px">
+        <button style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#2A2A2A;color:#D4FF00;border:none;border-radius:6px;cursor:pointer" style-hover="background:#3A3A3A;color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+        <div style="font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-1px;color:#D4FF00">Хакатон Весна 2026</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:14px;font-weight:600;color:#B0B0B0;text-transform:uppercase">Оценка</span>
+        <div style="width:38px;height:20px;border-radius:10px;background:#16a34a;position:relative;cursor:pointer"><div style="position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff"></div></div>
+        <span style="font-size:14px;font-weight:700;color:#D4FF00">Включена</span>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:24px">
+    <div style="background:#1A1A1A;border-bottom:2px solid #333333;margin-bottom:24px;display:flex;overflow-x:auto">
+      <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="5">
+        <button onClick="{{ tab.onClick }}" style="padding:12px 24px;font-size:14px;font-weight:700;text-transform:uppercase;background:{{ tab.bg }};color:{{ tab.color }};border:none;border-bottom:3px solid {{ tab.borderColor }};cursor:pointer;white-space:nowrap">{{ tab.label }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ isTeams }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="background:#1F1F1F;padding:16px;border:3px solid #FF0080;border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+          <span style="font-size:18px;font-weight:700;color:#FF0080">Идёт оценивание</span>
+          <button style="background:#FF0080;color:#fff;font-weight:700;padding:10px 32px;border-radius:50px;border:none;cursor:pointer;font-size:15px" style-hover="background:#0A0A0A;color:#FF0080;box-shadow:inset 0 0 0 3px #FF0080">Остановить все оценивания</button>
+        </div>
+        <div style="background:#1F1F1F;padding:16px;border:3px solid #333333;border-radius:8px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:16px;font-weight:700;color:#B0B0B0">Фильтры отображения</span>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:14px;font-weight:600;color:#D4FF00;text-transform:uppercase">Тип</span>
+              <div style="display:flex;gap:16px;align-items:center">
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #D4FF00;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:#D4FF00"></span></span>Все</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Только команды</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Только участницы</label>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:14px;font-weight:600;color:#D4FF00;text-transform:uppercase">Статус оценки</span>
+              <div style="display:flex;gap:16px;align-items:center">
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:30px;height:16px;border-radius:8px;background:#16a34a;position:relative;display:inline-block"><span style="position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#fff"></span></span>Оцененные</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:30px;height:16px;border-radius:8px;background:#FF0080;position:relative;display:inline-block"><span style="position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#fff"></span></span>Не оцененные</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#1F1F1F;padding:24px;border:3px solid #333333;border-radius:8px">
+          <div style="font-size:20px;font-weight:900;margin-bottom:8px;text-transform:uppercase;color:#D4FF00">Добавить команду/участницу</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;gap:16px;align-items:center">
+              <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #D4FF00;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:#D4FF00"></span></span>Команда</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Участница</label>
+            </div>
+            <input placeholder="Название команды" style="width:100%;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+            <input placeholder="Название проекта" style="width:100%;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+            <textarea placeholder="Описание кейса" rows="4" style="width:100%;box-sizing:border-box;padding:12px 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none;resize:vertical" style-focus="border-color:#D4FF00"></textarea>
+            <button style="width:fit-content;background:#D4FF00;color:#000;font-weight:700;padding:10px 32px;border-radius:50px;border:none;cursor:pointer;font-size:15px" style-hover="background:#0A0A0A;color:#D4FF00;box-shadow:inset 0 0 0 3px #D4FF00">Добавить</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:16px">
+          <sc-for list="{{ teams }}" as="t" hint-placeholder-count="3">
+            <div style="background:#1F1F1F;padding:20px;border:3px solid #333333;border-radius:8px;opacity:{{ t.opacity }}" style-hover="border-color:#FF0080;transform:translateY(-5px);transition:all .3s">
+              <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between">
+                  <span style="background:{{ t.typeBg }};color:#000;padding:4px 12px;font-size:12px;font-weight:700;text-transform:uppercase;border-radius:2px">{{ t.typeLabel }}</span>
+                  <span style="background:{{ t.activeBg }};color:#000;padding:4px 12px;font-size:12px;font-weight:700;border-radius:2px">{{ t.activeLabel }}</span>
+                </div>
+                <span style="background:{{ t.statusBg }};color:#000;padding:4px 12px;font-size:12px;font-weight:700;border-radius:2px;width:fit-content">{{ t.statusLabel }}</span>
+              </div>
+              <div style="font-size:18px;font-weight:900;margin-bottom:8px;color:#fff">{{ t.name }}</div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:4px"><span style="color:#D4FF00;font-weight:700">Проект:</span> {{ t.project }}</div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:12px">{{ t.caseDesc }}</div>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+                <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:{{ t.voteBg }};color:{{ t.voteColor }};font-weight:700;height:36px;border-radius:6px;border:none;cursor:pointer;font-size:14px">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.voteIcon }}"></path></svg>
+                  {{ t.voteLabel }}
+                </button>
+                <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+                  <button style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:2px solid #D4FF00;color:#D4FF00;border-radius:6px;cursor:pointer" style-hover="background:#D4FF00;color:#000"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></button>
+                  <div style="display:flex;gap:8px;align-items:center;flex:1;justify-content:center">
+                    <span style="font-size:14px;color:#B0B0B0">{{ t.activeText }}</span>
+                    <span style="width:30px;height:16px;border-radius:8px;background:{{ t.switchBg }};position:relative;display:inline-block"><span style="position:absolute;top:2px;{{ t.switchSide }}:2px;width:12px;height:12px;border-radius:50%;background:#fff"></span></span>
+                  </div>
+                  <button style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:2px solid #FF4444;color:#FF4444;border-radius:6px;cursor:pointer" style-hover="background:#FF4444;color:#fff"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isExperts }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="background:#1F1F1F;padding:24px;border:3px solid #333333;border-radius:8px">
+          <div style="font-size:20px;font-weight:900;margin-bottom:16px;text-transform:uppercase;color:#D4FF00">{ Добавить эксперта }</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <input placeholder="ФИО эксперта" style="width:100%;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+            <button style="width:fit-content;background:#D4FF00;color:#000;font-weight:700;padding:10px 32px;border-radius:50px;border:none;cursor:pointer;font-size:15px" style-hover="background:#0A0A0A;color:#D4FF00;box-shadow:inset 0 0 0 3px #D4FF00">Добавить и сгенерировать QR-код</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+          <sc-for list="{{ experts }}" as="ex" hint-placeholder-count="3">
+            <div style="background:#1F1F1F;padding:20px;border:3px solid #333333;border-radius:8px;text-align:center" style-hover="border-color:#D4FF00;transform:translateY(-5px);transition:all .3s">
+              <div style="font-size:18px;font-weight:900;margin-bottom:8px;color:#fff">{{ ex.name }}</div>
+              <div style="margin-bottom:16px">
+                <div style="font-size:12px;color:#B0B0B0;margin-bottom:8px">Прогресс оценивания</div>
+                <div style="position:relative;height:24px;background:#1A1A1A;border-radius:12px;overflow:hidden">
+                  <div style="position:absolute;height:100%;width:{{ ex.progressW }};background:{{ ex.progressBg }};border-radius:12px"></div>
+                  <div style="position:absolute;width:100%;line-height:24px;font-weight:700;font-size:12px;color:{{ ex.progressText }}">{{ ex.progress }}</div>
+                </div>
+              </div>
+              <div style="background:#fff;padding:12px;border-radius:8px;display:inline-block;margin-bottom:16px;cursor:pointer;line-height:0" style-hover="transform:scale(1.05);box-shadow:0 0 20px #D4FF00;transition:all .3s">
+                <div style="width:150px;height:150px;background-image:url('{{ ex.qr }}');background-size:contain;background-repeat:no-repeat"></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button style="width:100%;background:transparent;color:#D4FF00;border:2px solid #D4FF00;font-weight:600;height:34px;border-radius:6px;cursor:pointer;font-size:14px" style-hover="background:#D4FF00;color:#000">Скачать QR</button>
+                <button style="width:100%;background:transparent;color:#FF6B00;border:2px solid #FF6B00;font-weight:600;height:34px;border-radius:6px;cursor:pointer;font-size:14px" style-hover="background:#FF6B00;color:#000">Копировать ссылку</button>
+                <button style="width:100%;background:transparent;color:#FF0080;border:2px solid #FF0080;font-weight:600;height:34px;border-radius:6px;cursor:pointer;font-size:14px" style-hover="background:#FF0080;color:#fff">Удалить</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isCriteria }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="background:#1F1F1F;padding:16px;border:2px solid #333333;border-radius:8px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+          <div style="flex:1;min-width:240px">
+            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:4px">Критерии по умолчанию</div>
+            <div style="font-size:14px;color:#B0B0B0">Для хакатона — критерии оценки команды и участницы из положения.</div>
+          </div>
+          <button style="background:#FF6B00;color:#000;font-weight:700;padding:10px 24px;border-radius:50px;border:none;cursor:pointer;font-size:15px" style-hover="background:#0A0A0A;color:#FF6B00;box-shadow:inset 0 0 0 3px #FF6B00">Загрузить критерии по умолчанию</button>
+        </div>
+        <div style="background:#1F1F1F;padding:24px;border:3px solid #333333;border-radius:8px">
+          <div style="font-size:20px;font-weight:900;margin-bottom:16px;text-transform:uppercase;color:#D4FF00">Создать блок критериев</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <input placeholder="Название блока" style="width:100%;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+            <div>
+              <div style="font-size:16px;font-weight:700;color:#B0B0B0;margin-bottom:8px">Тип критериев:</div>
+              <select style="width:100%;box-sizing:border-box;height:40px;padding:0 12px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none">
+                <option>Только для команд</option>
+                <option>Только для участниц</option>
+                <option>Для всех</option>
+              </select>
+            </div>
+            <div style="font-size:16px;font-weight:700;color:#B0B0B0">Критерии:</div>
+            <div style="display:flex;gap:12px">
+              <input placeholder="Название критерия" style="flex:3;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+              <input type="number" value="5" style="flex:1;box-sizing:border-box;height:40px;padding:0 16px;background:#1A1A1A;border:2px solid #333333;border-radius:6px;color:#fff;font-size:15px;outline:none" style-focus="border-color:#D4FF00" />
+            </div>
+            <button style="width:fit-content;background:transparent;color:#D4FF00;border:2px solid #D4FF00;font-weight:600;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px" style-hover="background:#D4FF00;color:#000">+ Добавить критерий</button>
+            <button style="width:fit-content;background:#D4FF00;color:#000;font-weight:700;padding:10px 32px;border-radius:50px;border:none;cursor:pointer;font-size:15px;margin-top:16px" style-hover="background:#0A0A0A;color:#D4FF00;box-shadow:inset 0 0 0 3px #D4FF00">Сохранить блок</button>
+          </div>
+        </div>
+        <sc-for list="{{ criteriaBlocks }}" as="cb" hint-placeholder-count="2">
+          <div style="background:#1F1F1F;padding:20px;border:3px solid #333333;border-radius:8px" style-hover="border-color:#D4FF00">
+            <div style="display:flex;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap">
+              <div>
+                <div style="font-size:18px;font-weight:900;color:#fff;text-transform:uppercase">{{ cb.blockName }}</div>
+                <div style="font-size:12px;color:#B0B0B0;margin-top:4px">{{ cb.typeLabel }}</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button style="background:transparent;color:#D4FF00;border:2px solid #D4FF00;font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px" style-hover="background:#D4FF00;color:#000">Редактировать</button>
+                <button style="background:transparent;color:#FF0080;border:2px solid #FF0080;font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px" style-hover="background:#FF0080;color:#fff">Удалить</button>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ cb.items }}" as="ci" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1A1A1A;border-radius:4px">
+                  <span style="color:#B0B0B0;font-size:14px">{{ ci.label }}</span>
+                  <span style="color:#D4FF00;font-size:14px;font-weight:700">{{ ci.score }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="font-size:16px;font-weight:700;color:#B0B0B0">Фильтр:</span>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #D4FF00;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:#D4FF00"></span></span>Все</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Только команды</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Только участницы</label>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px">
+          <sc-for list="{{ stats }}" as="st" hint-placeholder-count="2">
+            <div style="background:#1F1F1F;padding:20px;border:3px solid #333333;border-radius:8px" style-hover="border-color:#FF0080;transform:translateY(-5px);transition:all .3s">
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+                <span style="background:#D4FF00;color:#000;padding:4px 12px;font-size:12px;font-weight:700;text-transform:uppercase;border-radius:2px">Команда</span>
+                <span style="font-size:14px;color:#B0B0B0">Оценок: {{ st.count }}</span>
+              </div>
+              <div style="font-size:20px;font-weight:900;margin-bottom:8px;color:#fff;text-transform:uppercase">{{ st.name }}</div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:12px"><span style="color:#D4FF00;font-weight:700">Проект:</span> {{ st.project }}</div>
+              <div style="background:#D4FF00;color:#000;padding:12px;border-radius:8px;margin-bottom:16px;text-align:center">
+                <div style="font-size:24px;font-weight:900">{{ st.total }}</div>
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase">Средний балл</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;font-weight:700;color:#B0B0B0;text-transform:uppercase">По критериям:</div>
+                <sc-for list="{{ st.criteria }}" as="c" hint-placeholder-count="3">
+                  <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1A1A1A;border-radius:4px">
+                    <span style="color:#B0B0B0;font-size:14px;flex:1">{{ c.name }}</span>
+                    <span style="color:#D4FF00;font-size:14px;font-weight:700">{{ c.avg }}</span>
+                  </div>
+                </sc-for>
+                <div style="font-size:14px;font-weight:700;color:#B0B0B0;text-transform:uppercase;margin-top:8px">Оценки экспертов:</div>
+                <sc-for list="{{ st.experts }}" as="e" hint-placeholder-count="2">
+                  <div style="display:flex;justify-content:space-between;padding:8px 12px;background:#1A1A1A;border-radius:4px">
+                    <span style="color:#FF0080;font-size:14px;font-weight:700">{{ e.name }}</span>
+                    <span style="color:#D4FF00;font-size:14px;font-weight:700">{{ e.score }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isTop3 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:16px;font-weight:700;color:#B0B0B0">Вкладка:</span>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #D4FF00;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;background:#D4FF00"></span></span>Команды</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;color:#B0B0B0"><span style="width:16px;height:16px;border-radius:50%;border:2px solid #666666"></span>Участницы</label>
+        </div>
+        <div style="font-size:20px;font-weight:900;color:#D4FF00;text-transform:uppercase">Топ-3 команд</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:end">
+          <sc-for list="{{ podium }}" as="p" hint-placeholder-count="3">
+            <div style="background:#1F1F1F;padding:24px;border:3px solid {{ p.color }};border-radius:8px;position:relative;min-height:{{ p.minH }}" style-hover="transform:translateY(-10px);transition:all .3s">
+              <div style="position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:{{ p.color }};color:#000;padding:4px 16px;border-radius:50px;font-size:14px;font-weight:900;text-transform:uppercase;white-space:nowrap">{{ p.placeLabel }}</div>
+              <div style="display:flex;flex-direction:column;gap:12px;text-align:center;margin-top:16px">
+                <div style="font-size:{{ p.numSize }};font-weight:900;color:{{ p.color }};line-height:1">{{ p.num }}</div>
+                <div style="font-size:18px;font-weight:900;color:#fff;text-transform:uppercase">{{ p.name }}</div>
+                <div style="font-size:14px;color:#B0B0B0">{{ p.project }}</div>
+                <div style="background:{{ p.color }};color:#000;padding:12px;border-radius:8px;margin-top:8px">
+                  <div style="font-size:28px;font-weight:900">{{ p.score }}</div>
+                  <div style="font-size:12px;font-weight:700;text-transform:uppercase">Баллов</div>
+                </div>
+                <div style="font-size:12px;color:#B0B0B0">Оценок: {{ p.count }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'teams' };
+  qrCache = {};
+  makeQR(seed) {
+    if (this.qrCache[seed]) return this.qrCache[seed];
+    const n = 25, cell = 8, canvas = document.createElement('canvas');
+    canvas.width = canvas.height = n * cell + 32;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000';
+    let h = 0; for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => { h = (h * 1103515245 + 12345) >>> 0; return h / 4294967296; };
+    const finder = (x, y) => {
+      ctx.fillRect(16 + x * cell, 16 + y * cell, 7 * cell, 7 * cell);
+      ctx.fillStyle = '#fff'; ctx.fillRect(16 + (x + 1) * cell, 16 + (y + 1) * cell, 5 * cell, 5 * cell);
+      ctx.fillStyle = '#000'; ctx.fillRect(16 + (x + 2) * cell, 16 + (y + 2) * cell, 3 * cell, 3 * cell);
+    };
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const inFinder = (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+      if (!inFinder && rnd() > 0.5) ctx.fillRect(16 + x * cell, 16 + y * cell, cell, cell);
+    }
+    finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+    return (this.qrCache[seed] = canvas.toDataURL());
+  }
+  renderVals() {
+    const tab = this.state.tab;
+    const tabs = [
+      { v: 'teams', label: 'Команды' }, { v: 'experts', label: 'Эксперты' },
+      { v: 'criteria', label: 'Критерии' }, { v: 'statistics', label: 'Статистика' }, { v: 'top3', label: 'Топ 3' }
+    ].map(t => ({
+      label: t.label,
+      bg: tab === t.v ? '#D4FF00' : 'transparent',
+      color: tab === t.v ? '#0A0A0A' : '#B0B0B0',
+      borderColor: tab === t.v ? '#D4FF00' : 'transparent',
+      onClick: () => this.setState({ tab: t.v })
+    }));
+    const teamsData = [
+      { name: 'Code Crushers', project: 'EcoTrack', caseDesc: 'Мониторинг углеродного следа офиса в реальном времени.', status: 'evaluating', active: true },
+      { name: 'Null Pointers', project: 'MedAssist', caseDesc: 'Ассистент записи к врачу с умной маршрутизацией.', status: 'evaluated', active: true },
+      { name: 'Byte Riders', project: 'FinFlow', caseDesc: 'Планировщик личного бюджета с прогнозом расходов.', status: 'not_evaluated', active: false }
+    ];
+    const statusMap = {
+      not_evaluated: { label: 'Не оценен', bg: '#B0B0B0' },
+      evaluating: { label: 'Оценивается', bg: '#FFD700' },
+      evaluated: { label: 'Оценен', bg: '#00FF00' }
+    };
+    const teams = teamsData.map(t => ({
+      name: t.name, project: t.project, caseDesc: t.caseDesc,
+      typeLabel: 'Команда', typeBg: '#D4FF00',
+      activeLabel: t.active ? 'Активна' : 'Остановлена', activeBg: t.active ? '#00FF00' : '#FF6B00',
+      statusLabel: statusMap[t.status].label, statusBg: statusMap[t.status].bg,
+      opacity: t.active ? '1' : '0.6',
+      voteLabel: t.status === 'evaluating' ? 'Стоп' : 'Оценить',
+      voteBg: t.status === 'evaluating' ? '#FF0080' : '#D4FF00',
+      voteColor: t.status === 'evaluating' ? '#FFFFFF' : '#000000',
+      voteIcon: t.status === 'evaluating' ? 'M5 5h14v14H5z' : 'M6 3l14 9-14 9V3z',
+      activeText: t.active ? 'Активна' : 'Неактивна',
+      switchBg: t.active ? '#16a34a' : '#555',
+      switchSide: t.active ? 'right' : 'left'
+    }));
+    const experts = [
+      { name: 'Иванова Мария', progress: 100 },
+      { name: 'Петров Алексей', progress: 60 },
+      { name: 'Сидорова Анна', progress: 0 }
+    ].map(e => ({
+      name: e.name,
+      progress: e.progress + '%', progressW: e.progress + '%',
+      progressBg: e.progress === 100 ? '#00FF00' : '#D4FF00',
+      progressText: e.progress > 50 ? '#000' : '#fff',
+      qr: this.makeQR(e.name)
+    }));
+    const criteriaBlocks = [
+      { blockName: 'Технологичность', typeLabel: 'Только для команд', items: [
+        { label: '1. Сложность решения', score: '0-5 баллов' },
+        { label: '2. Качество кода', score: '0-5 баллов' },
+        { label: '3. Работоспособность MVP', score: '0-10 баллов' }
+      ]},
+      { blockName: 'Презентация', typeLabel: 'Для всех', items: [
+        { label: '1. Понятность питча', score: '0-5 баллов' },
+        { label: '2. Ответы на вопросы', score: '0-5 баллов' }
+      ]}
+    ];
+    const stats = [
+      { name: 'Null Pointers', project: 'MedAssist', count: 3, total: '21.33',
+        criteria: [{ name: 'Сложность решения', avg: '4.3' }, { name: 'Качество кода', avg: '4.0' }, { name: 'Работоспособность MVP', avg: '8.7' }],
+        experts: [{ name: 'Иванова Мария', score: '23 баллов' }, { name: 'Петров Алексей', score: '20 баллов' }, { name: 'Сидорова Анна', score: '21 баллов' }] },
+      { name: 'Code Crushers', project: 'EcoTrack', count: 2, total: '18.50',
+        criteria: [{ name: 'Сложность решения', avg: '3.5' }, { name: 'Качество кода', avg: '4.0' }, { name: 'Работоспособность MVP', avg: '7.0' }],
+        experts: [{ name: 'Иванова Мария', score: '19 баллов' }, { name: 'Петров Алексей', score: '18 баллов' }] }
+    ];
+    const podiumData = [
+      { place: 1, name: 'Byte Riders', project: 'FinFlow', score: '19.75', count: 4 },
+      { place: 0, name: 'Null Pointers', project: 'MedAssist', score: '21.33', count: 3 },
+      { place: 2, name: 'Code Crushers', project: 'EcoTrack', score: '18.50', count: 2 }
+    ];
+    const placeColors = ['#D4FF00', '#AFAFAF', '#FF6B00'];
+    const podium = podiumData.map(p => ({
+      color: placeColors[p.place],
+      placeLabel: (p.place + 1) + ' место',
+      num: p.place + 1,
+      numSize: p.place === 0 ? '96px' : '60px',
+      minH: p.place === 0 ? '300px' : '250px',
+      name: p.name, project: p.project, score: p.score, count: p.count
+    }));
+    return {
+      tabs, teams, experts, criteriaBlocks, stats, podium,
+      isTeams: tab === 'teams', isExperts: tab === 'experts', isCriteria: tab === 'criteria',
+      isStats: tab === 'statistics', isTop3: tab === 'top3'
+    };
+  }
+}
+</script>
+</body>
+</html>

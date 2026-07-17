@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f0eee9;font-family:'Golos Text',system-ui,sans-serif}a{color:#2a78d6}a:hover{color:#1a5fb0}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style></helmet>
+<section class="dv-turn" id="t6">
+<div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">Система на базе <a class="dv-oid" href="#5b">5b</a>: старт после QR, финал, админ залов и статистика</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="6a"><div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a>Старт после скана QR зала</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(140% 100% at 100% 0%,#2FD37B 0%,#12A8A6 22%,#0B3540 50%,#050E14 100%);min-height:800px;display:flex;flex-direction:column;color:#fff;padding:22px 22px 26px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+    <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 13px;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>зал Гигатрансформация</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;margin-top:26px">
+    <span style="background:#fff;color:#0B1F24;border-radius:30px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">#</span>
+    <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:6px 15px;font-size:13px;font-weight:600">оцениспикера</span>
+  </div>
+  <div style="font-family:'Unbounded',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1.12;margin-top:18px">QR отсканирован.<br><span style="background:linear-gradient(90deg,#4BE96A,#7CF29A,#4FC9F0);-webkit-background-clip:text;background-clip:text;color:transparent">Вы уже лучше<br>половины зала</span></div>
+  <div style="font-size:14.5px;color:rgba(255,255,255,.7);margin-top:12px;line-height:1.5">Осталось нажать 4 клавиши. Никакой регистрации — мы верим, что вы не бот.</div>
+  <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:18px;margin-top:26px;backdrop-filter:blur(8px)">
+    <div style="display:flex;gap:14px;align-items:center">
+      <span style="width:56px;height:56px;border-radius:16px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;flex-shrink:0">ДА</span>
+      <div><div style="font-size:16px;font-weight:800;line-height:1.25">Денис Артюшин</div><div style="font-size:13px;color:rgba(255,255,255,.65);margin-top:2px">«От IDE-плагина к агентному сервису»<br>Т-Банк · 14:40–15:20</div></div>
+    </div>
+    <div style="display:flex;gap:7px;margin-top:16px">
+      <span style="flex:1;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:6px 0;font-size:11px;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.4px">контент</span>
+      <span style="flex:1;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:6px 0;font-size:11px;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.4px">подача</span>
+      <span style="flex:1;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:6px 0;font-size:11px;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.4px">слайды</span>
+      <span style="flex:1;border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:6px 0;font-size:11px;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.4px">польза</span>
+    </div>
+  </div>
+  <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;justify-content:center;gap:22px;margin-bottom:6px">
+      <div style="text-align:center"><div style="font-size:26px;font-weight:800;color:#7CF29A">148</div><div style="font-size:11px;color:rgba(255,255,255,.5)">уже оценили</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+      <div style="text-align:center"><div style="font-size:26px;font-weight:800">~40</div><div style="font-size:11px;color:rgba(255,255,255,.5)">секунд займёт</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+      <div style="text-align:center"><div style="font-size:26px;font-weight:800">0</div><div style="font-size:11px;color:rgba(255,255,255,.5)">токенов спишем</div></div>
+    </div>
+    <button style="width:100%;height:58px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50,#8AE98F);color:#06220D;font-size:16.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(61,220,80,.4)">Начать деплой фидбека →</button>
+    <div style="text-align:center;font-size:11.5px;color:rgba(255,255,255,.4)">анонимно · без СМС · без дипфейков</div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="6b"><div class="dv-olabel"><a class="dv-oid" href="#6b">6b</a>Финал: фидбек «задеплоен», ачивка, мостик к следующему докладу</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:800px;display:flex;flex-direction:column;color:#fff;padding:22px;box-sizing:border-box;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#2FD37B 0%,#12A8A6 40%,transparent 68%);filter:blur(50px);opacity:.4"></div>
+  <div style="position:relative;display:flex;justify-content:space-between;align-items:center">
+    <span style="border:1.5px solid rgba(255,255,255,.6);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600">зал Гигатрансформация</span>
+    <span style="border:1.5px solid #3DDC50;color:#7CF29A;border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:700">4 / 4 ✓</span>
+  </div>
+  <div style="position:relative;text-align:center;margin-top:44px">
+    <div style="width:104px;height:104px;margin:0 auto;border-radius:26px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 9px 0 #0F6B26,0 0 60px rgba(61,220,80,.55),inset 0 3px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;transform:rotate(-6deg)">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#04220C" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <div style="font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.8px;line-height:1.15;margin-top:26px">Фидбек задеплоен<br>в ПРОМ</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.6);margin-top:10px;line-height:1.5">Без ревью и канареечного релиза.<br>Денис получит его после доклада.</div>
+  </div>
+  <div style="position:relative;display:flex;gap:10px;margin-top:28px">
+    <div style="flex:1;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;text-align:center"><div style="font-size:24px;font-weight:800;color:#7CF29A">149-й</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">вы по счёту</div></div>
+    <div style="flex:1;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;text-align:center"><div style="font-size:24px;font-weight:800">4.6</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">средняя в зале</div></div>
+    <div style="flex:1;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;text-align:center"><div style="font-size:24px;font-weight:800">31с</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">ваше время</div></div>
+  </div>
+  <div style="position:relative;background:linear-gradient(135deg,rgba(0,174,239,.15),rgba(61,220,80,.1));border:1.5px solid rgba(0,174,239,.4);border-radius:20px;padding:16px 18px;margin-top:14px;display:flex;align-items:center;gap:14px">
+    <span style="width:46px;height:46px;border-radius:13px;background:linear-gradient(180deg,#57C8F2,#2A8FC0);box-shadow:0 4px 0 #17567A,inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#03293C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+    <div><div style="font-size:14px;font-weight:800;color:#7FD9F7">Ачивка: «Не дипфейк»</div><div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:2px">оценили 3 доклада подряд — вы точно человек</div></div>
+  </div>
+  <div style="position:relative;margin-top:auto;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:15px 18px;display:flex;align-items:center;gap:13px">
+      <span style="width:42px;height:42px;border-radius:12px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0">МЛ</span>
+      <div style="flex:1;min-width:0"><div style="font-size:11px;color:#7CF29A;font-weight:700;text-transform:uppercase;letter-spacing:.5px">далее в этом зале · 15:20</div><div style="font-size:13.5px;font-weight:700;margin-top:2px">«Цифровой иммунитет» · Мария Лаврентьева</div></div>
+    </div>
+    <button style="width:100%;height:54px;border-radius:30px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Напомнить оценить следующего</button>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="6c"><div class="dv-olabel"><a class="dv-oid" href="#6c">6c</a>Админ · Залы в языке <a class="dv-oid" href="#5b">5b</a>: кейкап-кнопки, live-пульс, слайд с QR</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:600px;color:#fff;padding:0 0 26px">
+  <div style="background:radial-gradient(120% 200% at 95% 0%,#2FD37B 0%,#12A8A6 24%,#0B3540 56%,#0C1218 100%);padding:20px 30px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+        <div style="font-family:'Unbounded',sans-serif;font-size:19px;font-weight:700;letter-spacing:-0.5px">Техно хаб Конф</div>
+        <div style="display:flex;gap:6px;margin-left:10px">
+          <span style="background:#fff;color:#0C1218;border-radius:30px;padding:7px 17px;font-size:12.5px;font-weight:700">Залы</span>
+          <span style="border:1.5px solid rgba(255,255,255,.4);border-radius:30px;padding:7px 17px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.8)">Спикеры</span>
+          <span style="border:1.5px solid rgba(255,255,255,.4);border-radius:30px;padding:7px 17px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.8)">Статистика</span>
+          <span style="border:1.5px solid rgba(255,255,255,.4);border-radius:30px;padding:7px 17px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.8)">Настройки</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:6px 15px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#3DDC50"></span>287 оценок за час</span>
+        <button style="height:36px;padding:0 18px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(61,220,80,.35)">Скачать все QR-слайды</button>
+      </div>
+    </div>
+  </div>
+  <div style="padding:22px 30px;display:grid;grid-template-columns:repeat(3,1fr);gap:15px">
+    <div style="background:#141C24;border:1.5px solid #3DDC50;border-radius:22px;padding:18px;box-shadow:0 0 44px rgba(61,220,80,.14);display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:14.5px;font-weight:800">Гигатрансформация</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 12px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:6px"><span style="width:5px;height:5px;border-radius:50%;background:#06220D"></span>в эфире</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="width:48px;height:48px;border-radius:14px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0">ДА</span>
+        <div style="min-width:0"><div style="font-size:14px;font-weight:700">Денис Артюшин</div><div style="font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.35">«От IDE-плагина к агентному сервису» · 14:40</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800;color:#7CF29A">148</div><div style="font-size:10px;color:rgba(255,255,255,.45)">оценок</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800">4.6</div><div style="font-size:10px;color:rgba(255,255,255,.45)">средняя</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800">62%</div><div style="font-size:10px;color:rgba(255,255,255,.45)">конверсия</div></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:11px 12px">
+        <div style="width:56px;height:56px;border-radius:9px;background:#fff;padding:4px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 0/8px 8px;border-radius:5px"></div></div>
+        <div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:700">QR зала №1 · постоянный</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.35">сам переключается на текущего спикера</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button style="flex:1;height:42px;border-radius:14px;border:none;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 4px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4);color:#04220C;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Следующий спикер →</button>
+        <button style="height:42px;padding:0 14px;border-radius:14px;border:none;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Слайд с QR</button>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:14.5px;font-weight:800">AI-инженер</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 12px;font-size:11px;font-weight:800;display:flex;align-items:center;gap:6px"><span style="width:5px;height:5px;border-radius:50%;background:#06220D"></span>в эфире</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="width:48px;height:48px;border-radius:14px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0">ИК</span>
+        <div style="min-width:0"><div style="font-size:14px;font-weight:700">Игорь Кензин</div><div style="font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.35">«Agentic Search на стероидах» · 14:40</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800;color:#7CF29A">92</div><div style="font-size:10px;color:rgba(255,255,255,.45)">оценки</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800">4.2</div><div style="font-size:10px;color:rgba(255,255,255,.45)">средняя</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800">48%</div><div style="font-size:10px;color:rgba(255,255,255,.45)">конверсия</div></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:11px 12px">
+        <div style="width:56px;height:56px;border-radius:9px;background:#fff;padding:4px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 50% 0/8px 8px;border-radius:5px"></div></div>
+        <div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:700">QR зала №2 · постоянный</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.35">оценки не перепутаются — проверено дипфейком</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button style="flex:1;height:42px;border-radius:14px;border:none;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 4px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4);color:#04220C;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Следующий спикер →</button>
+        <button style="height:42px;padding:0 14px;border-radius:14px;border:none;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Слайд с QR</button>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;opacity:.88">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:14.5px;font-weight:800">Дизайн</span>
+        <span style="border:1.5px solid rgba(0,174,239,.7);color:#4FC9F0;border-radius:30px;padding:4px 12px;font-size:11px;font-weight:700">кофе-брейк · 12 мин</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="width:48px;height:48px;border-radius:14px;background:#2B3947;color:#8FA6B8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0">МК</span>
+        <div style="min-width:0"><div style="font-size:14px;font-weight:700">Максим Кукушкин</div><div style="font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.35">следующий · «AI 3D» · 16:40</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800;color:rgba(255,255,255,.4)">—</div><div style="font-size:10px;color:rgba(255,255,255,.45)">оценок</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800;color:rgba(255,255,255,.4)">—</div><div style="font-size:10px;color:rgba(255,255,255,.45)">средняя</div></div>
+        <div style="flex:1;background:#0C1218;border-radius:14px;padding:10px;text-align:center"><div style="font-size:19px;font-weight:800;color:#4FC9F0">трек</div><div style="font-size:10px;color:rgba(255,255,255,.45)">QR ведёт</div></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:11px 12px">
+        <div style="width:56px;height:56px;border-radius:9px;background:#fff;padding:4px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 50%/8px 8px;border-radius:5px"></div></div>
+        <div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:700">QR зала №3 · постоянный</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.35">в паузе собирает оценку всего трека</div></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button style="flex:1;height:42px;border-radius:14px;border:1.5px solid #3DDC50;background:transparent;color:#7CF29A;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Запустить спикера</button>
+        <button style="height:42px;padding:0 14px;border-radius:14px;border:none;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Слайд с QR</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="6d"><div class="dv-olabel"><a class="dv-oid" href="#6d">6d</a>Админ · Статистика: лидерборд спикеров по 4 критериям + топ реакций</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:580px;color:#fff;padding:26px 30px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+    <div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:21px;font-weight:700;letter-spacing:-0.5px">Лидерборд спикеров</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">обновляется live · 287 оценок из 3 залов</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <span style="background:#fff;color:#0C1218;border-radius:30px;padding:7px 16px;font-size:12.5px;font-weight:700">Все залы</span>
+      <span style="border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:7px 16px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.75)">Гигатрансформация</span>
+      <span style="border:1.5px solid rgba(255,255,255,.3);border-radius:30px;padding:7px 16px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.75)">AI-инженер</span>
+      <button style="height:34px;padding:0 16px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit;margin-left:8px">Экспорт CSV</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 100px;gap:14px;align-items:center;padding:0 18px 10px;font-size:10.5px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.6px">
+    <span></span><span>Спикер</span><span>Контент</span><span>Подача</span><span>Слайды</span><span>Польза</span><span style="text-align:right">Итог</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 100px;gap:14px;align-items:center;background:#141C24;border:1.5px solid #3DDC50;border-radius:18px;padding:14px 18px;box-shadow:0 0 30px rgba(61,220,80,.12)">
+      <span style="width:36px;height:36px;border-radius:11px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 3px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#04220C">1</span>
+      <div style="display:flex;align-items:center;gap:11px;min-width:0"><span style="width:38px;height:38px;border-radius:11px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">ДА</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:700">Денис Артюшин</div><div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">агентный сервис · 148 оценок</div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.8</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:96%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.7</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:94%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.3</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:86%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.6</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:92%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div style="text-align:right"><span style="font-size:20px;font-weight:800;color:#7CF29A">4.6</span><div style="font-size:10px;color:rgba(255,255,255,.4)">«держал зал» ×61</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 100px;gap:14px;align-items:center;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 18px">
+      <span style="width:36px;height:36px;border-radius:11px;background:linear-gradient(180deg,#E8F2F7,#BFD4DE);box-shadow:0 3px 0 #7E97A3,inset 0 1px 0 #fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#28404E">2</span>
+      <div style="display:flex;align-items:center;gap:11px;min-width:0"><span style="width:38px;height:38px;border-radius:11px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">ИК</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:700">Игорь Кензин</div><div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">agentic search · 92 оценки</div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.5</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:90%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.0</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:80%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.4</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:88%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.5</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:90%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div style="text-align:right"><span style="font-size:20px;font-weight:800">4.4</span><div style="font-size:10px;color:rgba(255,255,255,.4)">«заберу в прод» ×47</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 100px;gap:14px;align-items:center;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 18px">
+      <span style="width:36px;height:36px;border-radius:11px;background:linear-gradient(180deg,#3A70C2,#2A55A0);box-shadow:0 3px 0 #17325E,inset 0 1px 0 rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff">3</span>
+      <div style="display:flex;align-items:center;gap:11px;min-width:0"><span style="width:38px;height:38px;border-radius:11px;background:#2B3947;color:#8FA6B8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">ДБ</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:700">Дмитрий Бугайченко</div><div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">универсальные агенты · 71 оценка</div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.6</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:92%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.2</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:84%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">3.9</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:78%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:rgba(255,255,255,.5)">4.4</span></div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:88%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+      <div style="text-align:right"><span style="font-size:20px;font-weight:800">4.3</span><div style="font-size:10px;color:rgba(255,255,255,.4)">«AGI-момент» ×28</div></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:18px;align-items:center;flex-wrap:wrap">
+    <span style="font-size:12px;color:rgba(255,255,255,.45);font-weight:600">Топ реакций дня:</span>
+    <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:6px 13px;font-size:12px;font-weight:800">демо не упало ×112</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:6px 13px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8)">заберу в прод ×89</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:6px 13px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8)">хочу слайды ×64</span>
+    <span style="border:1.5px solid rgba(0,174,239,.6);color:#4FC9F0;border-radius:30px;padding:6px 13px;font-size:12px;font-weight:600">это был дипфейк? ×23</span>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери интерактивный прототип: <a class="dv-oid" href="#6a">6a</a> → <a class="dv-oid" href="#5b">5b</a> → <a class="dv-oid" href="#6b">6b</a> + админ <a class="dv-oid" href="#6c">6c</a>/<a class="dv-oid" href="#6d">6d</a>» · «мобильная версия админки залов» · «подиум топ-3 спикеров для закрытия конфы»</p>
+</section>
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Риффы на <a class="dv-oid" href="#4a">4a</a>: 4 критерия (контент · подача · слайды · применимость), мемные шкалы на каждый</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="5a"><div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>Всё на одном скролле: компактные кейкапы, у каждого критерия своя мем-шкала</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(140% 90% at 100% 0%,#2FD37B 0%,#12A8A6 20%,#0B3540 46%,#050E14 100%);min-height:820px;display:flex;flex-direction:column;color:#fff;overflow:hidden">
+  <div style="padding:18px 20px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="background:#fff;color:#0B1F24;border-radius:30px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">#</span>
+        <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:4px 12px;font-size:12px;font-weight:600">оцениспикера</span>
+      </div>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>зал Гигатрансформация</span>
+    </div>
+    <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.15;margin-top:14px">Денис Артюшин</div>
+    <div style="font-size:13.5px;color:rgba(255,255,255,.7);margin-top:4px">«От IDE-плагина к агентному сервису» · Т-Банк</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:14px;margin-bottom:16px">
+      <div style="flex:1;height:7px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden"><div style="width:50%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50,#7CF29A)"></div></div>
+      <span style="font-size:11.5px;font-weight:700;color:#7CF29A">деплой фидбека: 50%</span>
+    </div>
+  </div>
+  <div style="flex:1;background:#0C1218;border-radius:28px 28px 0 0;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 16px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <span style="font-size:14.5px;font-weight:800">Контент</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:800">глубокая база</span>
+      </div>
+      <div style="display:flex;gap:7px">
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">1</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">2</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">3</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 4px 0 #0F6B26,0 0 22px rgba(61,220,80,.4),inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#04220C;cursor:pointer;transform:translateY(-2px)">4</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:9px;padding:0 2px">
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">пустой промпт</span>
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">новая парадигма</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 16px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <span style="font-size:14.5px;font-weight:800">Подача</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:800">стендап-спешл</span>
+      </div>
+      <div style="display:flex;gap:7px">
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">1</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">2</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">3</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">4</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 4px 0 #0F6B26,0 0 22px rgba(61,220,80,.4),inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#04220C;cursor:pointer;transform:translateY(-2px)">5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:9px;padding:0 2px">
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">читал со слайдов</span>
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">держал зал</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 16px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <span style="font-size:14.5px;font-weight:800">Слайды</span>
+        <span style="border:1.5px solid rgba(0,174,239,.7);color:#4FC9F0;border-radius:30px;padding:4px 12px;font-size:11px;font-weight:700">жмите клавишу</span>
+      </div>
+      <div style="display:flex;gap:7px">
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">1</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">2</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">3</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">4</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:9px;padding:0 2px">
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">шрифт 8pt</span>
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">кинцо</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 16px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <span style="font-size:14.5px;font-weight:800">Применимость</span>
+        <span style="border:1.5px solid rgba(0,174,239,.7);color:#4FC9F0;border-radius:30px;padding:4px 12px;font-size:11px;font-weight:700">жмите клавишу</span>
+      </div>
+      <div style="display:flex;gap:7px">
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">1</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">2</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">3</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">4</span>
+        <span style="flex:1;height:44px;border-radius:12px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#5E7280;cursor:pointer">5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:9px;padding:0 2px">
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">просто вайб</span>
+        <span style="font-size:9px;color:#5E7280;font-weight:700;text-transform:uppercase">внедрю в понедельник</span>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding-top:6px;display:flex;flex-direction:column;gap:9px">
+      <button style="width:100%;height:54px;border-radius:30px;border:none;background:#1D2833;color:#5E7280;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Ещё 2 клавиши до деплоя…</button>
+      <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.35)">✓ вы прошли проверку на дипфейк (наверное)</div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="5b"><div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>Пошагово: один критерий на экран, у каждой клавиши своя мем-подпись</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(140% 90% at 100% 0%,#2FD37B 0%,#12A8A6 20%,#0B3540 46%,#050E14 100%);min-height:800px;display:flex;flex-direction:column;color:#fff;overflow:hidden">
+  <div style="padding:18px 20px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600">Денис Артюшин · Т-Банк</span>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:700">2 / 4</span>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:14px">
+      <div style="flex:1;height:5px;border-radius:3px;background:linear-gradient(90deg,#21A038,#3DDC50)"></div>
+      <div style="flex:1;height:5px;border-radius:3px;background:linear-gradient(90deg,#21A038,#3DDC50)"></div>
+      <div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.15)"></div>
+      <div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.15)"></div>
+    </div>
+    <div style="margin-top:26px">
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 14px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Подача</span>
+      <div style="font-family:'Unbounded',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px;line-height:1.2;margin-top:14px">Как спикер<br>держал зал?</div>
+      <div style="font-size:13.5px;color:rgba(255,255,255,.65);margin-top:8px">Ораторское искусство. Честно — мы никому не скажем.</div>
+    </div>
+  </div>
+  <div style="flex:1;background:#0C1218;border-radius:28px 28px 0 0;margin-top:20px;padding:22px 18px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);cursor:pointer">
+      <span style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#5E7280">1</span>
+      <div><div style="font-size:14.5px;font-weight:700;color:rgba(255,255,255,.85)">Синтезированный голос</div><div style="font-size:12px;color:#5E7280">монотонно, как TTS без интонаций</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);cursor:pointer">
+      <span style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#5E7280">2</span>
+      <div><div style="font-size:14.5px;font-weight:700;color:rgba(255,255,255,.85)">Читал со слайдов</div><div style="font-size:12px;color:#5E7280">суфлёр был главным спикером</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);cursor:pointer">
+      <span style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(180deg,#3A70C2,#2A55A0);box-shadow:0 4px 0 #17325E,inset 0 1px 0 rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#fff">3</span>
+      <div><div style="font-size:14.5px;font-weight:700;color:rgba(255,255,255,.85)">Уверенный инференс</div><div style="font-size:12px;color:#5E7280">ровно, по делу, без галлюцинаций</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:rgba(61,220,80,.08);border:1.5px solid #3DDC50;cursor:pointer;box-shadow:0 0 26px rgba(61,220,80,.2)">
+      <span style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 4px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#04220C">4</span>
+      <div><div style="font-size:14.5px;font-weight:800;color:#7CF29A">Держал зал</div><div style="font-size:12px;color:rgba(124,242,154,.7)">даже те, кто пришёл за мерчем, слушали</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);cursor:pointer">
+      <span style="width:46px;height:46px;border-radius:13px;flex-shrink:0;background:linear-gradient(180deg,#E8F2F7,#BFD4DE);box-shadow:0 4px 0 #7E97A3,inset 0 1px 0 #fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#28404E">5</span>
+      <div><div style="font-size:14.5px;font-weight:700;color:rgba(255,255,255,.85)">Стендап-спешл</div><div style="font-size:12px;color:#5E7280">после такого afterparty не нужен</div></div>
+    </div>
+    <div style="margin-top:auto;display:flex;gap:10px;padding-top:10px">
+      <button style="height:52px;padding:0 22px;border-radius:30px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">←</button>
+      <button style="flex:1;height:52px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50,#8AE98F);color:#06220D;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(61,220,80,.3)">Дальше: Слайды →</button>
+    </div>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери прототип на базе <a class="dv-oid" href="#5a">5a</a> (или <a class="dv-oid" href="#5b">5b</a>) с экраном завершения» · «другие мем-подписи для шкал» · «добавь общий вопрос "дизраптнуло?" в конец как в <a class="dv-oid" href="#4a">4a</a>»</p>
+</section>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Митапы и конференции: QR на зал, мемная оценка, премиальный KV. Развитие <a class="dv-oid" href="#3a">3a</a>–<a class="dv-oid" href="#3c">3c</a></span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Слушатель · «Кейкапы»: оценка как клавиши из KV, шкала от «галлюцинации» до «AGI»</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(140% 90% at 100% 0%,#2FD37B 0%,#12A8A6 20%,#0B3540 46%,#050E14 100%);min-height:800px;display:flex;flex-direction:column;color:#fff;overflow:hidden">
+  <div style="padding:20px 20px 0">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 13px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>зал Гигатрансформация</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:18px">
+      <span style="background:#fff;color:#0B1F24;border-radius:30px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">#</span>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 14px;font-size:13px;font-weight:600">оцениспикера</span>
+    </div>
+    <div style="font-family:'Unbounded',sans-serif;font-size:25px;font-weight:700;letter-spacing:-0.5px;line-height:1.15;margin-top:14px">Денис<br>Артюшин</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.7);margin-top:6px;line-height:1.45">«От IDE-плагина к агентному сервису»<br>Т-Банк · 14:40</div>
+  </div>
+  <div style="flex:1;background:#0C1218;border-radius:30px 30px 0 0;margin-top:18px;padding:24px 20px;display:flex;flex-direction:column;gap:20px">
+    <div>
+      <div style="font-size:17px;font-weight:800;margin-bottom:4px">Насколько дизраптнуло?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5)">Жми на клавишу. Это быстрее, чем ролл-аут в ПРОМ.</div>
+    </div>
+    <div style="display:flex;gap:9px;align-items:flex-end">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <span style="width:100%;aspect-ratio:1;border-radius:15px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 5px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#5E7280;cursor:pointer">1</span>
+        <span style="font-size:9.5px;color:#5E7280;font-weight:700;text-transform:uppercase;letter-spacing:.3px">глюки</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <span style="width:100%;aspect-ratio:1;border-radius:15px;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 5px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#5E7280;cursor:pointer">2</span>
+        <span style="font-size:9.5px;color:#5E7280;font-weight:700;text-transform:uppercase;letter-spacing:.3px">ретрай</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <span style="width:100%;aspect-ratio:1;border-radius:15px;background:linear-gradient(180deg,#3A70C2,#2A55A0);box-shadow:0 5px 0 #17325E,inset 0 1px 0 rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#fff;cursor:pointer">3</span>
+        <span style="font-size:9.5px;color:#7FA8E0;font-weight:700;text-transform:uppercase;letter-spacing:.3px">норм</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <span style="width:100%;aspect-ratio:1;border-radius:15px;background:linear-gradient(180deg,#E8F2F7,#BFD4DE);box-shadow:0 5px 0 #7E97A3,inset 0 1px 0 #fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#28404E;cursor:pointer">4</span>
+        <span style="font-size:9.5px;color:#9FBCCB;font-weight:700;text-transform:uppercase;letter-spacing:.3px">прод-реди</span>
+      </div>
+      <div style="flex:1.18;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <span style="width:100%;aspect-ratio:1;border-radius:17px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 6px 0 #0F6B26,0 0 34px rgba(61,220,80,.5),inset 0 2px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#04220C;cursor:pointer;transform:translateY(-4px)">5</span>
+        <span style="font-size:10px;color:#7CF29A;font-weight:800;text-transform:uppercase;letter-spacing:.3px">AGI-момент</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12.5px;color:rgba(255,255,255,.5);font-weight:600">Быстрые реакции — можно несколько</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer">демо не упало</span>
+        <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">унёс в прод</span>
+        <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">проснулся ради этого</span>
+        <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">хочу слайды</span>
+        <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">это был дипфейк?</span>
+      </div>
+    </div>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+      <button style="width:100%;height:56px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50,#8AE98F);color:#06220D;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 10px 28px rgba(61,220,80,.35)">Отправить агенту →</button>
+      <div style="text-align:center;font-size:11.5px;color:rgba(255,255,255,.4)">✓ вы прошли проверку на дипфейк (наверное)</div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Слушатель · «Оцен-бот»: оценка как чат с AI-агентом, ответы чипсами</div>
+<div class="dv-card" style="width:390px;border-radius:30px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:800px;display:flex;flex-direction:column;color:#fff">
+  <div style="background:radial-gradient(140% 120% at 90% 0%,#2FD37B 0%,#12A8A6 26%,#0B3540 60%,#0C1218 100%);padding:18px 20px 20px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="width:40px;height:40px;border-radius:14px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 3px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#04220C">Оц</span>
+        <div><div style="font-size:15px;font-weight:800">Оцен-бот 9000</div><div style="font-size:12px;color:#7CF29A;display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>агент запущен · не галлюцинирует</div></div>
+      </div>
+      <span style="border:1.5px solid rgba(255,255,255,.7);border-radius:30px;padding:4px 11px;font-size:11px;font-weight:700">зал AI-инженер</span>
+    </div>
+  </div>
+  <div style="flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+    <div style="align-self:flex-start;max-width:86%;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:4px 20px 20px 20px;padding:14px 16px">
+      <div style="font-size:14px;line-height:1.5">Привет! Я собираю фидбек вместо кожаных организаторов. Как тебе доклад <b>Игоря Кензина</b> «Agentic Search на стероидах»?</div>
+    </div>
+    <div style="align-self:flex-end;background:linear-gradient(135deg,#21A038,#3DDC50);color:#06220D;border-radius:20px 4px 20px 20px;padding:12px 16px;font-size:14px;font-weight:700">Perplexity своими руками — топ. 5/5</div>
+    <div style="align-self:flex-start;max-width:86%;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:4px 20px 20px 20px;padding:14px 16px">
+      <div style="font-size:14px;line-height:1.5">Записал в контекст. А подача? Только честно — я отличаю дипфейк-вежливость.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-self:flex-end;justify-content:flex-end;max-width:92%">
+      <span style="border:1.5px solid #3DDC50;color:#7CF29A;border-radius:30px;padding:9px 15px;font-size:13.5px;font-weight:700;cursor:pointer">держал зал</span>
+      <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:9px 15px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">местами уснул</span>
+      <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:9px 15px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">читал со слайдов</span>
+      <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:9px 15px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">хочу ещё 40 минут</span>
+    </div>
+    <div style="align-self:flex-start;max-width:86%;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:4px 20px 20px 20px;padding:14px 16px">
+      <div style="font-size:14px;line-height:1.5">Последнее: заберёшь что-то в свой пайплайн или это был вайб-кодинг мозга?</div>
+    </div>
+    <div style="display:flex;gap:8px;align-self:flex-end">
+      <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:9px 16px;font-size:13.5px;font-weight:800;cursor:pointer">заберу в прод</span>
+      <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:9px 16px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer">просто вайб</span>
+    </div>
+  </div>
+  <div style="padding:14px 16px 22px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:10px;background:#141C24;border:1px solid rgba(255,255,255,.1);border-radius:30px;padding:6px 6px 6px 18px">
+      <span style="flex:1;font-size:13.5px;color:rgba(255,255,255,.4)">свой комментарий (опционально)…</span>
+      <span style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#06220D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></span>
+    </div>
+    <div style="text-align:center;font-size:11.5px;color:rgba(255,255,255,.35)">2 из 3 вопросов · осталось ~10 секунд · токены не расходуются</div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>Админ · Залы: QR на каждый зал, переключение спикеров, слайд с QR в один клик</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:640px;color:#fff;padding:0 0 28px">
+  <div style="background:radial-gradient(120% 200% at 95% 0%,#2FD37B 0%,#12A8A6 24%,#0B3540 56%,#0C1218 100%);padding:22px 32px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+        <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.5px">Техно хаб Конф · залы</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:6px 15px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#3DDC50"></span>3 зала в эфире</span>
+        <button style="height:34px;padding:0 18px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Скачать все QR-слайды</button>
+      </div>
+    </div>
+  </div>
+  <div style="padding:24px 32px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div style="background:#141C24;border:1px solid rgba(61,220,80,.4);border-radius:22px;overflow:hidden;box-shadow:0 0 40px rgba(61,220,80,.12)">
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.07)">
+        <span style="font-size:14px;font-weight:800">Гигатрансформация</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 11px;font-size:11px;font-weight:800">в эфире</span>
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="width:46px;height:46px;border-radius:14px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">ДА</span>
+          <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.25">Денис Артюшин</div><div style="font-size:12px;color:rgba(255,255,255,.5)">«От IDE-плагина к агентному сервису»</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:72%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div>
+          <span style="font-size:12px;color:#7CF29A;font-weight:700">148 оценок</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:12px">
+          <div style="width:64px;height:64px;border-radius:10px;background:#fff;padding:5px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 0/9px 9px;border-radius:5px"></div></div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700;margin-bottom:2px">QR зала №1</div><div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.4">вшивается в последний слайд каждого спикера</div></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button style="flex:1;height:38px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Следующий спикер →</button>
+          <button style="height:38px;padding:0 14px;border-radius:30px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">Слайд с QR</button>
+        </div>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:22px;overflow:hidden">
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.07)">
+        <span style="font-size:14px;font-weight:800">AI-инженер</span>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:4px 11px;font-size:11px;font-weight:800">в эфире</span>
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="width:46px;height:46px;border-radius:14px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">ИК</span>
+          <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.25">Игорь Кензин</div><div style="font-size:12px;color:rgba(255,255,255,.5)">«Agentic Search на стероидах»</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:45%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div>
+          <span style="font-size:12px;color:#7CF29A;font-weight:700">92 оценки</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:12px">
+          <div style="width:64px;height:64px;border-radius:10px;background:#fff;padding:5px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 50% 0/9px 9px;border-radius:5px"></div></div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700;margin-bottom:2px">QR зала №2</div><div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.4">свой код — оценки не перепутаются между залами</div></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button style="flex:1;height:38px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Следующий спикер →</button>
+          <button style="height:38px;padding:0 14px;border-radius:30px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">Слайд с QR</button>
+        </div>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:22px;overflow:hidden;opacity:.85">
+      <div style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.07)">
+        <span style="font-size:14px;font-weight:800">Дизайн</span>
+        <span style="border:1.5px solid rgba(0,174,239,.7);color:#4FC9F0;border-radius:30px;padding:4px 11px;font-size:11px;font-weight:700">кофе-брейк</span>
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="width:46px;height:46px;border-radius:14px;background:#2B3947;color:#8FA6B8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">МК</span>
+          <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;line-height:1.25">Максим Кукушкин</div><div style="font-size:12px;color:rgba(255,255,255,.5)">следующий · «AI 3D» · 16:40</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:6px;background:rgba(255,255,255,.1);border-radius:3px"></div>
+          <span style="font-size:12px;color:rgba(255,255,255,.4);font-weight:600">пауза</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;background:#0C1218;border-radius:16px;padding:12px">
+          <div style="width:64px;height:64px;border-radius:10px;background:#fff;padding:5px;flex-shrink:0"><div style="width:100%;height:100%;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 50%/9px 9px;border-radius:5px"></div></div>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700;margin-bottom:2px">QR зала №3</div><div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.4">во время паузы ведёт на оценку всего трека</div></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button style="flex:1;height:38px;border-radius:30px;border:1.5px solid #3DDC50;background:transparent;color:#7CF29A;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">Запустить спикера</button>
+          <button style="height:38px;padding:0 14px;border-radius:30px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">Слайд с QR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="4d"><div class="dv-olabel"><a class="dv-oid" href="#4d">4d</a>Последний слайд спикера · 16:9 с QR зала, самоирония в заголовке</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(95% 130% at 85% 5%,#2FD37B 0%,#14B0A0 20%,#0B3540 52%,#050E14 100%);aspect-ratio:16/9;position:relative;color:#fff;display:flex;flex-direction:column;padding:34px 46px;box-sizing:border-box">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="background:#fff;color:#0B1F24;border-radius:30px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">#</span>
+      <span style="border:2px solid #fff;border-radius:30px;padding:6px 16px;font-size:14px;font-weight:600">каквсбере</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:50%;background:#3DDC50"></span><span style="width:14px;height:14px;border-radius:4px;border:2px solid #fff"></span><span style="width:14px;height:14px;border-radius:50%;border:2px solid #fff"></span></div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:50px">
+    <div style="flex:1">
+      <div style="font-family:'Unbounded',sans-serif;font-size:46px;font-weight:700;letter-spacing:-1.5px;line-height:1.08">Это был дипфейк?<br><span style="background:linear-gradient(90deg,#4BE96A,#7CF29A,#4FC9F0);-webkit-background-clip:text;background-clip:text;color:transparent">Реши сам — оцени</span></div>
+      <div style="font-size:19px;color:rgba(255,255,255,.7);margin-top:16px;line-height:1.5">20 секунд. Без регистрации и СМС.<br>Ваш фидбек попадёт в контекст оргов без сжатия.</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-top:26px">
+        <span style="border:2px solid #fff;border-radius:30px;padding:6px 15px;font-size:13.5px;font-weight:600">Денис Артюшин</span>
+        <span style="border:2px solid #fff;border-radius:30px;padding:6px 15px;font-size:13.5px;font-weight:600">зал Гигатрансформация</span>
+        <span style="border:2px solid #fff;border-radius:30px;padding:6px 15px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>оценка открыта</span>
+      </div>
+    </div>
+    <div style="flex-shrink:0;text-align:center">
+      <div style="background:#fff;border-radius:26px;padding:18px;box-shadow:0 0 70px rgba(61,220,80,.4)">
+        <div style="width:210px;height:210px;border-radius:12px;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 0/24px 24px"></div>
+      </div>
+      <div style="font-size:14px;font-weight:700;margin-top:14px;color:rgba(255,255,255,.85)">спасибо, что не ушли на кофе-брейк</div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;letter-spacing:-0.3px">Техно хаб Конф</div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="border:2px solid #fff;border-radius:30px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700">11</span>
+      <span style="border:2px solid #fff;border-radius:30px;padding:5px 13px;font-size:12.5px;font-weight:600">июля</span>
+      <span style="border:2px solid #fff;border-radius:30px;padding:5px 13px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff"></span>Санкт-Петербург</span>
+    </div>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери прототип слушателя на базе <a class="dv-oid" href="#4a">4a</a> (или <a class="dv-oid" href="#4b">4b</a>) + админку залов <a class="dv-oid" href="#4c">4c</a>» · «мемные подписи мягче/жёстче» · «покажи экран после отправки оценки»</p>
+</section>
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">По настоящему key visual «Техно хаб Конф»: тёмный teal-градиент, пилл-бейджи, белый гротеск, зелёные градиентные кнопки</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Эксперт · мобильный: тёмный KV-фон, пилл-бейджи, градиентная шкала</div>
+<div class="dv-card" style="width:390px;border-radius:28px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(130% 100% at 100% 0%,#2FD37B 0%,#12A8A6 22%,#0B3540 48%,#050E14 100%);min-height:800px;display:flex;flex-direction:column;color:#fff">
+  <div style="padding:18px 20px 14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:14px;border-radius:50%;background:#fff"></span><span style="width:14px;height:14px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:14px;height:14px;border-radius:50%;border:1.5px solid #fff"></span></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 12px;font-size:12px;font-weight:600">Иванова Мария</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px">
+      <span style="background:#fff;color:#0B1F24;border-radius:30px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">#</span>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 14px;font-size:13px;font-weight:600">хакатон весна 2026</span>
+    </div>
+    <div style="font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1.1">Code Crushers</div>
+    <div style="font-size:14.5px;color:rgba(255,255,255,.65);margin-top:6px">Проект EcoTrack · критериев осталось: 2</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:16px">
+      <div style="flex:1;height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50,#7CF29A);border-radius:4px"></div></div>
+      <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:3px 10px;font-size:12px;font-weight:700">3 / 5</span>
+    </div>
+  </div>
+  <div style="flex:1;background:#0C1218;border-radius:28px 28px 0 0;margin-top:10px;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Сложность решения</span><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(61,220,80,.35)">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">5</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Качество кода</span><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(61,220,80,.35)">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">5</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Работоспособность MVP</span><span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#21A038,#3DDC50);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(61,220,80,.35)">5</span>
+      </div>
+    </div>
+    <div style="background:#141C24;border:1px dashed rgba(0,174,239,.5);border-radius:20px;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Понятность питча</span><span style="border:1.5px solid rgba(0,174,239,.7);color:#4FC9F0;border-radius:30px;padding:3px 10px;font-size:11px;font-weight:700">не оценено</span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#1D2833;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5E7280">5</span>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding-top:8px">
+      <button style="width:100%;height:56px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50,#8AE98F);color:#06220D;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 8px 24px rgba(61,220,80,.35)">Завершить оценку → осталось 2</button>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Админ · десктоп: тёмная система, KV-hero, циановые акценты, пилл-навигация</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:#0C1218;min-height:720px;color:#fff;display:flex;flex-direction:column">
+  <div style="background:radial-gradient(120% 160% at 95% 0%,#2FD37B 0%,#12A8A6 24%,#0B3540 52%,#0C1218 100%);padding:22px 32px 26px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="background:#fff;color:#0B1F24;border-radius:30px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">#</span>
+          <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:4px 13px;font-size:12.5px;font-weight:600">каквсбере</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:6px 14px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#3DDC50"></span>Оценка идёт</span>
+        <button style="height:34px;padding:0 16px;border-radius:30px;border:1.5px solid rgba(255,255,255,.8);background:transparent;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">Остановить</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px">
+      <div>
+        <div style="font-size:34px;font-weight:800;letter-spacing:-1.2px;line-height:1.05">Хакатон Весна 2026</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:12px">
+          <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">18</span>
+          <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 13px;font-size:12.5px;font-weight:600">июля</span>
+          <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 13px;font-size:12.5px;font-weight:600">2026</span>
+          <span style="border:1.5px solid rgba(255,255,255,.8);border-radius:30px;padding:5px 13px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#fff"></span>Санкт-Петербург</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:12px 18px;backdrop-filter:blur(8px)"><div style="font-size:24px;font-weight:800;line-height:1">37<span style="font-size:13px;color:rgba(255,255,255,.6);font-weight:600">/60</span></div><div style="font-size:11.5px;color:rgba(255,255,255,.65);margin-top:4px">оценок</div></div>
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:12px 18px;backdrop-filter:blur(8px)"><div style="font-size:24px;font-weight:800;line-height:1">2<span style="font-size:13px;color:rgba(255,255,255,.6);font-weight:600">/5</span></div><div style="font-size:11.5px;color:rgba(255,255,255,.65);margin-top:4px">экспертов готово</div></div>
+        <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:18px;padding:12px 18px;backdrop-filter:blur(8px)"><div style="font-size:24px;font-weight:800;line-height:1;color:#7CF29A">04:12</div><div style="font-size:11.5px;color:rgba(255,255,255,.65);margin-top:4px">на сцене</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:18px 32px;display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,.08)">
+    <span style="background:#fff;color:#0C1218;border-radius:30px;padding:8px 20px;font-size:13.5px;font-weight:700">Обзор</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 20px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.75)">Команды · 12</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 20px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.75)">Эксперты · 5</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 20px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.75)">Критерии</span>
+    <span style="border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 20px;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.75)">Результаты</span>
+    <button style="margin-left:auto;height:36px;padding:0 20px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">Экран проектора →</button>
+  </div>
+  <div style="padding:22px 32px;display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start">
+    <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:700">Команды</span><button style="height:32px;padding:0 16px;border-radius:30px;border:none;background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">+ Добавить</button></div>
+      <div style="display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,.06);gap:14px">
+        <span style="width:34px;height:34px;border-radius:10px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">NP</span>
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">Null Pointers</div><div style="font-size:12px;color:rgba(255,255,255,.5)">MedAssist</div></div>
+        <span style="border:1.5px solid #3DDC50;color:#7CF29A;border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:700">на сцене</span>
+        <div style="width:120px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div>
+        <span style="font-size:12px;color:rgba(255,255,255,.5);width:32px;text-align:right">3/5</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,.06);gap:14px">
+        <span style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#21A038,#3DDC50);color:#06220D;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">CC</span>
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">Code Crushers</div><div style="font-size:12px;color:rgba(255,255,255,.5)">EcoTrack</div></div>
+        <span style="background:linear-gradient(90deg,#21A038,#3DDC50);color:#06220D;border-radius:30px;padding:5px 12px;font-size:11.5px;font-weight:800">оценена</span>
+        <div style="width:120px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div>
+        <span style="font-size:12px;color:rgba(255,255,255,.5);width:32px;text-align:right">5/5</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:13px 20px;gap:14px">
+        <span style="width:34px;height:34px;border-radius:10px;background:#2B3947;color:#8FA6B8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">BR</span>
+        <div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700">Byte Riders</div><div style="font-size:12px;color:rgba(255,255,255,.5)">FinFlow</div></div>
+        <span style="border:1.5px solid rgba(255,255,255,.3);color:rgba(255,255,255,.6);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600">в очереди</span>
+        <div style="width:120px;height:6px;background:rgba(255,255,255,.1);border-radius:3px"></div>
+        <span style="font-size:12px;color:rgba(255,255,255,.5);width:32px;text-align:right">0/5</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden">
+        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);font-size:15px;font-weight:700">Эксперты · live</div>
+        <div style="padding:14px 20px;display:flex;flex-direction:column;gap:14px">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Иванова Мария</span><span style="font-size:12px;color:#7CF29A;font-weight:700">готово</span></div><div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Петров Алексей</span><span style="font-size:12px;color:rgba(255,255,255,.5)">8 / 12</span></div><div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:66%;height:100%;background:linear-gradient(90deg,#21A038,#3DDC50)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600;color:#4FC9F0">Ким Артём</span><span style="font-size:12px;color:#4FC9F0;font-weight:700">не начал</span></div><div style="height:6px;background:rgba(0,174,239,.15);border-radius:3px"></div></div>
+        </div>
+      </div>
+      <div style="background:#00AEEF;border-radius:20px;padding:18px 20px;color:#04222E">
+        <div style="font-size:14px;font-weight:800;margin-bottom:4px">QR-коды экспертов</div>
+        <div style="font-size:12.5px;opacity:.75;margin-bottom:12px">Персональные ссылки на оценку</div>
+        <button style="height:36px;padding:0 18px;border-radius:30px;border:none;background:#04222E;color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Показать все QR →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Проектор · композиция как на постере: заголовок по центру, пилл-бейджи по углам</div>
+<div class="dv-card" style="width:1180px;border-color:rgba(255,255,255,.1)">
+<div style="background:radial-gradient(90% 110% at 82% 8%,#2FD37B 0%,#14B0A0 20%,#0B3540 50%,#050E14 100%);min-height:660px;position:relative;color:#fff;display:flex;flex-direction:column;padding:36px 48px">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:16px;border-radius:50%;background:#fff"></span><span style="width:16px;height:16px;border-radius:5px;border:2px solid #fff"></span><span style="width:16px;height:16px;border-radius:50%;border:2px solid #fff"></span></div>
+    <div style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:16px;border-radius:50%;background:#3DDC50"></span><span style="width:16px;height:16px;border-radius:5px;border:2px solid #fff"></span><span style="width:16px;height:16px;border-radius:50%;border:2px solid #fff"></span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:40px">
+    <span style="background:#fff;color:#0B1F24;border-radius:30px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px">#</span>
+    <span style="border:2px solid #fff;border-radius:30px;padding:8px 20px;font-size:17px;font-weight:600">оценидоклад</span>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:56px">
+    <div style="flex:1">
+      <div style="font-size:64px;font-weight:800;letter-spacing:-2.5px;line-height:1.02;color:#fff">Денис Артюшин</div>
+      <div style="font-size:24px;color:rgba(255,255,255,.7);margin-top:14px;letter-spacing:-0.3px">«От IDE-плагина к агентному сервису» · Т-Банк</div>
+      <div style="display:flex;align-items:center;gap:26px;margin-top:38px">
+        <div><div style="font-size:46px;font-weight:800;color:#7CF29A;line-height:1">148</div><div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:6px">оценок собрано</div></div>
+        <div style="width:1px;height:52px;background:rgba(255,255,255,.2)"></div>
+        <div><div style="font-size:46px;font-weight:800;line-height:1">4.6</div><div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:6px">средняя оценка</div></div>
+        <div style="width:1px;height:52px;background:rgba(255,255,255,.2)"></div>
+        <div style="display:flex;align-items:center;gap:9px"><span style="width:10px;height:10px;border-radius:50%;background:#3DDC50"></span><span style="font-size:16px;font-weight:700;color:#7CF29A">оценка открыта</span></div>
+      </div>
+    </div>
+    <div style="flex-shrink:0;text-align:center">
+      <div style="background:#fff;border-radius:32px;padding:24px;box-shadow:0 0 90px rgba(61,220,80,.35)">
+        <div style="width:270px;height:270px;border-radius:14px;background:repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 0/30px 30px"></div>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;border:2px solid #fff;border-radius:30px;padding:9px 22px"><span style="font-size:16px;font-weight:700">наведите камеру · 20 секунд</span></div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;align-items:center;gap:7px">
+      <span style="border:2px solid #fff;border-radius:30px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">11</span>
+      <span style="border:2px solid #fff;border-radius:30px;padding:7px 16px;font-size:14px;font-weight:600">июля</span>
+      <span style="border:2px solid #fff;border-radius:30px;padding:7px 16px;font-size:14px;font-weight:600">2026</span>
+    </div>
+    <span style="border:2px solid #fff;border-radius:30px;padding:7px 18px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px"><span style="width:7px;height:7px;border-radius:50%;background:#fff"></span>Санкт-Петербург</span>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери все экраны в стиле раунда 3» · «сделай админку светлой, а эксперта и проектор тёмными» · «добавь 3D-иконки из KV как декор» (пришлите PNG-ассеты иконок — вставлю оригиналы)</p>
+</section>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Key visual «Технохаб конф»: сбер-зелёный градиент, тёмные hero-блоки. Эксперт — на базе <a class="dv-oid" href="#1b">1b</a>, админ — на базе <a class="dv-oid" href="#1d">1d</a></span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Эксперт · мобильный: тёмный hero с градиентными орбами + светлая шкала</div>
+<div class="dv-card" style="width:390px;border-radius:24px">
+<div style="background:#F4F6F5;min-height:780px;display:flex;flex-direction:column;color:#101512">
+  <div style="background:#0B1F14;padding:18px 20px 22px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-60px;right:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#2BD64F 0%,#21A038 40%,transparent 70%);filter:blur(30px);opacity:.8"></div>
+    <div style="position:absolute;bottom:-70px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#0FA8E0 0%,#107F8C 45%,transparent 70%);filter:blur(34px);opacity:.6"></div>
+    <div style="position:relative">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#7FE39B;font-weight:700">Технохаб конф · СПб</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6)">Иванова Мария</div>
+      </div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-0.5px;color:#fff;line-height:1.2">Code Crushers</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.65);margin-top:4px">Проект EcoTrack · Хакатон</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:16px">
+        <div style="flex:1;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#2BD64F,#21A038,#0FA8E0);border-radius:3px"></div></div>
+        <div style="font-size:13px;font-weight:800;color:#7FE39B">3 / 5</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:18px 16px;display:flex;flex-direction:column;gap:12px;flex:1">
+    <div style="background:#fff;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(11,31,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Сложность решения</span><span style="width:22px;height:22px;border-radius:50%;background:#21A038;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#2BD64F,#21A038);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 14px rgba(33,160,56,.35)">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(11,31,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Качество кода</span><span style="width:22px;height:22px;border-radius:50%;background:#21A038;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#2BD64F,#21A038);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 14px rgba(33,160,56,.35)">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(11,31,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Работоспособность MVP</span><span style="width:22px;height:22px;border-radius:50%;background:#21A038;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:linear-gradient(135deg,#2BD64F,#21A038);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 14px rgba(33,160,56,.35)">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:20px;padding:18px;box-shadow:0 2px 10px rgba(11,31,20,.06);border:2px dashed #BBD8C3">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Понятность питча</span><span style="font-size:12px;color:#9AACA0;font-weight:600">не оценено</span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">1</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">2</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">3</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">4</span>
+        <span style="flex:1;height:48px;border-radius:14px;background:#EDF3EF;display:flex;align-items:center;justify-content:center;font-weight:700;color:#9AACA0">5</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:12px 16px 22px">
+    <button style="width:100%;height:54px;border-radius:16px;border:none;background:#DDE7E0;color:#8FA396;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit">Осталось 2 критерия…</button>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Админ · десктоп: светлый SaaS + градиентный hero-бар события</div>
+<div class="dv-card" style="width:1180px">
+<div style="background:#F4F6F5;display:flex;min-height:720px;color:#101512">
+  <div style="width:224px;background:#fff;border-right:1px solid #E5EAE7;padding:20px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+    <div style="padding:0 12px 16px;display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#2BD64F,#21A038,#107F8C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px">Т</div>
+      <div style="font-size:14px;font-weight:700;line-height:1.2">Технохаб<br>оценка</div>
+    </div>
+    <div style="padding:9px 12px;border-radius:10px;background:#E9F7EC;color:#178232;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>Обзор</div>
+    <div style="padding:9px 12px;border-radius:10px;color:#5F6D64;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg>Команды <span style="margin-left:auto;font-size:11px;background:#EDF3EF;padding:2px 7px;border-radius:10px">12</span></div>
+    <div style="padding:9px 12px;border-radius:10px;color:#5F6D64;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>Эксперты <span style="margin-left:auto;font-size:11px;background:#EDF3EF;padding:2px 7px;border-radius:10px">5</span></div>
+    <div style="padding:9px 12px;border-radius:10px;color:#5F6D64;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Критерии</div>
+    <div style="padding:9px 12px;border-radius:10px;color:#5F6D64;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Результаты</div>
+    <div style="margin-top:auto;padding:14px;border-radius:14px;background:#0B1F14;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,#2BD64F,#107F8C 60%,transparent 75%);filter:blur(18px);opacity:.7"></div>
+      <div style="position:relative">
+        <div style="font-size:12.5px;font-weight:700;color:#fff;margin-bottom:6px">Экран проектора</div>
+        <div style="font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.4;margin-bottom:10px">QR и live-результаты для зала</div>
+        <button style="width:100%;height:32px;border-radius:9px;border:none;background:#21A038;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Открыть →</button>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <div style="background:#0B1F14;padding:20px 28px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-80px;right:80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,#2BD64F 0%,#21A038 40%,transparent 70%);filter:blur(40px);opacity:.75"></div>
+      <div style="position:absolute;bottom:-90px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,#0FA8E0,#107F8C 50%,transparent 72%);filter:blur(42px);opacity:.6"></div>
+      <div style="position:relative;display:flex;justify-content:space-between;align-items:center;gap:16px">
+        <div>
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#7FE39B;font-weight:700;margin-bottom:4px">Хакатон · 18 июля 2026 · Технохаб СПб</div>
+          <div style="font-size:24px;font-weight:800;letter-spacing:-0.5px;color:#fff">Хакатон Весна 2026</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(43,214,79,.15);border:1px solid rgba(43,214,79,.4);padding:8px 14px;border-radius:24px"><span style="width:8px;height:8px;border-radius:50%;background:#2BD64F"></span><span style="font-size:13px;font-weight:700;color:#7FE39B">Оценка идёт</span></div>
+          <button style="height:38px;padding:0 18px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">Остановить</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:22px 28px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;padding:16px"><div style="font-size:12px;color:#5F6D64;margin-bottom:6px">Оценок собрано</div><div style="font-size:28px;font-weight:800">37<span style="font-size:15px;color:#9AACA0;font-weight:600"> / 60</span></div></div>
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;padding:16px"><div style="font-size:12px;color:#5F6D64;margin-bottom:6px">Экспертов завершило</div><div style="font-size:28px;font-weight:800">2<span style="font-size:15px;color:#9AACA0;font-weight:600"> / 5</span></div></div>
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;padding:16px"><div style="font-size:12px;color:#5F6D64;margin-bottom:6px">Сейчас на сцене</div><div style="font-size:17px;font-weight:700;margin-top:4px">Null Pointers</div><div style="font-size:12px;color:#178232;font-weight:700">оценивается · 04:12</div></div>
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;padding:16px"><div style="font-size:12px;color:#5F6D64;margin-bottom:6px">Лидер сейчас</div><div style="font-size:17px;font-weight:700;margin-top:4px">Byte Riders</div><div style="font-size:12px;color:#5F6D64">21.3 балла в среднем</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start">
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;overflow:hidden">
+          <div style="padding:14px 18px;border-bottom:1px solid #EEF2EF;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:700">Команды</span><button style="height:30px;padding:0 12px;border-radius:9px;border:none;background:#21A038;color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">+ Добавить</button></div>
+          <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #EEF2EF;gap:12px">
+            <span style="width:30px;height:30px;border-radius:9px;background:#E9F7EC;color:#178232;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">NP</span>
+            <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Null Pointers</div><div style="font-size:12px;color:#5F6D64">MedAssist</div></div>
+            <span style="font-size:12px;font-weight:700;color:#178232;background:#E9F7EC;padding:4px 10px;border-radius:12px">на сцене</span>
+            <div style="width:110px;height:6px;background:#EDF3EF;border-radius:3px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#2BD64F,#21A038)"></div></div>
+            <span style="font-size:12px;color:#5F6D64;width:32px;text-align:right">3/5</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #EEF2EF;gap:12px">
+            <span style="width:30px;height:30px;border-radius:9px;background:#EDF3EF;color:#5F6D64;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">CC</span>
+            <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Code Crushers</div><div style="font-size:12px;color:#5F6D64">EcoTrack</div></div>
+            <span style="font-size:12px;font-weight:700;color:#0E6B7A;background:#E3F2F5;padding:4px 10px;border-radius:12px">оценена</span>
+            <div style="width:110px;height:6px;background:#EDF3EF;border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:#107F8C"></div></div>
+            <span style="font-size:12px;color:#5F6D64;width:32px;text-align:right">5/5</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:12px 18px;gap:12px">
+            <span style="width:30px;height:30px;border-radius:9px;background:#EDF3EF;color:#5F6D64;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">BR</span>
+            <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Byte Riders</div><div style="font-size:12px;color:#5F6D64">FinFlow</div></div>
+            <span style="font-size:12px;font-weight:600;color:#5F6D64;background:#EDF3EF;padding:4px 10px;border-radius:12px">в очереди</span>
+            <div style="width:110px;height:6px;background:#EDF3EF;border-radius:3px"></div>
+            <span style="font-size:12px;color:#5F6D64;width:32px;text-align:right">0/5</span>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #E5EAE7;border-radius:16px;overflow:hidden">
+          <div style="padding:14px 18px;border-bottom:1px solid #EEF2EF;font-size:14px;font-weight:700">Эксперты · live</div>
+          <div style="padding:12px 18px;display:flex;flex-direction:column;gap:14px">
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Иванова Мария</span><span style="font-size:12px;color:#178232;font-weight:700">готово</span></div><div style="height:6px;background:#EDF3EF;border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:linear-gradient(90deg,#2BD64F,#21A038)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Петров Алексей</span><span style="font-size:12px;color:#5F6D64">8 / 12</span></div><div style="height:6px;background:#EDF3EF;border-radius:3px;overflow:hidden"><div style="width:66%;height:100%;background:linear-gradient(90deg,#2BD64F,#21A038)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600;color:#A05C10">Ким Артём</span><span style="font-size:12px;color:#A05C10;font-weight:700">не начал</span></div><div style="height:6px;background:#F7EEDF;border-radius:3px"></div></div>
+          </div>
+          <div style="padding:12px 18px;border-top:1px solid #EEF2EF"><button style="width:100%;height:34px;border-radius:10px;border:1px solid #CBDAD0;background:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;color:#178232">Напомнить отстающим · QR</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Проектор · key visual на весь экран: QR для зала + live-прогресс</div>
+<div class="dv-card" style="width:1180px">
+<div style="background:#07130C;min-height:660px;position:relative;overflow:hidden;display:flex;flex-direction:column;color:#fff">
+  <div style="position:absolute;top:-160px;left:-100px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,#2BD64F 0%,#21A038 40%,transparent 68%);filter:blur(60px);opacity:.55"></div>
+  <div style="position:absolute;bottom:-180px;right:-120px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,#0FA8E0 0%,#107F8C 45%,transparent 70%);filter:blur(70px);opacity:.5"></div>
+  <div style="position:absolute;top:40%;left:55%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,#83E37A,transparent 65%);filter:blur(60px);opacity:.3"></div>
+  <div style="position:relative;flex:1;display:flex;align-items:center;justify-content:space-between;padding:60px 80px;gap:60px">
+    <div style="flex:1">
+      <div style="font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#7FE39B;font-weight:700;margin-bottom:18px">Технохаб конф · Санкт-Петербург</div>
+      <div style="font-size:58px;font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:16px">Оцените доклад<br><span style="background:linear-gradient(90deg,#2BD64F,#7FE39B,#0FA8E0);-webkit-background-clip:text;background-clip:text;color:transparent">Дениса Артюшина</span></div>
+      <div style="font-size:22px;color:rgba(255,255,255,.65);margin-bottom:36px">«От IDE-плагина к агентному сервису» · Т-Банк</div>
+      <div style="display:flex;align-items:center;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:44px;font-weight:900;color:#7FE39B">148</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.55)">оценок уже собрано</div>
+        </div>
+        <div style="width:1px;height:56px;background:rgba(255,255,255,.15)"></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:44px;font-weight:900;color:#fff">4.6</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.55)">средняя оценка live</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex-shrink:0;text-align:center">
+      <div style="background:#fff;border-radius:28px;padding:26px;box-shadow:0 0 80px rgba(43,214,79,.35)">
+        <div style="width:280px;height:280px;border-radius:12px;background:repeating-conic-gradient(#07130C 0 25%,#fff 0 50%) 0 0/32px 32px"></div>
+      </div>
+      <div style="font-size:20px;font-weight:700;margin-top:22px">Наведите камеру —<br>оценка займёт 20 секунд</div>
+    </div>
+  </div>
+  <div style="position:relative;padding:22px 80px;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:15px;color:rgba(255,255,255,.55)">Следующий доклад: «Цифровой иммунитет» · 15:20</div>
+    <div style="display:flex;align-items:center;gap:10px"><span style="width:10px;height:10px;border-radius:50%;background:#2BD64F"></span><span style="font-size:15px;font-weight:700;color:#7FE39B">Оценка открыта</span></div>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери все экраны в стиле <a class="dv-oid" href="#2a">2a</a>/<a class="dv-oid" href="#2b">2b</a>» · «сделай hero светлее» · «тёмная версия всей админки как <a class="dv-oid" href="#2c">2c</a>»</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Три направления: экран эксперта (мобильный) + админ-дашборд (десктоп)</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Эксперт · «Фокус»: один критерий на экран, крупные баллы</div>
+<div class="dv-card" style="width:390px;border-radius:24px">
+<div style="background:#F7F7F5;min-height:760px;display:flex;flex-direction:column;color:#1A1D21">
+  <div style="padding:16px 20px 12px;background:#fff;border-bottom:1px solid #ECEBE7">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;color:#6B7280;font-weight:500">Хакатон Весна 2026</div>
+      <div style="font-size:13px;font-weight:700;color:#4F46E5">2 / 5</div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <div style="flex:1;height:4px;border-radius:2px;background:#4F46E5"></div>
+      <div style="flex:1;height:4px;border-radius:2px;background:#4F46E5"></div>
+      <div style="flex:1;height:4px;border-radius:2px;background:#E5E4E0"></div>
+      <div style="flex:1;height:4px;border-radius:2px;background:#E5E4E0"></div>
+      <div style="flex:1;height:4px;border-radius:2px;background:#E5E4E0"></div>
+    </div>
+  </div>
+  <div style="padding:24px 20px;display:flex;flex-direction:column;gap:20px;flex:1">
+    <div>
+      <div style="display:inline-block;background:#EEF2FF;color:#4F46E5;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px">Code Crushers · EcoTrack</div>
+      <div style="font-size:26px;font-weight:800;line-height:1.2;letter-spacing:-0.5px">Качество кода</div>
+      <div style="font-size:14px;color:#6B7280;margin-top:8px;line-height:1.5">Архитектура, читаемость, тесты. Достаточно вашего общего впечатления от репозитория и демо.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:2px solid #E5E4E0;background:#fff;cursor:pointer;text-align:left;font-family:inherit" style-hover="border-color:#4F46E5"><span style="width:36px;height:36px;border-radius:10px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#6B7280">1</span><span style="font-size:15px;color:#374151">Слабо — много проблем</span></button>
+      <button style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:2px solid #E5E4E0;background:#fff;cursor:pointer;text-align:left;font-family:inherit" style-hover="border-color:#4F46E5"><span style="width:36px;height:36px;border-radius:10px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#6B7280">2</span><span style="font-size:15px;color:#374151">Ниже среднего</span></button>
+      <button style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:2px solid #E5E4E0;background:#fff;cursor:pointer;text-align:left;font-family:inherit" style-hover="border-color:#4F46E5"><span style="width:36px;height:36px;border-radius:10px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#6B7280">3</span><span style="font-size:15px;color:#374151">Нормально</span></button>
+      <button style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:2px solid #4F46E5;background:#EEF2FF;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 4px 12px rgba(79,70,229,.15)"><span style="width:36px;height:36px;border-radius:10px;background:#4F46E5;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff">4</span><span style="font-size:15px;color:#1A1D21;font-weight:600">Хорошо, уверенная работа</span></button>
+      <button style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:2px solid #E5E4E0;background:#fff;cursor:pointer;text-align:left;font-family:inherit" style-hover="border-color:#4F46E5"><span style="width:36px;height:36px;border-radius:10px;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#6B7280">5</span><span style="font-size:15px;color:#374151">Отлично — уровень продакшена</span></button>
+    </div>
+  </div>
+  <div style="padding:16px 20px 24px;display:flex;gap:12px;background:#F7F7F5">
+    <button style="height:52px;padding:0 20px;border-radius:14px;border:1px solid #E5E4E0;background:#fff;font-size:15px;color:#6B7280;cursor:pointer;font-family:inherit">Назад</button>
+    <button style="flex:1;height:52px;border-radius:14px;border:none;background:#4F46E5;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(79,70,229,.3)">Далее →</button>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Эксперт · «Скролл + прогресс-кольцо», тёплый вовлекающий</div>
+<div class="dv-card" style="width:390px;border-radius:24px">
+<div style="background:#FFF8F2;min-height:760px;display:flex;flex-direction:column;color:#2B2118">
+  <div style="padding:14px 20px;background:#FFF8F2;border-bottom:1px solid #F4E7DA;display:flex;align-items:center;gap:14px;position:relative">
+    <svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#F4E7DA" stroke-width="5"></circle><circle cx="26" cy="26" r="22" fill="none" stroke="#FF5C38" stroke-width="5" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="55" transform="rotate(-90 26 26)"></circle><text x="26" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="#2B2118">3/5</text></svg>
+    <div style="flex:1">
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700">Code Crushers</div>
+      <div style="font-size:12.5px;color:#8C7A68">Проект EcoTrack · осталось 2 критерия</div>
+    </div>
+  </div>
+  <div style="padding:20px;display:flex;flex-direction:column;gap:14px;flex:1">
+    <div style="background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(80,50,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Сложность решения</span><span style="width:22px;height:22px;border-radius:50%;background:#2EB872;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">1</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">2</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">3</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FF5C38;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 4px 10px rgba(255,92,56,.35)">4</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(80,50,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Качество кода</span><span style="width:22px;height:22px;border-radius:50%;background:#2EB872;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">1</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">2</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FF5C38;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 4px 10px rgba(255,92,56,.35)">3</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">4</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(80,50,20,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Работоспособность MVP</span><span style="width:22px;height:22px;border-radius:50%;background:#2EB872;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">1</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">2</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">3</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">4</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FF5C38;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 4px 10px rgba(255,92,56,.35)">5</span>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:18px;padding:18px;box-shadow:0 2px 8px rgba(80,50,20,.06);border:2px dashed #F0C8AE">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:15px;font-weight:700">Понятность питча</span><span style="font-size:12px;color:#C9A88F;font-weight:600">не оценено</span></div>
+      <div style="display:flex;gap:8px">
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">1</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">2</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">3</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">4</span>
+        <span style="flex:1;height:48px;border-radius:12px;background:#FFEDE4;display:flex;align-items:center;justify-content:center;font-weight:700;color:#C9A88F">5</span>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 20px 24px;background:linear-gradient(transparent,#FFF8F2 30%)">
+    <button style="width:100%;height:54px;border-radius:16px;border:none;background:#E8DDD2;color:#A08D79;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit">Осталось 2 критерия…</button>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Эксперт · Тёмный премиальный, карточка-свайп</div>
+<div class="dv-card" style="width:390px;border-radius:24px">
+<div style="background:#101014;min-height:760px;display:flex;flex-direction:column;color:#F2EFEA">
+  <div style="padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:13px;color:#8B8B95">Хакатон Весна 2026</div>
+    <div style="font-size:13px;color:#E8C468;font-weight:600">Иванова Мария</div>
+  </div>
+  <div style="padding:14px 20px 0">
+    <div style="height:3px;background:#26262E;border-radius:2px;overflow:hidden"><div style="width:40%;height:100%;background:linear-gradient(90deg,#E8C468,#F2DA9C)"></div></div>
+    <div style="font-size:12px;color:#8B8B95;margin-top:8px">Критерий 2 из 5</div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;padding:24px 20px">
+    <div style="width:100%;background:linear-gradient(160deg,#1C1C24,#16161C);border:1px solid #2C2C36;border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.5)">
+      <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#E8C468;font-weight:600;margin-bottom:14px">Code Crushers · EcoTrack</div>
+      <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.2;margin-bottom:10px">Качество кода</div>
+      <div style="font-size:14px;color:#8B8B95;line-height:1.5;margin-bottom:32px">Архитектура, читаемость,<br>устойчивость решения</div>
+      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:16px">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="#E8C468" stroke="#E8C468" stroke-width="1.5" style="filter:drop-shadow(0 0 12px rgba(232,196,104,.4))"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="#E8C468" stroke="#E8C468" stroke-width="1.5" style="filter:drop-shadow(0 0 12px rgba(232,196,104,.4))"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="#E8C468" stroke="#E8C468" stroke-width="1.5" style="filter:drop-shadow(0 0 12px rgba(232,196,104,.4))"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="#E8C468" stroke="#E8C468" stroke-width="1.5" style="filter:drop-shadow(0 0 12px rgba(232,196,104,.4))"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#3A3A46" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </div>
+      <div style="font-size:15px;color:#E8C468;font-weight:600">Хорошо</div>
+    </div>
+  </div>
+  <div style="padding:0 20px 28px;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <button style="width:100%;height:54px;border-radius:16px;border:none;background:linear-gradient(90deg,#E8C468,#D9B054);color:#101014;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit">Подтвердить и дальше</button>
+    <div style="font-size:12px;color:#5A5A64">← смахните, чтобы вернуться</div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Админ · Светлый SaaS: сайдбар + live-дашборд хода оценки</div>
+<div class="dv-card" style="width:1180px">
+<div style="background:#F7F7F5;display:flex;min-height:720px;color:#1A1D21">
+  <div style="width:224px;background:#fff;border-right:1px solid #ECEBE7;padding:20px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0">
+    <div style="padding:0 12px 16px;display:flex;align-items:center;gap:10px">
+      <div style="width:32px;height:32px;border-radius:9px;background:#4F46E5;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px">A</div>
+      <div style="font-size:14px;font-weight:700">Assessment</div>
+    </div>
+    <div style="padding:9px 12px;border-radius:9px;background:#EEF2FF;color:#4F46E5;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>Обзор</div>
+    <div style="padding:9px 12px;border-radius:9px;color:#6B7280;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg>Команды <span style="margin-left:auto;font-size:11px;background:#F3F4F6;padding:2px 7px;border-radius:10px">12</span></div>
+    <div style="padding:9px 12px;border-radius:9px;color:#6B7280;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>Эксперты <span style="margin-left:auto;font-size:11px;background:#F3F4F6;padding:2px 7px;border-radius:10px">5</span></div>
+    <div style="padding:9px 12px;border-radius:9px;color:#6B7280;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>Критерии</div>
+    <div style="padding:9px 12px;border-radius:9px;color:#6B7280;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>Результаты</div>
+    <div style="margin-top:auto;padding:12px;border-radius:12px;background:#F7F7F5;border:1px solid #ECEBE7">
+      <div style="font-size:12px;font-weight:600;margin-bottom:8px">Экран проектора</div>
+      <div style="font-size:11.5px;color:#6B7280;line-height:1.4;margin-bottom:10px">QR и live-результаты на большом экране</div>
+      <button style="width:100%;height:32px;border-radius:8px;border:1px solid #D6D5D0;background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:#1A1D21">Открыть →</button>
+    </div>
+  </div>
+  <div style="flex:1;padding:24px 28px;display:flex;flex-direction:column;gap:20px;min-width:0">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+      <div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:2px">Хакатон · 18 июля 2026</div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.4px">Хакатон Весна 2026</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px;background:#ECFDF5;border:1px solid #A7F3D0;padding:8px 14px;border-radius:24px"><span style="width:8px;height:8px;border-radius:50%;background:#10B981"></span><span style="font-size:13px;font-weight:600;color:#047857">Оценка идёт</span></div>
+        <button style="height:38px;padding:0 16px;border-radius:10px;border:1px solid #FCA5A5;background:#fff;color:#DC2626;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">Остановить</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;padding:16px"><div style="font-size:12px;color:#6B7280;margin-bottom:6px">Оценок собрано</div><div style="font-size:28px;font-weight:800">37<span style="font-size:15px;color:#9CA3AF;font-weight:600"> / 60</span></div></div>
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;padding:16px"><div style="font-size:12px;color:#6B7280;margin-bottom:6px">Экспертов завершило</div><div style="font-size:28px;font-weight:800">2<span style="font-size:15px;color:#9CA3AF;font-weight:600"> / 5</span></div></div>
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;padding:16px"><div style="font-size:12px;color:#6B7280;margin-bottom:6px">Сейчас на сцене</div><div style="font-size:17px;font-weight:700;margin-top:4px">Null Pointers</div><div style="font-size:12px;color:#4F46E5;font-weight:600">оценивается · 04:12</div></div>
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;padding:16px"><div style="font-size:12px;color:#6B7280;margin-bottom:6px">Лидер сейчас</div><div style="font-size:17px;font-weight:700;margin-top:4px">Byte Riders</div><div style="font-size:12px;color:#6B7280">21.3 балла в среднем</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start">
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid #F1F0EC;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:700">Команды</span><button style="height:30px;padding:0 12px;border-radius:8px;border:none;background:#4F46E5;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">+ Добавить</button></div>
+        <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #F1F0EC;gap:12px">
+          <span style="width:30px;height:30px;border-radius:8px;background:#EEF2FF;color:#4F46E5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">NP</span>
+          <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Null Pointers</div><div style="font-size:12px;color:#6B7280">MedAssist</div></div>
+          <span style="font-size:12px;font-weight:600;color:#4F46E5;background:#EEF2FF;padding:4px 10px;border-radius:12px">на сцене</span>
+          <div style="width:110px;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"><div style="width:60%;height:100%;background:#4F46E5"></div></div>
+          <span style="font-size:12px;color:#6B7280;width:32px;text-align:right">3/5</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #F1F0EC;gap:12px">
+          <span style="width:30px;height:30px;border-radius:8px;background:#ECFDF5;color:#059669;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">CC</span>
+          <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Code Crushers</div><div style="font-size:12px;color:#6B7280">EcoTrack</div></div>
+          <span style="font-size:12px;font-weight:600;color:#047857;background:#ECFDF5;padding:4px 10px;border-radius:12px">оценена</span>
+          <div style="width:110px;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:#10B981"></div></div>
+          <span style="font-size:12px;color:#6B7280;width:32px;text-align:right">5/5</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #F1F0EC;gap:12px">
+          <span style="width:30px;height:30px;border-radius:8px;background:#F3F4F6;color:#6B7280;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">BR</span>
+          <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Byte Riders</div><div style="font-size:12px;color:#6B7280">FinFlow</div></div>
+          <span style="font-size:12px;font-weight:600;color:#6B7280;background:#F3F4F6;padding:4px 10px;border-radius:12px">в очереди</span>
+          <div style="width:110px;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"></div>
+          <span style="font-size:12px;color:#6B7280;width:32px;text-align:right">0/5</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:12px 18px;gap:12px">
+          <span style="width:30px;height:30px;border-radius:8px;background:#F3F4F6;color:#6B7280;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">DT</span>
+          <div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:600">Data Titans</div><div style="font-size:12px;color:#6B7280">AgroSense</div></div>
+          <span style="font-size:12px;font-weight:600;color:#6B7280;background:#F3F4F6;padding:4px 10px;border-radius:12px">в очереди</span>
+          <div style="width:110px;height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"></div>
+          <span style="font-size:12px;color:#6B7280;width:32px;text-align:right">0/5</span>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #ECEBE7;border-radius:14px;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid #F1F0EC;font-size:14px;font-weight:700">Эксперты · live</div>
+        <div style="padding:12px 18px;display:flex;flex-direction:column;gap:14px">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Иванова Мария</span><span style="font-size:12px;color:#047857;font-weight:600">готово</span></div><div style="height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:#10B981"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Петров Алексей</span><span style="font-size:12px;color:#6B7280">8 / 12</span></div><div style="height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"><div style="width:66%;height:100%;background:#4F46E5"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600">Сидорова Анна</span><span style="font-size:12px;color:#6B7280">3 / 12</span></div><div style="height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden"><div style="width:25%;height:100%;background:#4F46E5"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:600;color:#B45309">Ким Артём</span><span style="font-size:12px;color:#B45309;font-weight:600">не начал</span></div><div style="height:6px;background:#FEF3C7;border-radius:3px"></div></div>
+        </div>
+        <div style="padding:12px 18px;border-top:1px solid #F1F0EC"><button style="width:100%;height:34px;border-radius:9px;border:1px solid #D6D5D0;background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;color:#1A1D21">Напомнить отстающим · QR</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Админ · Тёплый, крупная типографика, режим «пульт ведущего»</div>
+<div class="dv-card" style="width:1180px">
+<div style="background:#FFF8F2;min-height:720px;color:#2B2118;padding:0 0 28px">
+  <div style="padding:20px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #F4E7DA">
+    <div style="display:flex;align-items:center;gap:20px">
+      <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;letter-spacing:-0.5px">Хакатон Весна 2026</div>
+      <div style="display:flex;gap:6px;background:#F8ECDF;border-radius:12px;padding:4px">
+        <span style="padding:7px 16px;border-radius:9px;background:#2B2118;color:#FFF8F2;font-size:13px;font-weight:600">Пульт</span>
+        <span style="padding:7px 16px;border-radius:9px;font-size:13px;font-weight:600;color:#8C7A68">Данные</span>
+        <span style="padding:7px 16px;border-radius:9px;font-size:13px;font-weight:600;color:#8C7A68">Результаты</span>
+      </div>
+    </div>
+    <button style="height:42px;padding:0 22px;border-radius:24px;border:none;background:#FF5C38;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 6px 16px rgba(255,92,56,.3)">■ Стоп оценка</button>
+  </div>
+  <div style="padding:28px 32px;display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="background:#2B2118;color:#FFF8F2;border-radius:24px;padding:28px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,92,56,.25);filter:blur(40px)"></div>
+        <div style="font-size:13px;color:#C9B8A6;margin-bottom:6px;font-weight:500">Сейчас на сцене</div>
+        <div style="font-family:'Unbounded',sans-serif;font-size:34px;font-weight:900;letter-spacing:-1px;margin-bottom:4px">Null Pointers</div>
+        <div style="font-size:15px;color:#C9B8A6;margin-bottom:22px">MedAssist — ассистент записи к врачу</div>
+        <div style="display:flex;align-items:center;gap:18px">
+          <div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:700;color:#FF8A6B">04:12</div>
+          <div style="flex:1;height:8px;background:rgba(255,248,242,.15);border-radius:4px;overflow:hidden"><div style="width:60%;height:100%;background:#FF5C38"></div></div>
+          <div style="font-size:14px;font-weight:700;color:#FF8A6B">3 / 5 экспертов</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:22px">
+          <button style="height:44px;padding:0 20px;border-radius:22px;border:none;background:#FF5C38;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Завершить и следующая →</button>
+          <button style="height:44px;padding:0 20px;border-radius:22px;border:1px solid rgba(255,248,242,.3);background:transparent;color:#FFF8F2;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Пауза</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:20px 22px;box-shadow:0 2px 8px rgba(80,50,20,.06)">
+        <div style="font-size:14px;font-weight:800;margin-bottom:14px">Очередь</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#FFF3EA"><span style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#FF5C38;width:24px">1</span><div style="flex:1"><span style="font-size:14px;font-weight:700">Byte Riders</span><span style="font-size:13px;color:#8C7A68"> · FinFlow</span></div><span style="font-size:12px;color:#8C7A68">через ~6 мин</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px"><span style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#C9B8A6;width:24px">2</span><div style="flex:1"><span style="font-size:14px;font-weight:700">Data Titans</span><span style="font-size:13px;color:#8C7A68"> · AgroSense</span></div><span style="font-size:12px;color:#8C7A68">—</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;opacity:.55"><span style="width:24px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2EB872" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span><div style="flex:1"><span style="font-size:14px;font-weight:700">Code Crushers</span><span style="font-size:13px;color:#8C7A68"> · EcoTrack</span></div><span style="font-size:12px;color:#2EB872;font-weight:700">18.5</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="background:#fff;border-radius:20px;padding:20px 22px;box-shadow:0 2px 8px rgba(80,50,20,.06)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px"><span style="font-size:14px;font-weight:800">Эксперты</span><span style="font-size:12px;color:#8C7A68">обновлено 5 сек назад</span></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;border-radius:50%;background:#2EB872;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">ИМ</span><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Иванова Мария</div><div style="height:5px;background:#F4E7DA;border-radius:3px;margin-top:5px;overflow:hidden"><div style="width:100%;height:100%;background:#2EB872"></div></div></div><span style="font-size:12px;font-weight:700;color:#2EB872">100%</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;border-radius:50%;background:#FFD9CC;color:#B4462C;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">ПА</span><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Петров Алексей</div><div style="height:5px;background:#F4E7DA;border-radius:3px;margin-top:5px;overflow:hidden"><div style="width:66%;height:100%;background:#FF5C38"></div></div></div><span style="font-size:12px;font-weight:700;color:#8C7A68">66%</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;border-radius:50%;background:#FFD9CC;color:#B4462C;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">СА</span><div style="flex:1"><div style="font-size:13.5px;font-weight:700">Сидорова Анна</div><div style="height:5px;background:#F4E7DA;border-radius:3px;margin-top:5px;overflow:hidden"><div style="width:25%;height:100%;background:#FF5C38"></div></div></div><span style="font-size:12px;font-weight:700;color:#8C7A68">25%</span></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:20px 22px;box-shadow:0 2px 8px rgba(80,50,20,.06);text-align:center">
+        <div style="font-size:14px;font-weight:800;margin-bottom:4px">QR для зала</div>
+        <div style="font-size:12.5px;color:#8C7A68;margin-bottom:14px">Общий код: оценка текущего спикера</div>
+        <div style="width:140px;height:140px;margin:0 auto;border-radius:14px;background:repeating-conic-gradient(#2B2118 0 25%,#fff 0 50%) 0 0/20px 20px;border:8px solid #fff;outline:1px solid #F4E7DA"></div>
+        <button style="margin-top:14px;height:38px;padding:0 18px;border-radius:20px;border:1px solid #E8DDD2;background:#FFF8F2;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:#2B2118">На проектор →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+</div>
+<p class="dv-next">Дальше: «собери всё в стиле <a class="dv-oid" href="#1a">1a</a>» · «эксперт как <a class="dv-oid" href="#1b">1b</a>, админ как <a class="dv-oid" href="#1d">1d</a>» · «покажи экран проектора и митап-режим»</p>
+</section>
+</x-dc>
+</body>
+</html>

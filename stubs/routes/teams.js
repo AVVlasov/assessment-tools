@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { Team, Event } = require('../models');
 
 const ALLOWED_TYPES_BY_EVENT = {
-  hackathon: ['team', 'participant'],
+  hackathon: ['team'],
   queen_of_code: ['participant'],
   conference: ['speaker', 'event']
 };
@@ -78,7 +78,10 @@ router.get('/:id', async (req, res) => {
 // POST /api/teams - создать команду/участника/спикера
 router.post('/', async (req, res) => {
   try {
-    const { eventId, type, name, projectName, caseDescription } = req.body;
+    const {
+      eventId, type, name, projectName, caseDescription,
+      hallId, scheduledTime, org, format, order
+    } = req.body;
     
     if (!eventId || !type || !name) {
       return res.status(400).json({ error: 'EventId, type and name are required' });
@@ -102,6 +105,8 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'Event rating entity already exists' });
       }
     }
+
+    const count = await Team.countDocuments({ eventId, type });
     
     const team = await Team.create({
       eventId,
@@ -109,6 +114,11 @@ router.post('/', async (req, res) => {
       name,
       projectName: projectName || '',
       caseDescription: caseDescription || '',
+      hallId: hallId || null,
+      scheduledTime: scheduledTime || '',
+      org: org || '',
+      format: ['panel', 'workshop'].includes(format) ? format : 'talk',
+      order: order ?? count,
       isActive: true
     });
     
@@ -121,7 +131,10 @@ router.post('/', async (req, res) => {
 // PUT /api/teams/:id - редактировать команду
 router.put('/:id', async (req, res) => {
   try {
-    const { type, name, projectName, caseDescription } = req.body;
+    const {
+      type, name, projectName, caseDescription,
+      hallId, scheduledTime, org, format, order
+    } = req.body;
     
     const team = await Team.findById(req.params.id);
     if (!team) {
@@ -149,6 +162,13 @@ router.put('/:id', async (req, res) => {
     if (name !== undefined) team.name = name;
     if (projectName !== undefined) team.projectName = projectName;
     if (caseDescription !== undefined) team.caseDescription = caseDescription;
+    if (hallId !== undefined) team.hallId = hallId || null;
+    if (scheduledTime !== undefined) team.scheduledTime = scheduledTime;
+    if (org !== undefined) team.org = org;
+    if (format !== undefined) {
+      team.format = ['panel', 'workshop'].includes(format) ? format : 'talk';
+    }
+    if (order !== undefined) team.order = order;
     
     await team.save();
     res.json(team);

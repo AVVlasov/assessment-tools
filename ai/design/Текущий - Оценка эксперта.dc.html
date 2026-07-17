@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#0A0A0A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto",sans-serif}
+a{color:#D4FF00;text-decoration:none} a:hover{color:#C4EF00}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0A0A0A">
+  <div style="background:#1A1A1A;border-bottom:1px solid #333333;padding:16px;text-align:center">
+    <div style="font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:-1px;color:#D4FF00">Оценка</div>
+    <div style="font-size:16px;color:#E0E0E0;font-weight:600;margin-top:8px">Хакатон Весна 2026</div>
+    <div style="font-size:14px;color:#B0B0B0;margin-top:4px">Иванова Мария</div>
+  </div>
+  <div style="max-width:640px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:20px">
+    <div style="background:#1F1F1F;padding:20px;border:3px solid #D4FF00;border-radius:8px;text-align:center">
+      <div style="font-size:12px;font-weight:700;color:#0A0A0A;background:#D4FF00;display:inline-block;padding:4px 12px;border-radius:20px;margin-bottom:12px;text-transform:uppercase">Команда</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px">Code Crushers</div>
+      <div style="color:#B0B0B0;font-size:14px;max-width:480px;margin:0 auto">Оцените проект по критериям ниже. Оценка сохраняется автоматически.</div>
+      <div style="color:#B0B0B0;font-size:16px;margin-top:12px"><span style="color:#D4FF00;font-weight:700">Проект:</span> EcoTrack</div>
+    </div>
+    <div style="font-size:14px;color:#B0B0B0;text-align:center">Шкала: 1 — слабо · 5 — отлично. Достаточно вашего личного впечатления.</div>
+    <sc-for list="{{ blocks }}" as="block" hint-placeholder-count="2">
+      <div style="background:#1F1F1F;padding:16px;border:2px solid #333333;border-radius:8px">
+        <div style="font-size:16px;font-weight:800;margin-bottom:16px;color:#D4FF00">{{ block.name }}</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ block.criteria }}" as="cr" hint-placeholder-count="3">
+            <div style="padding:16px;background:#1A1A1A;border-radius:8px">
+              <div style="font-size:16px;color:#fff;margin-bottom:12px;font-weight:600;line-height:1.4">{{ cr.name }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                <div style="display:flex;gap:4px">
+                  <sc-for list="{{ cr.stars }}" as="star" hint-placeholder-count="5">
+                    <div onClick="{{ star.onClick }}" style="width:40px;height:40px;cursor:pointer" style-hover="transform:scale(1.1);transition:all .2s">
+                      <svg width="100%" height="100%" viewBox="0 0 24 24" fill="{{ star.fill }}" stroke="#D4FF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:{{ star.glow }}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-size:16px;color:#D4FF00;font-weight:900;min-width:48px;text-align:right">{{ cr.scoreLabel }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+    <div style="background:#1F1F1F;padding:16px;border:2px solid #333333;border-radius:8px;text-align:center">
+      <div style="font-size:14px;color:#B0B0B0;margin-bottom:8px">Заполнено {{ ratedCount }} из {{ totalCount }}</div>
+      <div style="position:relative;height:28px;background:#1A1A1A;border-radius:20px;overflow:hidden;margin-bottom:8px">
+        <div style="position:absolute;height:100%;width:{{ progressW }};background:{{ progressBg }};transition:all .3s ease;border-radius:20px"></div>
+      </div>
+      <sc-if value="{{ isComplete }}" hint-placeholder-val="{{ false }}">
+        <div style="color:#4CAF50;font-size:16px;font-weight:800;margin-top:8px">Готово. Спасибо за оценку!</div>
+      </sc-if>
+      <sc-if value="{{ showSaved }}" hint-placeholder-val="{{ false }}">
+        <div style="color:#4CAF50;font-size:14px;font-weight:700">Сохранено</div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { ratings: {}, showSaved: false };
+  setScore(name, score) {
+    this.setState(s => ({ ratings: { ...s.ratings, [name]: score }, showSaved: false }));
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ showSaved: true }), 600);
+  }
+  renderVals() {
+    const blockDefs = [
+      { name: 'Технологичность', criteria: [
+        { name: 'Сложность решения', max: 5 },
+        { name: 'Качество кода', max: 5 },
+        { name: 'Работоспособность MVP', max: 5 }
+      ]},
+      { name: 'Презентация', criteria: [
+        { name: 'Понятность питча', max: 5 },
+        { name: 'Ответы на вопросы', max: 5 }
+      ]}
+    ];
+    const r = this.state.ratings;
+    const blocks = blockDefs.map(b => ({
+      name: b.name,
+      criteria: b.criteria.map(c => {
+        const val = r[c.name] || 0;
+        return {
+          name: c.name,
+          scoreLabel: val + '/' + c.max,
+          stars: Array.from({ length: c.max }, (_, i) => ({
+            fill: i < val ? '#D4FF00' : 'none',
+            glow: i < val ? 'drop-shadow(0 0 8px rgba(212,255,0,0.5))' : 'none',
+            onClick: () => this.setScore(c.name, i + 1)
+          }))
+        };
+      })
+    }));
+    const all = blockDefs.flatMap(b => b.criteria);
+    const rated = all.filter(c => (r[c.name] || 0) > 0).length;
+    const progress = all.length ? Math.round(rated / all.length * 100) : 0;
+    const complete = rated === all.length && all.length > 0;
+    return {
+      blocks,
+      ratedCount: rated, totalCount: all.length,
+      progressW: progress + '%',
+      progressBg: complete ? '#4CAF50' : '#D4FF00',
+      isComplete: complete,
+      showSaved: this.state.showSaved && !complete && rated > 0
+    };
+  }
+}
+</script>
+</body>
+</html>

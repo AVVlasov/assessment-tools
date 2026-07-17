@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#0A0A0A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto",sans-serif}
+a{color:#D4FF00;text-decoration:none} a:hover{color:#C4EF00}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0A0A0A;color:#fff">
+  <div style="max-width:1400px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:32px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:36px;font-weight:700;color:#D4FF00;line-height:1.2">Мероприятия</div>
+        <div style="font-size:16px;color:#B0B0B0;margin-top:8px">Хакатоны, конкурсы и конференции — в одном месте</div>
+      </div>
+      <button style="display:flex;align-items:center;gap:8px;background:#D4FF00;color:#0A0A0A;font-weight:700;font-size:16px;height:48px;padding:0 24px;border:none;border-radius:6px;cursor:pointer" style-hover="background:#C4EF00">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+        Создать мероприятие
+      </button>
+    </div>
+    <div>
+      <div style="font-size:24px;font-weight:700;color:#D4FF00;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid #333333">2026</div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#B0B0B0;margin-bottom:16px">Июль</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+            <div style="background:#1A1A1A;padding:24px;border-radius:8px;border:1px solid #333333;display:flex;flex-direction:column;gap:16px" style-hover="border-color:#D4FF00;transform:translateY(-2px);transition:all .2s">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <div style="font-size:20px;font-weight:700;color:#fff">Хакатон Весна 2026</div>
+                <span style="background:#2A2A2A;color:#D4FF00;border:1px solid #D4FF00;padding:4px 8px;font-size:12px;font-weight:700;text-transform:uppercase;border-radius:2px">Хакатон</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0B0B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+              </div>
+              <div style="color:#B0B0B0;font-size:14px">48 часов разработки MVP по кейсам от партнёров. 12 команд, финальные питчи и оценка жюри.</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Дата:</span><span style="color:#B0B0B0">18 июля 2026 г.</span></div>
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Место:</span><span style="color:#B0B0B0">Технопарк, зал А</span></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button style="flex:1;background:#D4FF00;color:#0A0A0A;font-weight:700;font-size:15px;height:40px;border:none;border-radius:6px;cursor:pointer" style-hover="background:#C4EF00">Открыть</button>
+                <button style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#2A2A2A;color:#FF4444;border:1px solid #FF4444;border-radius:6px;cursor:pointer" style-hover="background:#FF4444;color:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+              </div>
+            </div>
+            <div style="background:#1A1A1A;padding:24px;border-radius:8px;border:1px solid #333333;display:flex;flex-direction:column;gap:16px" style-hover="border-color:#D4FF00;transform:translateY(-2px);transition:all .2s">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <div style="font-size:20px;font-weight:700;color:#fff">Frontend Meetup #14</div>
+                <span style="background:#2A2A2A;color:#D4FF00;border:1px solid #D4FF00;padding:4px 8px;font-size:12px;font-weight:700;text-transform:uppercase;border-radius:2px">Конференция / митап</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0B0B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+              </div>
+              <div style="color:#B0B0B0;font-size:14px">Вечерний митап: четыре доклада, оценка спикеров слушателями и общая оценка мероприятия.</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Дата:</span><span style="color:#B0B0B0">24 июля 2026 г.</span></div>
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Место:</span><span style="color:#B0B0B0">Офис, конференц-зал</span></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button style="flex:1;background:#D4FF00;color:#0A0A0A;font-weight:700;font-size:15px;height:40px;border:none;border-radius:6px;cursor:pointer" style-hover="background:#C4EF00">Открыть</button>
+                <button style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#2A2A2A;color:#FF4444;border:1px solid #FF4444;border-radius:6px;cursor:pointer" style-hover="background:#FF4444;color:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#B0B0B0;margin-bottom:16px">Март</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+            <div style="background:#1A1A1A;padding:24px;border-radius:8px;border:1px solid #333333;display:flex;flex-direction:column;gap:16px" style-hover="border-color:#D4FF00;transform:translateY(-2px);transition:all .2s">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <div style="font-size:20px;font-weight:700;color:#fff">Королева кода 2026</div>
+                <span style="background:#2A2A2A;color:#D4FF00;border:1px solid #D4FF00;padding:4px 8px;font-size:12px;font-weight:700;text-transform:uppercase;border-radius:2px">Королева кода</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0B0B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+              </div>
+              <div style="color:#B0B0B0;font-size:14px">Конкурс выступлений участниц: жюри оценивает подачу, экспертизу и ответы на вопросы.</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Дата:</span><span style="color:#B0B0B0">6 марта 2026 г.</span></div>
+                <div style="display:flex;gap:8px;font-size:14px"><span style="color:#666666">Место:</span><span style="color:#B0B0B0">Главная сцена</span></div>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button style="flex:1;background:#D4FF00;color:#0A0A0A;font-weight:700;font-size:15px;height:40px;border:none;border-radius:6px;cursor:pointer" style-hover="background:#C4EF00">Открыть</button>
+                <button style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#2A2A2A;color:#FF4444;border:1px solid #FF4444;border-radius:6px;cursor:pointer" style-hover="background:#FF4444;color:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

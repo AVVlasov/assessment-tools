@@ -48,8 +48,8 @@ export const EventHeader: React.FC = () => {
 
   return (
     <Box
-      bg="#1A1A1A"
-      borderBottom="1px solid #333333"
+      bg="#141C24"
+      borderBottom="1px solid rgba(255,255,255,0.12)"
       p={6}
       position="sticky"
       top={0}
@@ -61,13 +61,13 @@ export const EventHeader: React.FC = () => {
             aria-label="Вернуться к дашборду"
             onClick={() => navigate('/assessment-tools')}
             size="md"
-            bg="#2A2A2A"
-            color="#D4FF00"
+            bg="#1A222C"
+            color="#3DDC50"
             _hover={{ bg: '#3A3A3A', color: '#FFFFFF' }}
           >
             <FiArrowLeft size={20} />
           </IconButton>
-          <Box fontSize="2xl" fontWeight="900" textTransform="uppercase" letterSpacing="-1px" color="#D4FF00">
+          <Box fontSize="2xl" fontWeight="900" textTransform="uppercase" letterSpacing="-1px" color="#3DDC50">
             <Editable.Root
               defaultValue={event.name}
               onValueCommit={(e) => handleNameChange(e.value[0])}
@@ -78,8 +78,8 @@ export const EventHeader: React.FC = () => {
                 bg="transparent" 
                 border="none" 
                 p={0}
-                color="#D4FF00"
-                _focus={{ outline: 'none', borderBottom: '2px solid #D4FF00' }}
+                color="#3DDC50"
+                _focus={{ outline: 'none', borderBottom: '2px solid #3DDC50' }}
               />
             </Editable.Root>
           </Box>
@@ -94,7 +94,7 @@ export const EventHeader: React.FC = () => {
             onCheckedChange={handleVotingToggle}
             colorPalette="green"
           />
-          <Text fontSize="sm" fontWeight="700" color={event.votingEnabled ? '#D4FF00' : '#B0B0B0'}>
+          <Text fontSize="sm" fontWeight="700" color={event.votingEnabled ? '#3DDC50' : '#B0B0B0'}>
             {event.votingEnabled ? 'Включена' : 'Выключена'}
           </Text>
         </HStack>

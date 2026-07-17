@@ -11,7 +11,7 @@ Object.keys(require.cache).forEach((key) => {
   }
 });
 
-['Event', 'Team', 'Expert', 'Criteria', 'Rating'].forEach((name) => {
+['Event', 'Team', 'Expert', 'Criteria', 'Rating', 'Hall', 'ListenerRating'].forEach((name) => {
   if (mongoose.models[name]) {
     delete mongoose.models[name];
   }
@@ -31,5 +31,7 @@ router.use('/teams', require('../routes/teams'));
 router.use('/experts', require('../routes/experts'));
 router.use('/criteria', require('../routes/criteria'));
 router.use('/ratings', require('../routes/ratings'));
+router.use('/halls', require('../routes/halls'));
+router.use('/listener', require('../routes/listener'));
 
 module.exports = router;

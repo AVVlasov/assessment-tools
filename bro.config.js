@@ -13,6 +13,7 @@ module.exports = {
     'assessment-tools.admin': '/assessment-tools/admin',
     'assessment-tools.expert': '/assessment-tools/expert',
     'assessment-tools.event-create': '/assessment-tools/events/create',
+    'assessment-tools.rate-hall': '/assessment-tools/rate/hall',
     'link.assessment-tools.auth': '/auth'
   },
   features: {

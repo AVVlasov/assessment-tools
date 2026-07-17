@@ -30,7 +30,7 @@ const GROUP_TITLES: Record<Top3Group, string> = {
   speakers: 'Топ-3 спикеров'
 };
 
-const placeColors = ['#D4FF00', '#AFAFAF', '#FF6B00'];
+const placeColors = ['#3DDC50', '#AFAFAF', '#FF6B00'];
 const placeLabels = ['1 место', '2 место', '3 место'];
 
 const PodiumCard: React.FC<{ item: Top3Item; place: number }> = ({ item, place }) => {
@@ -39,7 +39,7 @@ const PodiumCard: React.FC<{ item: Top3Item; place: number }> = ({ item, place }
 
   return (
     <Box
-      bg="#1F1F1F"
+      bg="#0C1218"
       p={6}
       border={`3px solid ${color}`}
       borderRadius="8px"
@@ -165,7 +165,7 @@ export const Top3Tab: React.FC<Top3TabProps> = ({ eventId, eventType }) => {
 
       {items.length > 0 && (
         <Stack gap={4}>
-          <Text fontSize="xl" fontWeight="900" color="#D4FF00" textTransform="uppercase">
+          <Text fontSize="xl" fontWeight="900" color="#3DDC50" textTransform="uppercase">
             {GROUP_TITLES[activeGroup]}
           </Text>
           <Grid

@@ -54,6 +54,30 @@ router.post('/', async (req, res) => {
         caseDescription: '',
         isActive: true
       });
+
+      const { Hall } = require('../models');
+      const { getDefaultCriteriaByEventType } = require('../api/defaultCriteria');
+      const { Criteria } = require('../models');
+
+      await Hall.create({
+        eventId: event._id,
+        name: 'Главный зал',
+        num: 1,
+        order: 0,
+        status: 'break',
+        qrNote: 'сам переключается на текущего спикера'
+      });
+
+      const defaults = getDefaultCriteriaByEventType('conference');
+      await Criteria.insertMany(
+        defaults.map((block) => ({
+          eventId: event._id,
+          blockName: block.blockName,
+          criteriaType: block.criteriaType,
+          criteria: block.criteria,
+          order: block.order
+        }))
+      );
     }
     
     res.status(201).json(event);

@@ -106,12 +106,12 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
   return (
     <Stack gap={6}>
       <Box
-        bg="#1F1F1F"
+        bg="#0C1218"
         p={6}
-        border="3px solid #333333"
+        border="3px solid rgba(255,255,255,0.12)"
         borderRadius="8px"
       >
-        <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#D4FF00">
+        <Text fontSize="xl" fontWeight="900" mb={4} textTransform="uppercase" color="#3DDC50">
           {'{ '}Добавить эксперта{' }'}
         </Text>
         
@@ -121,21 +121,21 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               placeholder="ФИО эксперта"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              bg="#1A1A1A"
-              border="2px solid #333333"
+              bg="#141C24"
+              border="2px solid rgba(255,255,255,0.12)"
               color="#FFFFFF"
-              _focus={{ borderColor: '#D4FF00' }}
+              _focus={{ borderColor: '#3DDC50' }}
               required
             />
 
             <Button
               type="submit"
-              bg="#D4FF00"
+              bg="#3DDC50"
               color="#000000"
               fontWeight="700"
               px={8}
               borderRadius="50px"
-              _hover={{ bg: '#0A0A0A', color: '#D4FF00', border: '3px solid #D4FF00' }}
+              _hover={{ bg: '#060B10', color: '#3DDC50', border: '3px solid #3DDC50' }}
               width="fit-content"
             >
               Добавить и сгенерировать QR-код
@@ -148,12 +148,12 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
         {experts.map((expert) => (
           <Box
             key={expert._id}
-            bg="#1F1F1F"
+            bg="#0C1218"
             p={5}
-            border="3px solid #333333"
+            border="3px solid rgba(255,255,255,0.12)"
             borderRadius="8px"
             transition="all 0.3s"
-            _hover={{ borderColor: '#D4FF00', transform: 'translateY(-5px)' }}
+            _hover={{ borderColor: '#3DDC50', transform: 'translateY(-5px)' }}
             textAlign="center"
           >
             <Text fontSize="lg" fontWeight="900" mb={2} color="#FFFFFF">
@@ -165,12 +165,12 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                 <Text fontSize="xs" color="#B0B0B0" mb={2}>
                   Прогресс оценивания
                 </Text>
-                <Box position="relative" height="24px" bg="#1A1A1A" borderRadius="12px" overflow="hidden">
+                <Box position="relative" height="24px" bg="#141C24" borderRadius="12px" overflow="hidden">
                   <Box
                     position="absolute"
                     height="100%"
                     width={`${calculateExpertProgress(expert._id)}%`}
-                    bg={calculateExpertProgress(expert._id) === 100 ? '#00FF00' : '#D4FF00'}
+                    bg={calculateExpertProgress(expert._id) === 100 ? '#00FF00' : '#3DDC50'}
                     transition="all 0.3s ease"
                     borderRadius="12px"
                   />
@@ -196,7 +196,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               mb={4}
               cursor="pointer"
               transition="all 0.3s"
-              _hover={{ transform: 'scale(1.05)', boxShadow: '0 0 20px #D4FF00' }}
+              _hover={{ transform: 'scale(1.05)', boxShadow: '0 0 20px #3DDC50' }}
               onClick={() => setSelectedExpert(expert)}
             >
               <QRCodeSVG
@@ -212,9 +212,9 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               <Button
                 size="sm"
                 bg="transparent"
-                color="#D4FF00"
-                border="2px solid #D4FF00"
-                _hover={{ bg: '#D4FF00', color: '#000000' }}
+                color="#3DDC50"
+                border="2px solid #3DDC50"
+                _hover={{ bg: '#3DDC50', color: '#000000' }}
                 onClick={() => handleDownloadQR(expert)}
                 width="100%"
               >
@@ -236,9 +236,9 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               <Button
                 size="sm"
                 bg="transparent"
-                color="#FF0080"
-                border="2px solid #FF0080"
-                _hover={{ bg: '#FF0080', color: '#FFFFFF' }}
+                color="#4FC9F0"
+                border="2px solid #4FC9F0"
+                _hover={{ bg: '#4FC9F0', color: '#FFFFFF' }}
                 onClick={() => handleDelete(expert._id)}
                 width="100%"
               >
@@ -267,8 +267,8 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
           <Dialog.Backdrop bg="blackAlpha.900" />
           <Dialog.Positioner>
             <Dialog.Content
-              bg="#0A0A0A"
-              border={{ base: 'none', md: '3px solid #D4FF00' }}
+              bg="#060B10"
+              border={{ base: 'none', md: '3px solid #3DDC50' }}
               borderRadius={{ base: '0', md: '12px' }}
               p={{ base: 6, md: 6 }}
               maxW={{ base: '100vw', md: '600px' }}
@@ -282,7 +282,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                 <Dialog.Title
                   fontSize={{ base: '3xl', md: 'xl' }}
                   fontWeight="900"
-                  color="#D4FF00"
+                  color="#3DDC50"
                   textAlign="center"
                   mb={{ base: 4, md: 2 }}
                 >
@@ -330,11 +330,11 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
               <Dialog.Footer mt={{ base: 6, md: 6 }}>
                 <Stack gap={3} width="100%">
                   <Button
-                    bg="#D4FF00"
+                    bg="#3DDC50"
                     color="#000000"
                     fontWeight="700"
                     size={{ base: 'lg', md: 'md' }}
-                    _hover={{ bg: '#C4EF00' }}
+                    _hover={{ bg: '#21A038' }}
                     onClick={() => handleDownloadQR(selectedExpert)}
                     width="100%"
                   >
@@ -343,11 +343,11 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                   
                   <Button
                     bg="transparent"
-                    color="#D4FF00"
-                    border="2px solid #D4FF00"
+                    color="#3DDC50"
+                    border="2px solid #3DDC50"
                     fontWeight="700"
                     size={{ base: 'lg', md: 'md' }}
-                    _hover={{ bg: '#D4FF00', color: '#000000' }}
+                    _hover={{ bg: '#3DDC50', color: '#000000' }}
                     onClick={() => setSelectedExpert(null)}
                     width="100%"
                   >
@@ -360,7 +360,7 @@ export const ExpertsTab: React.FC<ExpertsTabProps> = ({ eventId }) => {
                 position="absolute"
                 top={4}
                 right={4}
-                color="#D4FF00"
+                color="#3DDC50"
                 _hover={{ color: '#FFFFFF' }}
               />
             </Dialog.Content>

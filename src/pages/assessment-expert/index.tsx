@@ -1,369 +1,404 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Stack, Text, HStack } from '@chakra-ui/react';
-import { StarRating } from '../../components/assessment';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { Box, Flex, Spinner, Text } from '@chakra-ui/react'
+import {
+  AvatarInitials,
+  BrandMark,
+  GradientButton,
+  KeyOption,
+  Pill,
+  StepProgress,
+} from '../../components/tehnohub'
+import { thColors } from '../../theme'
 import {
   useGetExpertByTokenQuery,
   useGetActiveTeamForVotingQuery,
   useGetCriteriaQuery,
   useCreateRatingMutation,
   useGetExpertRatingsQuery,
-  useGetEventQuery
-} from '../../__data__/api';
-import type { EventType, RatingItem, TeamType } from '../../types';
-import { getEventTypeConfig } from '../../utils/eventTypeConfig';
+  useGetEventQuery,
+} from '../../__data__/api'
+import type { CriterionItem, EventType, RatingItem, TeamType } from '../../types'
+import { getEventTypeConfig } from '../../utils/eventTypeConfig'
+import { t } from '../../utils/locale'
 
 const TYPE_LABELS: Record<TeamType, string> = {
   team: 'Команда',
   participant: 'Участница',
   speaker: 'Спикер',
-  event: 'Мероприятие'
-};
+  event: 'Мероприятие',
+}
 
 const PAGE_TITLES: Record<EventType, string> = {
-  hackathon: 'Оценка',
-  queen_of_code: 'Оценка',
-  conference: 'Ваша оценка'
-};
+  hackathon: t('expertPage.titleHackathon'),
+  queen_of_code: t('expertPage.titleQueen'),
+  conference: t('expertPage.titleConference'),
+}
 
-const WAITING_COPY: Record<EventType, { title: string; body: string; hint: string }> = {
-  hackathon: {
-    title: 'Ожидание',
-    body: 'Сейчас нет активной оценки.',
-    hint: 'Когда админ запустит оценку команды или участницы — форма появится здесь.'
-  },
-  queen_of_code: {
-    title: 'Ожидание',
-    body: 'Сейчас нет активной оценки.',
-    hint: 'Когда начнётся выступление участницы, админ откроет оценку.'
-  },
-  conference: {
-    title: 'Подождите, пожалуйста',
-    body: 'Оценка ещё не открыта.',
-    hint: 'Как только начнётся доклад или этап общей оценки мероприятия — форма появится сама. Обновлять страницу не нужно.'
-  }
-};
+const defaultOptions = (max = 5) =>
+  Array.from({ length: max }, (_, i) => ({
+    title: `${i + 1}`,
+    subtitle: i === 0 ? 'слабо' : i === max - 1 ? 'отлично' : '',
+  }))
 
-const CONTEXT_HINTS: Record<TeamType, string> = {
-  team: 'Оцените проект по критериям ниже. Оценка сохраняется автоматически.',
-  participant: 'Оцените выступление по критериям ниже. Оценка сохраняется автоматически.',
-  speaker: 'Оцените доклад так, как вы его восприняли. Достаточно личного впечатления — без анализа всего зала.',
-  event: 'Оцените мероприятие в целом по своему опыту участия.'
-};
+type Screen = 'wait' | 'start' | 'step' | 'done'
 
 export const AssessmentExpertPage: React.FC = () => {
-  const { token } = useParams<{ token: string }>();
-
+  const { token } = useParams<{ token: string }>()
   const { data: expert, isLoading: expertLoading } = useGetExpertByTokenQuery(token || '', {
-    skip: !token
-  });
-
-  const { data: event } = useGetEventQuery(expert?.eventId || '', {
-    skip: !expert?.eventId
-  });
-
+    skip: !token,
+  })
+  const { data: event } = useGetEventQuery(expert?.eventId || '', { skip: !expert?.eventId })
   const { data: activeTeam, isLoading: teamLoading } = useGetActiveTeamForVotingQuery(
     { eventId: expert?.eventId },
-    {
-      skip: !expert?.eventId,
-      pollingInterval: 3000
-    }
-  );
-
+    { skip: !expert?.eventId, pollingInterval: 3000 }
+  )
   const { data: criteriaBlocks = [], isLoading: criteriaLoading } = useGetCriteriaQuery(
-    activeTeam
-      ? { eventId: activeTeam.eventId, criteriaType: activeTeam.type }
-      : undefined,
+    activeTeam ? { eventId: activeTeam.eventId, criteriaType: activeTeam.type } : undefined,
     { skip: !activeTeam }
-  );
-
-  const [createRating] = useCreateRatingMutation();
+  )
+  const [createRating] = useCreateRatingMutation()
   const { data: expertRatings = [] } = useGetExpertRatingsQuery(expert?._id || '', {
     skip: !expert,
-    pollingInterval: 10000
-  });
+    pollingInterval: 10000,
+  })
 
-  const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [screen, setScreen] = useState<Screen>('wait')
+  const [stepIdx, setStepIdx] = useState(0)
+  const [scores, setScores] = useState<number[]>([])
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const advRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const lastTeamId = useRef<string | null>(null)
 
-  const eventType: EventType = event?.eventType || 'hackathon';
-  const config = getEventTypeConfig(eventType);
-  const pageTitle = PAGE_TITLES[eventType];
-  const waiting = WAITING_COPY[eventType];
+  const eventType: EventType = event?.eventType || 'hackathon'
+  const config = getEventTypeConfig(eventType)
+  const allCriteria: CriterionItem[] = useMemo(
+    () => criteriaBlocks.flatMap((b) => b.criteria),
+    [criteriaBlocks]
+  )
+
+  const alreadyRated = useMemo(() => {
+    if (!activeTeam || !expert) return false
+    return expertRatings.some(
+      (r) => typeof r.teamId === 'object' && r.teamId._id === activeTeam._id
+    )
+  }, [activeTeam, expert, expertRatings])
 
   useEffect(() => {
-    if (activeTeam && expert) {
-      const existingRating = expertRatings.find(r =>
-        typeof r.teamId === 'object' && r.teamId._id === activeTeam._id
-      );
-
-      if (existingRating) {
-        const ratingsMap: Record<string, number> = {};
-        existingRating.ratings.forEach(r => {
-          ratingsMap[r.criterionName] = r.score;
-        });
-        setRatings(ratingsMap);
-      } else {
-        setRatings({});
-      }
-    } else {
-      setRatings({});
+    if (!activeTeam) {
+      setScreen('wait')
+      lastTeamId.current = null
+      return
     }
-  }, [activeTeam, expert, expertRatings]);
+    if (lastTeamId.current !== activeTeam._id) {
+      lastTeamId.current = activeTeam._id
+      setScores(Array(allCriteria.length).fill(0))
+      setStepIdx(0)
+      setScreen(alreadyRated ? 'done' : 'start')
+    }
+  }, [activeTeam, allCriteria.length, alreadyRated])
 
   useEffect(() => {
-    if (!activeTeam || !expert) return;
+    setScores((prev) => {
+      if (prev.length === allCriteria.length) return prev
+      return Array(allCriteria.length).fill(0)
+    })
+  }, [allCriteria.length])
 
-    const allCriteria = criteriaBlocks.flatMap(block => block.criteria);
-    if (allCriteria.length === 0) return;
+  const submit = async (finalScores: number[]): Promise<void> => {
+    if (!activeTeam || !expert) return
+    const ratingsArray: RatingItem[] = allCriteria.map((criterion, i) => ({
+      criteriaId: criteriaBlocks.find((b) => b.criteria.includes(criterion))?._id || '',
+      criterionName: criterion.name,
+      score: finalScores[i] || 0,
+    }))
+    try {
+      setSaveStatus('saving')
+      await createRating({
+        eventId: activeTeam.eventId,
+        expertId: expert._id,
+        teamId: activeTeam._id,
+        ratings: ratingsArray,
+      }).unwrap()
+      setSaveStatus('saved')
+      setScreen('done')
+    } catch {
+      setSaveStatus('error')
+    }
+  }
 
-    const hasAnyRating = Object.values(ratings).some(r => r > 0);
-    if (!hasAnyRating) return;
-
-    const saveRatings = async () => {
-      const ratingsArray: RatingItem[] = allCriteria.map(criterion => ({
-        criteriaId: criteriaBlocks.find(b => b.criteria.includes(criterion))?._id || '',
-        criterionName: criterion.name,
-        score: ratings[criterion.name] || 0
-      }));
-
-      try {
-        setSaveStatus('saving');
-        await createRating({
-          eventId: activeTeam.eventId,
-          expertId: expert._id,
-          teamId: activeTeam._id,
-          ratings: ratingsArray
-        }).unwrap();
-
-        setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 2000);
-      } catch (error) {
-        console.error('Error auto-saving rating:', error);
-        setSaveStatus('error');
-        setTimeout(() => setSaveStatus('idle'), 3000);
-      }
-    };
-
-    const timeoutId = setTimeout(() => {
-      saveRatings();
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [ratings, activeTeam, expert, criteriaBlocks, createRating]);
-
-  const handleRatingChange = (criterionName: string, score: number) => {
-    setRatings(prev => ({ ...prev, [criterionName]: score }));
-  };
-
-  const allCriteria = criteriaBlocks.flatMap(block => block.criteria);
-  const ratedCount = allCriteria.filter(c => ratings[c.name] > 0).length;
-  const totalCount = allCriteria.length;
-  const progress = totalCount === 0 ? 0 : Math.round((ratedCount / totalCount) * 100);
-  const isComplete = totalCount > 0 && ratedCount === totalCount;
+  const selectOption = (score: number): void => {
+    const next = [...scores]
+    next[stepIdx] = score
+    setScores(next)
+    if (advRef.current) clearTimeout(advRef.current)
+    advRef.current = setTimeout(() => {
+      if (stepIdx < allCriteria.length - 1) setStepIdx((s) => s + 1)
+      else void submit(next)
+    }, 450)
+  }
 
   if (expertLoading || (teamLoading && !activeTeam) || (criteriaLoading && activeTeam)) {
     return (
-      <Box minH="100vh" bg="#0A0A0A" display="flex" alignItems="center" justifyContent="center">
-        <Text color="#B0B0B0" fontSize="xl">Загрузка...</Text>
-      </Box>
-    );
+      <Flex minH="100vh" bg={thColors.bg} align="center" justify="center">
+        <Spinner color={thColors.green} size="xl" />
+      </Flex>
+    )
   }
 
   if (!expert) {
     return (
-      <Box minH="100vh" bg="#0A0A0A" display="flex" alignItems="center" justifyContent="center">
-        <Text color="#FF0080" fontSize="xl">Ссылка недействительна</Text>
-      </Box>
-    );
+      <Flex minH="100vh" bg={thColors.bg} align="center" justify="center">
+        <Text color="#FF6B6B" fontSize="xl">
+          Ссылка недействительна
+        </Text>
+      </Flex>
+    )
   }
 
+  const crit = allCriteria[stepIdx]
+  const cur = scores[stepIdx] || 0
+
   return (
-    <Box minH="100vh" bg="#0A0A0A">
+    <Flex minH="100vh" bg={thColors.bg} justify="center" align="flex-start" py="28px" px="16px">
       <Box
-        bg="#1A1A1A"
-        borderBottom="1px solid #333333"
-        p={{ base: 4, md: 6 }}
+        w="390px"
+        maxW="100%"
+        borderRadius="34px"
+        overflow="hidden"
+        border={`1px solid ${thColors.border}`}
+        boxShadow="0 30px 80px rgba(0,0,0,0.6)"
       >
-        <Box textAlign="center">
-          <Text
-            fontSize={{ base: 'xl', md: '3xl' }}
-            fontWeight="900"
-            textTransform="uppercase"
-            letterSpacing="-1px"
-            color="#D4FF00"
+        {screen === 'wait' && (
+          <Flex
+            direction="column"
+            minH="720px"
+            p="22px"
+            bgImage={thColors.gradientHero}
+            color="white"
           >
-            {pageTitle}
-          </Text>
-          {event?.name && (
-            <Text fontSize="md" color="#E0E0E0" fontWeight="600" mt={2}>
-              {event.name}
-            </Text>
-          )}
-          <Text fontSize="sm" color="#B0B0B0" mt={1}>
-            {expert.fullName}
-          </Text>
-        </Box>
-      </Box>
-
-      <Box maxW="640px" mx="auto" p={{ base: 4, md: 6 }}>
-        <Stack gap={5}>
-          {activeTeam && (
-            <>
-              <Box
-                bg="#1F1F1F"
-                p={5}
-                border="3px solid #D4FF00"
-                borderRadius="8px"
-                textAlign="center"
-              >
-                <Text
-                  fontSize="xs"
-                  fontWeight="700"
-                  color="#0A0A0A"
-                  bg="#D4FF00"
-                  display="inline-block"
-                  px={3}
-                  py={1}
-                  borderRadius="20px"
-                  mb={3}
-                  textTransform="uppercase"
-                >
-                  {TYPE_LABELS[activeTeam.type] || activeTeam.type}
-                </Text>
-                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="900" color="#FFFFFF" mb={2}>
-                  {activeTeam.name}
-                </Text>
-                <Text color="#B0B0B0" fontSize="sm" maxW="480px" mx="auto">
-                  {CONTEXT_HINTS[activeTeam.type]}
-                </Text>
-                {config.showProjectFields && activeTeam.projectName && (
-                  <Text color="#B0B0B0" fontSize="md" mt={3}>
-                    <Text as="span" color="#D4FF00" fontWeight="700">Проект:</Text> {activeTeam.projectName}
-                  </Text>
-                )}
-              </Box>
-
-              <Text fontSize="sm" color="#B0B0B0" textAlign="center">
-                Шкала: 1 — слабо · 5 — отлично. Достаточно вашего личного впечатления.
+            <Flex justify="space-between" align="center">
+              <BrandMark />
+              <Pill>{PAGE_TITLES[eventType]}</Pill>
+            </Flex>
+            <Flex flex="1" direction="column" justify="center" gap="12px">
+              <Text fontFamily="heading" fontSize="26px" fontWeight="700">
+                {t('expertPage.waiting')}
               </Text>
+              <Text color={thColors.textDim} fontSize="14px" lineHeight="1.5">
+                {t('expertPage.waitingHint')}
+              </Text>
+              <Text fontSize="13px" color={thColors.muted} mt="8px">
+                {expert.fullName}
+                {event?.name ? ` · ${event.name}` : ''}
+              </Text>
+            </Flex>
+          </Flex>
+        )}
 
-              {criteriaBlocks.map((block) => (
-                <Box
-                  key={block._id}
-                  bg="#1F1F1F"
-                  p={{ base: 4, md: 5 }}
-                  border="2px solid #333333"
-                  borderRadius="8px"
-                >
-                  {criteriaBlocks.length > 1 && (
-                    <Text fontSize="md" fontWeight="800" mb={4} color="#D4FF00">
-                      {block.blockName}
+        {screen === 'start' && activeTeam && (
+          <Flex
+            direction="column"
+            minH="720px"
+            p="22px"
+            bgImage={thColors.gradientHero}
+            color="white"
+          >
+            <Flex justify="space-between" align="center">
+              <BrandMark />
+              <Pill variant="green">{TYPE_LABELS[activeTeam.type]}</Pill>
+            </Flex>
+            <Box
+              bg="rgba(255,255,255,0.08)"
+              border="1px solid rgba(255,255,255,0.15)"
+              borderRadius="22px"
+              p="18px"
+              mt="28px"
+            >
+              <Flex gap="14px" align="center">
+                <AvatarInitials name={activeTeam.name} size={56} />
+                <Box>
+                  <Text fontSize="16px" fontWeight="800">
+                    {activeTeam.name}
+                  </Text>
+                  {config.showProjectFields && activeTeam.projectName && (
+                    <Text fontSize="13px" color={thColors.textDim} mt="2px">
+                      {activeTeam.projectName}
                     </Text>
                   )}
-
-                  <Stack gap={3}>
-                    {block.criteria.map((criterion) => (
-                      <Box
-                        key={criterion.name}
-                        p={4}
-                        bg="#1A1A1A"
-                        borderRadius="8px"
-                      >
-                        <Text fontSize="md" color="#FFFFFF" mb={3} fontWeight="600" lineHeight="1.4">
-                          {criterion.name}
-                        </Text>
-
-                        <HStack justify="space-between" align="center" flexWrap="wrap" gap={3}>
-                          <StarRating
-                            value={ratings[criterion.name] || 0}
-                            maxScore={criterion.maxScore}
-                            onChange={(score) => handleRatingChange(criterion.name, score)}
-                            size="lg"
-                          />
-                          <Text fontSize="md" color="#D4FF00" fontWeight="900" minW="48px" textAlign="right">
-                            {ratings[criterion.name] || 0}/{criterion.maxScore}
-                          </Text>
-                        </HStack>
-                      </Box>
-                    ))}
-                  </Stack>
                 </Box>
-              ))}
-
+              </Flex>
               <Box
-                bg="#1F1F1F"
-                p={4}
-                border="2px solid #333333"
-                borderRadius="8px"
-                textAlign="center"
+                display="grid"
+                gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+                gap="7px"
+                mt="16px"
               >
-                <Text fontSize="sm" color="#B0B0B0" mb={2}>
-                  Заполнено {ratedCount} из {totalCount}
+                {allCriteria.slice(0, 4).map((c) => (
+                  <Pill
+                    key={c.name}
+                    w="100%"
+                    justifyContent="center"
+                    textAlign="center"
+                    fontSize="10.5px"
+                    textTransform="uppercase"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    {c.tag || c.name.split(' ')[0]}
+                  </Pill>
+                ))}
+              </Box>
+            </Box>
+            <Text fontSize="13px" color={thColors.textDim} mt="16px">
+              {t('expertPage.scaleHint')}
+            </Text>
+            <Box mt="auto">
+              <GradientButton
+                w="100%"
+                h="58px"
+                fontSize="16px"
+                onClick={() => {
+                  setStepIdx(0)
+                  setScores(Array(allCriteria.length).fill(0))
+                  setScreen('step')
+                }}
+                disabled={!allCriteria.length}
+              >
+                {t('listener.startCta')}
+              </GradientButton>
+            </Box>
+          </Flex>
+        )}
+
+        {screen === 'step' && crit && activeTeam && (
+          <Flex direction="column" minH="720px" color="white" bgImage={thColors.gradientHero}>
+            <Box px="20px" pt="18px">
+              <Flex justify="space-between" align="center">
+                <Pill>{activeTeam.name}</Pill>
+                <Pill fontWeight="700">
+                  {stepIdx + 1} / {allCriteria.length}
+                </Pill>
+              </Flex>
+              <StepProgress total={allCriteria.length} current={stepIdx} />
+              <Box mt="22px">
+                <Pill textTransform="uppercase">{crit.tag || crit.name}</Pill>
+                <Text
+                  fontFamily="heading"
+                  fontSize="22px"
+                  fontWeight="700"
+                  mt="13px"
+                  lineHeight="1.2"
+                >
+                  {crit.name}
                 </Text>
-
-                <Box position="relative" height="28px" bg="#1A1A1A" borderRadius="20px" overflow="hidden" mb={2}>
-                  <Box
-                    position="absolute"
-                    height="100%"
-                    width={`${progress}%`}
-                    bg={isComplete ? '#4CAF50' : '#D4FF00'}
-                    transition="all 0.3s ease"
-                    borderRadius="20px"
-                  />
-                </Box>
-
-                {saveStatus === 'saving' && (
-                  <Text color="#FF6B00" fontSize="sm" fontWeight="700">
-                    Сохранение...
-                  </Text>
-                )}
-
-                {saveStatus === 'saved' && (
-                  <Text color="#4CAF50" fontSize="sm" fontWeight="700">
-                    Сохранено
-                  </Text>
-                )}
-
-                {saveStatus === 'error' && (
-                  <Text color="#FF4444" fontSize="sm" fontWeight="700">
-                    Не удалось сохранить. Попробуйте ещё раз.
-                  </Text>
-                )}
-
-                {isComplete && (
-                  <Text color="#4CAF50" fontSize="md" fontWeight="800" mt={2}>
-                    Готово. Спасибо за оценку!
+                {crit.hint && (
+                  <Text fontSize="13px" color={thColors.textDim} mt="7px">
+                    {crit.hint}
                   </Text>
                 )}
               </Box>
-            </>
-          )}
-
-          {!activeTeam && (
-            <Box
-              textAlign="center"
-              py={{ base: 12, md: 16 }}
-              px={4}
-              bg="#1F1F1F"
-              border="2px solid #333333"
-              borderRadius="8px"
-            >
-              <Text color="#D4FF00" fontSize="2xl" fontWeight="900" mb={3}>
-                {waiting.title}
-              </Text>
-              <Text color="#FFFFFF" fontSize="lg" mb={2}>
-                {waiting.body}
-              </Text>
-              <Text color="#B0B0B0" fontSize="md" maxW="420px" mx="auto">
-                {waiting.hint}
-              </Text>
             </Box>
-          )}
-        </Stack>
-      </Box>
-    </Box>
-  );
-};
+            <Flex
+              flex="1"
+              direction="column"
+              gap="9px"
+              bg={thColors.surface}
+              borderRadius="28px 28px 0 0"
+              mt="18px"
+              px="18px"
+              py="20px"
+            >
+              {(crit.options?.length ? crit.options : defaultOptions(crit.maxScore || 5)).map(
+                (o, i) => (
+                  <KeyOption
+                    key={`${crit.name}-${i}`}
+                    num={i + 1}
+                    title={o.title}
+                    subtitle={o.subtitle}
+                    selected={cur === i + 1}
+                    onClick={() => selectOption(i + 1)}
+                  />
+                )
+              )}
+              <Flex gap="10px" mt="auto" pt="10px">
+                <GradientButton
+                  variant="ghost"
+                  h="52px"
+                  onClick={() =>
+                    stepIdx > 0 ? setStepIdx((s) => s - 1) : setScreen('start')
+                  }
+                >
+                  {t('listener.back')}
+                </GradientButton>
+                <GradientButton
+                  flex="1"
+                  h="52px"
+                  disabled={!cur}
+                  onClick={() => {
+                    if (stepIdx < allCriteria.length - 1) setStepIdx((s) => s + 1)
+                    else void submit(scores)
+                  }}
+                >
+                  {!cur
+                    ? t('listener.pickKey')
+                    : stepIdx < allCriteria.length - 1
+                      ? t('listener.next')
+                      : t('expertPage.saveButton')}
+                </GradientButton>
+              </Flex>
+            </Flex>
+          </Flex>
+        )}
 
-export default AssessmentExpertPage;
+        {screen === 'done' && (
+          <Flex
+            direction="column"
+            minH="720px"
+            p="22px"
+            bg={thColors.surface}
+            color="white"
+            align="center"
+            justify="center"
+            textAlign="center"
+            gap="14px"
+          >
+            <Flex
+              w="100px"
+              h="100px"
+              borderRadius="26px"
+              bg="linear-gradient(180deg,#4BE96A,#1FA53E)"
+              boxShadow={`0 9px 0 ${thColors.greenShadow}`}
+              align="center"
+              justify="center"
+              transform="rotate(-6deg)"
+              animation="popIn 0.5s ease"
+            >
+              <Text fontSize="40px" color="#04220C" fontWeight="800">
+                ✓
+              </Text>
+            </Flex>
+            <Text fontFamily="heading" fontSize="24px" fontWeight="700">
+              {t('listener.doneTitle')}
+              <br />
+              {t('listener.doneTitleProd')}
+            </Text>
+            <Text color={thColors.textDim} fontSize="14px">
+              {saveStatus === 'error' ? t('expertPage.error') : t('expertPage.done')}
+            </Text>
+            {activeTeam && (
+              <Text fontSize="13px" color={thColors.muted}>
+                {activeTeam.name}
+              </Text>
+            )}
+            <Text fontSize="12px" color={thColors.textFaint} mt="8px">
+              {t('expertPage.waitingHint')}
+            </Text>
+          </Flex>
+        )}
+      </Box>
+    </Flex>
+  )
+}
+
+export default AssessmentExpertPage

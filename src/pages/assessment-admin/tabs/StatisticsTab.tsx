@@ -26,8 +26,8 @@ const TYPE_LABELS: Record<TeamType, string> = {
 };
 
 const TYPE_COLORS: Record<TeamType, string> = {
-  team: '#D4FF00',
-  participant: '#FF0080',
+  team: '#3DDC50',
+  participant: '#4FC9F0',
   speaker: '#4CAF50',
   event: '#FF6B00'
 };
@@ -75,16 +75,16 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId, eventType
         {evaluatedStatistics.map((stat) => (
           <Box
             key={stat.team._id}
-            bg="#1F1F1F"
+            bg="#0C1218"
             p={5}
-            border="3px solid #333333"
+            border="3px solid rgba(255,255,255,0.12)"
             borderRadius="8px"
             transition="all 0.3s"
-            _hover={{ borderColor: '#FF0080', transform: 'translateY(-5px)' }}
+            _hover={{ borderColor: '#4FC9F0', transform: 'translateY(-5px)' }}
           >
             <HStack justify="space-between" mb={3}>
               <Badge
-                bg={TYPE_COLORS[stat.team.type] || '#D4FF00'}
+                bg={TYPE_COLORS[stat.team.type] || '#3DDC50'}
                 color="#000000"
                 px={3}
                 py={1}
@@ -106,12 +106,12 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId, eventType
 
             {stat.team.projectName && (
               <Text fontSize="sm" color="#B0B0B0" mb={3}>
-                <Text as="span" color="#D4FF00" fontWeight="700">Проект:</Text> {stat.team.projectName}
+                <Text as="span" color="#3DDC50" fontWeight="700">Проект:</Text> {stat.team.projectName}
               </Text>
             )}
 
             <Box
-              bg="#D4FF00"
+              bg="#3DDC50"
               color="#000000"
               p={3}
               borderRadius="8px"
@@ -137,13 +137,13 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId, eventType
                     justify="space-between"
                     px={3}
                     py={2}
-                    bg="#1A1A1A"
+                    bg="#141C24"
                     borderRadius="4px"
                   >
                     <Text color="#B0B0B0" fontSize="sm" lineClamp={1} flex={1}>
                       {criteria.name}
                     </Text>
-                    <Text color="#D4FF00" fontSize="sm" fontWeight="700">
+                    <Text color="#3DDC50" fontSize="sm" fontWeight="700">
                       {criteria.average.toFixed(1)}
                     </Text>
                   </HStack>
@@ -157,12 +157,12 @@ export const StatisticsTab: React.FC<StatisticsTabProps> = ({ eventId, eventType
                   Оценки экспертов:
                 </Text>
                 {stat.ratings.map((rating, index) => (
-                  <Box key={index} px={3} py={2} bg="#1A1A1A" borderRadius="4px">
+                  <Box key={index} px={3} py={2} bg="#141C24" borderRadius="4px">
                     <HStack justify="space-between" mb={1}>
-                      <Text color="#FF0080" fontSize="sm" fontWeight="700">
+                      <Text color="#4FC9F0" fontSize="sm" fontWeight="700">
                         {rating.expert}
                       </Text>
-                      <Text color="#D4FF00" fontSize="sm" fontWeight="700">
+                      <Text color="#3DDC50" fontSize="sm" fontWeight="700">
                         {rating.totalScore} баллов
                       </Text>
                     </HStack>

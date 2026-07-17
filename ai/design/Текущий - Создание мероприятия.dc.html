@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#0A0A0A;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto",sans-serif}
+a{color:#D4FF00;text-decoration:none} a:hover{color:#C4EF00}
+input,textarea{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#0A0A0A;color:#fff;padding:32px 0">
+  <div style="max-width:1000px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:32px">
+    <div style="display:flex;align-items:center;gap:16px">
+      <button style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:transparent;color:#fff;border:none;border-radius:6px;cursor:pointer" style-hover="background:#1A1A1A"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg></button>
+      <div style="font-size:30px;font-weight:700;color:#D4FF00">Создание мероприятия</div>
+    </div>
+    <div style="background:#1A1A1A;padding:24px;border-radius:8px;border:1px solid #333333">
+      <div style="display:flex;gap:16px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div style="flex:1;display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ s.circleBg }};color:{{ s.circleColor }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0">{{ s.num }}</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:{{ s.titleColor }}">{{ s.title }}</div>
+              <div style="font-size:12px;color:{{ s.descColor }}">{{ s.desc }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="background:#1A1A1A;padding:32px;border-radius:8px;border:1px solid #333333;min-height:400px">
+      <sc-if value="{{ isStep0 }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="font-size:18px;font-weight:700;color:#fff">Выберите тип мероприятия</div>
+          <div style="font-size:14px;color:#B0B0B0">Тип задаёт, что будут оценивать эксперты. После создания изменить его нельзя.</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ types }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="text-align:left;padding:20px;border-radius:8px;border:2px solid {{ t.border }};background:{{ t.bg }};cursor:pointer;width:100%" style-hover="border-color:#D4FF00">
+                <div style="font-size:18px;font-weight:900;color:{{ t.titleColor }};margin-bottom:4px">{{ t.title }}</div>
+                <div style="font-size:14px;color:#B0B0B0">{{ t.desc }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div>
+            <div style="color:#fff;font-weight:500;font-size:18px;margin-bottom:8px">Название мероприятия <span style="color:#FF4444">*</span></div>
+            <input placeholder="Введите название" style="width:100%;box-sizing:border-box;height:48px;padding:0 16px;background:#0A0A0A;border:1px solid #333333;border-radius:6px;color:#fff;font-size:16px;outline:none" style-focus="border-color:#D4FF00;box-shadow:0 0 0 1px #D4FF00" />
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:500;font-size:18px;margin-bottom:8px">Дата проведения <span style="color:#FF4444">*</span></div>
+            <input type="date" style="width:100%;box-sizing:border-box;height:48px;padding:0 16px;background:#0A0A0A;border:1px solid #333333;border-radius:6px;color:#fff;font-size:16px;outline:none;color-scheme:dark" style-focus="border-color:#D4FF00;box-shadow:0 0 0 1px #D4FF00" />
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div>
+            <div style="color:#fff;font-weight:500;font-size:18px;margin-bottom:8px">Описание мероприятия</div>
+            <textarea placeholder="Введите описание" rows="6" style="width:100%;box-sizing:border-box;padding:12px 16px;background:#0A0A0A;border:1px solid #333333;border-radius:6px;color:#fff;font-size:16px;outline:none;resize:vertical" style-focus="border-color:#D4FF00;box-shadow:0 0 0 1px #D4FF00"></textarea>
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:500;font-size:18px;margin-bottom:8px">Место проведения</div>
+            <input placeholder="Введите место проведения" style="width:100%;box-sizing:border-box;height:48px;padding:0 16px;background:#0A0A0A;border:1px solid #333333;border-radius:6px;color:#fff;font-size:16px;outline:none" style-focus="border-color:#D4FF00;box-shadow:0 0 0 1px #D4FF00" />
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div style="font-size:24px;font-weight:700;color:#D4FF00">Проверьте данные</div>
+          <div style="background:#0A0A0A;padding:24px;border-radius:6px;border:1px solid #333333;display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:4px">Тип:</div>
+              <div style="font-size:20px;font-weight:700;color:#D4FF00">Хакатон</div>
+              <div style="font-size:14px;color:#B0B0B0">Оценка команд и участниц</div>
+            </div>
+            <div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:4px">Название:</div>
+              <div style="font-size:20px;font-weight:700;color:#fff">Хакатон Весна 2026</div>
+            </div>
+            <div>
+              <div style="font-size:14px;color:#B0B0B0;margin-bottom:4px">Дата:</div>
+              <div style="font-size:18px;color:#fff">18 июля 2026 г.</div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:flex-end">
+      <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ back }}" style="height:48px;padding:0 32px;background:transparent;border:1px solid #666666;color:#fff;border-radius:6px;font-size:16px;cursor:pointer" style-hover="background:#1A1A1A;border-color:#D4FF00">Назад</button>
+      </sc-if>
+      <button style="height:48px;padding:0 32px;background:transparent;border:1px solid #666666;color:#fff;border-radius:6px;font-size:16px;cursor:pointer" style-hover="background:#1A1A1A;border-color:#FF4444">Отмена</button>
+      <sc-if value="{{ canNext }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ next }}" style="height:48px;padding:0 32px;background:#D4FF00;color:#0A0A0A;font-weight:700;border:none;border-radius:6px;font-size:16px;cursor:pointer" style-hover="background:#C4EF00">Далее</button>
+      </sc-if>
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <button style="height:48px;padding:0 32px;background:#D4FF00;color:#0A0A0A;font-weight:700;border:none;border-radius:6px;font-size:16px;cursor:pointer" style-hover="background:#C4EF00">Создать</button>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 0, type: 'hackathon' };
+  renderVals() {
+    const stepDefs = [
+      { title: 'Тип мероприятия', desc: 'Выберите формат оценки' },
+      { title: 'Основная информация', desc: 'Название и дата мероприятия' },
+      { title: 'Детали', desc: 'Описание и место проведения' },
+      { title: 'Подтверждение', desc: 'Проверьте данные' }
+    ];
+    const typeDefs = [
+      { id: 'hackathon', title: 'Хакатон', desc: 'Оценка команд и участниц' },
+      { id: 'queen_of_code', title: 'Королева кода', desc: 'Оценка участниц конкурса' },
+      { id: 'conference', title: 'Конференция / митап', desc: 'Оценка спикеров и мероприятия' }
+    ];
+    const step = this.state.step;
+    return {
+      steps: stepDefs.map((s, i) => ({
+        num: i + 1, title: s.title, desc: s.desc,
+        circleBg: i <= step ? '#D4FF00' : '#333333',
+        circleColor: i <= step ? '#0A0A0A' : '#999999',
+        titleColor: i <= step ? '#fff' : '#999999',
+        descColor: i <= step ? '#D0D0D0' : '#666666'
+      })),
+      types: typeDefs.map(t => {
+        const sel = this.state.type === t.id;
+        return {
+          title: t.title, desc: t.desc,
+          border: sel ? '#D4FF00' : '#333333',
+          bg: sel ? '#222200' : '#0A0A0A',
+          titleColor: sel ? '#D4FF00' : '#fff',
+          onClick: () => this.setState({ type: t.id })
+        };
+      }),
+      isStep0: step === 0, isStep1: step === 1, isStep2: step === 2, isStep3: step === 3,
+      canBack: step > 0, canNext: step < 3,
+      next: () => this.setState(s => ({ step: Math.min(3, s.step + 1) })),
+      back: () => this.setState(s => ({ step: Math.max(0, s.step - 1) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
