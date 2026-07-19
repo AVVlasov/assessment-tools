@@ -31,6 +31,10 @@ export const hallsApi = createApi({
       query: (id) => ({ url: `/halls/${id}/pause`, method: 'POST' }),
       invalidatesTags: ['Hall', 'ListenerStats', 'ListenerHall'],
     }),
+    pauseAllHalls: builder.mutation<{ paused: number }, { eventId: string }>({
+      query: (body) => ({ url: '/halls/pause-all', method: 'POST', body }),
+      invalidatesTags: ['Hall', 'ListenerStats', 'ListenerHall'],
+    }),
     restartHall: builder.mutation<Hall, { id: string; clearRatings?: boolean }>({
       query: ({ id, clearRatings }) => ({
         url: `/halls/${id}/restart`,
@@ -63,6 +67,7 @@ export const {
   useDeleteHallMutation,
   useNextHallSpeakerMutation,
   usePauseHallMutation,
+  usePauseAllHallsMutation,
   useRestartHallMutation,
   useSetHallSpeakerMutation,
   useGetHallQrQuery,

@@ -55,7 +55,6 @@ export const AssessmentListenerPage: React.FC = () => {
   const [reactions, setReactions] = useState<Record<string, boolean>>({})
   const [startAt, setStartAt] = useState(0)
   const [elapsed, setElapsed] = useState(0)
-  const [place, setPlace] = useState(0)
   const [userAvg, setUserAvg] = useState('—')
   const advRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -75,8 +74,16 @@ export const AssessmentListenerPage: React.FC = () => {
   const crit = criteria[stepIdx]
   const curRating = ratings[stepIdx] || 0
   const speaker = data?.currentSpeaker
-  const nextTalk = data?.nextSpeaker
   const isLive = data?.hall.status === 'live' && !!speaker
+
+  useEffect(() => {
+    if (mode === 'conf' || screen !== 'step' || isLive) return
+    if (advRef.current) clearTimeout(advRef.current)
+    setScreen('start')
+    setRatings([])
+    setReactions({})
+    setStepIdx(0)
+  }, [isLive, mode, screen])
 
   const startFlow = (): void => {
     setScreen('step')
@@ -117,7 +124,7 @@ export const AssessmentListenerPage: React.FC = () => {
     })
 
     try {
-      const res = await createRating({
+      await createRating({
         eventId: data.event._id,
         hallId: data.hall._id,
         teamId: mode === 'conf' ? null : speaker?._id || null,
@@ -127,9 +134,8 @@ export const AssessmentListenerPage: React.FC = () => {
         reactions: Object.keys(reactions).filter((k) => reactions[k]),
         elapsedSeconds: elapsedSec,
       }).unwrap()
-      setPlace(res.place)
     } catch {
-      setPlace((data.ratingsCount || 0) + 1)
+      /* keep done screen even if save fails */
     }
     setScreen('done')
   }
@@ -210,10 +216,27 @@ export const AssessmentListenerPage: React.FC = () => {
           minH="780px"
           color="white"
           p="22px"
+          bg={thColors.bg}
           bgImage={thColors.gradientHero}
+          backgroundRepeat="no-repeat"
+          backgroundSize="cover"
           boxSizing="border-box"
+          position="relative"
+          overflow="hidden"
         >
-          <Flex justify="space-between" align="center">
+          <Box
+            position="absolute"
+            top="-180px"
+            right="-120px"
+            w="420px"
+            h="420px"
+            borderRadius="50%"
+            bg="radial-gradient(circle,#2FD37B 0%,#12A8A6 42%,transparent 70%)"
+            filter="blur(64px)"
+            opacity={0.55}
+            pointerEvents="none"
+          />
+          <Flex position="relative" justify="space-between" align="center">
             <BrandMark />
             <Pill variant="outline" dot>
               {isConf ? t('listener.confBadge') : `${t('listener.hallBadge')} ${data.hall.name}`}
@@ -221,12 +244,12 @@ export const AssessmentListenerPage: React.FC = () => {
           </Flex>
 
           {!isLive && !isConf ? (
-            <Flex flex="1" direction="column" justify="center" gap={4}>
+            <Flex position="relative" flex="1" direction="column" justify="center" gap={4}>
               <Text fontFamily="heading" fontSize="24px" fontWeight="700">
-                {t('listener.waitingBreak')}
+                {t('listener.votingStopped')}
               </Text>
               <GradientButton variant="ghost" onClick={() => refetch()}>
-                Обновить
+                {t('listener.refresh')}
               </GradientButton>
             </Flex>
           ) : (
@@ -506,7 +529,6 @@ export const AssessmentListenerPage: React.FC = () => {
 
           <Flex position="relative" gap="10px" mt="24px">
             {[
-              { v: place ? `${place}-й` : '—', l: t('listener.placeLabel'), c: thColors.greenLight },
               { v: userAvg, l: t('listener.avgLabel'), c: 'white' },
               { v: `${elapsed}с`, l: t('listener.timeLabel'), c: 'white' },
             ].map((m) => (
@@ -553,109 +575,6 @@ export const AssessmentListenerPage: React.FC = () => {
               ))}
             </Flex>
           </Box>
-
-          <Box
-            position="relative"
-            bg="linear-gradient(135deg,rgba(0,174,239,0.15),rgba(61,220,80,0.1))"
-            border="1.5px solid rgba(0,174,239,0.4)"
-            borderRadius="18px"
-            p="13px 16px"
-            mt="12px"
-            display="flex"
-            alignItems="center"
-            gap="12px"
-          >
-            <Box
-              w="42px"
-              h="42px"
-              borderRadius="12px"
-              bg="linear-gradient(180deg,#57C8F2,#2A8FC0)"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              fontSize="18px"
-              flexShrink={0}
-            >
-              ★
-            </Box>
-            <Box>
-              <Text fontSize="13.5px" fontWeight="800" color="#7FD9F7">
-                {isConf ? t('listener.achConf') : t('listener.achSpeaker')}
-              </Text>
-              <Text fontSize="11.5px" color={thColors.textFaint} mt="2px">
-                {isConf ? t('listener.achConfSub') : t('listener.achSpeakerSub')}
-              </Text>
-            </Box>
-          </Box>
-
-          <Flex position="relative" mt="auto" direction="column" gap="10px" pt="14px">
-            {(nextTalk || isConf) && (
-              <Flex
-                bg="linear-gradient(135deg,rgba(0,174,239,0.15),rgba(61,220,80,0.1))"
-                border="1.5px solid rgba(0,174,239,0.4)"
-                borderRadius="18px"
-                p="13px 16px"
-                align="center"
-                gap="12px"
-              >
-                <AvatarInitials
-                  name={isConf ? 'AP' : nextTalk?.name || '—'}
-                  size={40}
-                />
-                <Box flex="1" minW={0}>
-                  <Text
-                    fontSize="10.5px"
-                    color={thColors.greenLight}
-                    fontWeight="700"
-                    textTransform="uppercase"
-                    letterSpacing="0.5px"
-                  >
-                    {isConf ? t('listener.nextProgram') : t('listener.nextInHall')}
-                    {' · '}
-                    {isConf ? '18:10' : nextTalk?.scheduledTime || ''}
-                  </Text>
-                  <Text fontSize="13px" fontWeight="700" mt="2px">
-                    {isConf
-                      ? 'Afterparty'
-                      : `${nextTalk?.projectName || ''} · ${nextTalk?.name || ''}`}
-                  </Text>
-                </Box>
-              </Flex>
-            )}
-            {!isConf && (
-              <GradientButton
-                variant="cyan"
-                h="52px"
-                onClick={() => {
-                  setMode('conf')
-                  setScreen('start')
-                  setRatings([])
-                  setReactions({})
-                  setStepIdx(0)
-                }}
-              >
-                {t('listener.rateConf')}
-              </GradientButton>
-            )}
-            <GradientButton
-              variant="ghost"
-              h="52px"
-              onClick={() => {
-                if (isConf) {
-                  setMode('speaker')
-                  setScreen('start')
-                } else {
-                  setScreen('start')
-                  refetch()
-                }
-                setRatings([])
-                setReactions({})
-                setStepIdx(0)
-              }}
-            >
-              {isConf ? t('listener.toHome') : t('listener.rateNext')}
-            </GradientButton>
-          </Flex>
         </Flex>
       )}
     </Box>

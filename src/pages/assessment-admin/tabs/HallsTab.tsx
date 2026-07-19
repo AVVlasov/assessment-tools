@@ -12,8 +12,10 @@ import {
 import { thColors } from '../../../theme'
 import {
   useCreateHallMutation,
+  useDeleteHallMutation,
   useGetHallsQuery,
   useNextHallSpeakerMutation,
+  usePauseAllHallsMutation,
   usePauseHallMutation,
   useRestartHallMutation,
 } from '../../../__data__/api'
@@ -34,8 +36,10 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   const { data: halls = [], isLoading } = useGetHallsQuery(eventId)
   const { data: stats } = useGetListenerStatsQuery({ eventId })
   const [createHall] = useCreateHallMutation()
+  const [deleteHall] = useDeleteHallMutation()
   const [nextSpeaker] = useNextHallSpeakerMutation()
   const [pauseHall] = usePauseHallMutation()
+  const [pauseAllHalls] = usePauseAllHallsMutation()
   const [restartHall] = useRestartHallMutation()
   const [resetSpeakerRatings] = useResetSpeakerRatingsMutation()
   const [resetHallRatings] = useResetHallRatingsMutation()
@@ -44,6 +48,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   const [qrHallId, setQrHallId] = useState<string | null>(null)
 
   const qrHall = useMemo(() => halls.find((h) => h._id === qrHallId) || null, [halls, qrHallId])
+  const hasLiveHall = halls.some((h) => h.status === 'live')
 
   const handleAdd = async (): Promise<void> => {
     if (!name.trim()) return
@@ -92,6 +97,21 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
           {stats?.totalRatings ?? 0} {t('admin.ratingsToday')}
         </Pill>
         <Flex gap="8px" flexWrap="wrap">
+          <GradientButton
+            h="36px"
+            fontSize="12px"
+            variant="ghost"
+            color="#FF6B6B"
+            borderColor="rgba(255,100,100,0.45)"
+            disabled={!hasLiveHall}
+            onClick={() => {
+              if (window.confirm(t('admin.confirmStopAllVoting'))) {
+                void pauseAllHalls({ eventId })
+              }
+            }}
+          >
+            {t('admin.stopAllVoting')}
+          </GradientButton>
           <GradientButton
             h="36px"
             fontSize="12px"
@@ -318,6 +338,22 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                     }}
                   >
                     {t('admin.resetHallRatings')}
+                  </GradientButton>
+                  <GradientButton
+                    h="34px"
+                    px="12px"
+                    fontSize="11px"
+                    variant="ghost"
+                    borderRadius="12px"
+                    color="#FF6B6B"
+                    borderColor="rgba(255,80,80,0.5)"
+                    onClick={() => {
+                      if (window.confirm(t('admin.confirmDeleteHall'))) {
+                        void deleteHall(h._id)
+                      }
+                    }}
+                  >
+                    {t('admin.deleteHall')}
                   </GradientButton>
                 </Flex>
               </SurfaceCard>

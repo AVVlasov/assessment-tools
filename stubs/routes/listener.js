@@ -136,6 +136,19 @@ router.post('/ratings', async (req, res) => {
       return res.status(400).json({ error: 'eventId, sessionId and scores are required' });
     }
 
+    if (targetType !== 'event') {
+      if (!hallId) {
+        return res.status(400).json({ error: 'hallId is required' });
+      }
+      const hall = await Hall.findById(hallId);
+      if (!hall) {
+        return res.status(404).json({ error: 'Hall not found' });
+      }
+      if (hall.status !== 'live') {
+        return res.status(403).json({ error: 'Voting is stopped for this hall' });
+      }
+    }
+
     const cleanedScores = sanitizeScores(scores);
     if (!cleanedScores) {
       return res.status(400).json({

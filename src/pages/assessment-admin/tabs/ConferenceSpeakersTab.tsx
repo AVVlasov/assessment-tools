@@ -14,6 +14,7 @@ import {
   useDeleteTeamMutation,
   useGetHallsQuery,
   useGetTeamsQuery,
+  usePauseHallMutation,
   useSetHallSpeakerMutation,
   useUpdateTeamMutation,
 } from '../../../__data__/api'
@@ -54,6 +55,7 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
   const [updateTeam] = useUpdateTeamMutation()
   const [deleteTeam] = useDeleteTeamMutation()
   const [setHallSpeaker] = useSetHallSpeakerMutation()
+  const [pauseHall] = usePauseHallMutation()
   const [resetSpeakerRatings] = useResetSpeakerRatingsMutation()
 
   const [form, setForm] = useState<EditState>(emptyForm())
@@ -377,6 +379,22 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
                   }}
                 >
                   {t('admin.setLive')}
+                </GradientButton>
+              )}
+              {sp.hallId && sp.status === 'live' && (
+                <GradientButton
+                  h="30px"
+                  px="10px"
+                  fontSize="11px"
+                  borderRadius="10px"
+                  variant="ghost"
+                  color="#FF6B6B"
+                  borderColor="rgba(255,80,80,0.5)"
+                  onClick={() => {
+                    void pauseHall(sp.hallId as string).then(refresh)
+                  }}
+                >
+                  {t('admin.pauseHall')}
                 </GradientButton>
               )}
               <GradientButton

@@ -72,6 +72,33 @@ router.post('/', async (req, res) => {
   }
 });
 
+// POST /api/halls/pause-all — остановить голосование во всех залах события
+router.post('/pause-all', async (req, res) => {
+  try {
+    const { eventId } = req.body || {};
+    if (!eventId) {
+      return res.status(400).json({ error: 'eventId is required' });
+    }
+    const halls = await Hall.find({ eventId, status: 'live' });
+    const updated = [];
+    for (const hall of halls) {
+      hall.status = 'break';
+      const speakers = await Team.find({ eventId: hall.eventId, type: 'speaker', hallId: hall._id })
+        .sort({ order: 1, scheduledTime: 1 });
+      await syncHallVoting(hall, speakers);
+      await hall.save();
+      updated.push({
+        ...hall.toObject(),
+        speakers,
+        currentSpeaker: speakers[hall.currentSpeakerIndex] || null
+      });
+    }
+    res.json({ paused: updated.length, halls: updated });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // PUT /api/halls/:id
 router.put('/:id', async (req, res) => {
   try {
@@ -101,6 +128,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Hall not found' });
     }
     await Team.updateMany({ hallId: hall._id }, { $set: { hallId: null } });
+    await ListenerRating.deleteMany({ hallId: hall._id });
     res.json({ message: 'Hall deleted', hall });
   } catch (error) {
     res.status(500).json({ error: error.message });
