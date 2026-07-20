@@ -38,6 +38,10 @@ const hallSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  color: {
+    type: String,
+    default: '#4FC9F0'
+  },
   createdAt: {
     type: Date,
     default: Date.now

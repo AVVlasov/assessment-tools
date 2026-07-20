@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Flex, Text, Spinner } from '@chakra-ui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { BrandMark, GradientButton, Pill } from '../../components/tehnohub'
+import { GradientButton, Pill } from '../../components/tehnohub'
 import { thColors } from '../../theme'
 import { useGetEventQuery, useToggleVotingMutation } from '../../__data__/api'
 import { useGetListenerStatsQuery } from '../../__data__/api/listenerApi'
@@ -14,6 +14,7 @@ import { StatisticsTab } from './tabs/StatisticsTab'
 import { Top3Tab } from './tabs/Top3Tab'
 import { HallsTab } from './tabs/HallsTab'
 import { ConferenceSpeakersTab } from './tabs/ConferenceSpeakersTab'
+import { ConferenceCriteriaTab } from './tabs/ConferenceCriteriaTab'
 import { ListenerStatsTab } from './tabs/ListenerStatsTab'
 import { Switch } from '../../components/ui/switch'
 
@@ -38,8 +39,9 @@ export const AssessmentAdminPage: React.FC = () => {
   )
 
   React.useEffect(() => {
-    setTab(isConference ? 'halls' : 'teams')
-  }, [isConference, eventId])
+    if (!event) return
+    setTab(event.eventType === 'conference' ? 'halls' : 'teams')
+  }, [eventId, event?.eventType])
 
   if (!eventId) {
     return (
@@ -60,8 +62,8 @@ export const AssessmentAdminPage: React.FC = () => {
   const conferenceTabs = [
     { id: 'halls', label: t('tabs.halls') },
     { id: 'speakers', label: t('tabs.speakersSchedule') },
+    { id: 'criteria', label: t('tabs.criteriaShort') },
     { id: 'stats', label: t('tabs.listenerStats') },
-    { id: 'criteria', label: t('tabs.criteria') },
   ]
 
   const classicTabs = [
@@ -83,22 +85,39 @@ export const AssessmentAdminPage: React.FC = () => {
         px={{ base: '16px', md: '30px' }}
         pt="20px"
         pb="20px"
-        borderRadius="0 0 26px 26px"
+        borderRadius="0 0 18px 18px"
       >
-        <Flex justify="space-between" align="center" flexWrap="wrap" gap="12px" mb="14px">
+        <Flex justify="space-between" align="center" flexWrap="wrap" gap="12px">
           <Flex align="center" gap="12px" flexWrap="wrap">
-            <GradientButton
-              variant="ghost"
-              h="34px"
-              fontSize="12px"
-              onClick={() => navigate('/assessment-tools')}
-            >
-              ← Назад
-            </GradientButton>
-            <BrandMark />
+            {!isConference && (
+              <GradientButton
+                variant="ghost"
+                h="34px"
+                fontSize="12px"
+                onClick={() => navigate('/assessment-tools')}
+              >
+                Назад
+              </GradientButton>
+            )}
             <Text fontFamily="heading" fontSize="19px" fontWeight="700" letterSpacing="-0.5px">
               {isConference ? t('admin.consoleTitle') : event.name}
             </Text>
+            <Flex gap="6px" flexWrap="wrap">
+              {tabs.map((tb) => (
+                <GradientButton
+                  key={tb.id}
+                  h="34px"
+                  px="17px"
+                  fontSize="12.5px"
+                  fontWeight="600"
+                  variant={tab === tb.id ? 'primary' : 'ghost'}
+                  boxShadow={tab === tb.id ? 'none' : undefined}
+                  onClick={() => setTab(tb.id)}
+                >
+                  {tb.label}
+                </GradientButton>
+              ))}
+            </Flex>
           </Flex>
           <Flex gap="8px" align="center" flexWrap="wrap">
             {isConference ? (
@@ -120,37 +139,17 @@ export const AssessmentAdminPage: React.FC = () => {
         </Flex>
 
         {!isConference && (
-          <Text fontSize="14px" color={thColors.textDim} mb="12px">
+          <Text fontSize="14px" color={thColors.textDim} mt="12px">
             {event.name}
           </Text>
         )}
-
-        <Flex gap="6px" flexWrap="wrap">
-          {tabs.map((tb) => (
-            <GradientButton
-              key={tb.id}
-              h="34px"
-              px="17px"
-              fontSize="12.5px"
-              variant={tab === tb.id ? 'primary' : 'ghost'}
-              bg={tab === tb.id ? 'white' : undefined}
-              color={tab === tb.id ? thColors.surface : 'rgba(255,255,255,0.8)'}
-              boxShadow="none"
-              onClick={() => setTab(tb.id)}
-            >
-              {tb.label}
-            </GradientButton>
-          ))}
-        </Flex>
       </Box>
 
       <Box maxW="1280px" mx="auto" px={{ base: '16px', md: '30px' }} py="22px">
         {isConference && tab === 'halls' && <HallsTab eventId={eventId} />}
         {isConference && tab === 'speakers' && <ConferenceSpeakersTab eventId={eventId} />}
         {isConference && tab === 'stats' && <ListenerStatsTab eventId={eventId} />}
-        {isConference && tab === 'criteria' && (
-          <CriteriaTab eventId={eventId} eventType={event.eventType || 'conference'} />
-        )}
+        {isConference && tab === 'criteria' && <ConferenceCriteriaTab eventId={eventId} />}
 
         {!isConference && tab === 'teams' && (
           <TeamsTab eventId={eventId} eventType={event.eventType || 'hackathon'} />

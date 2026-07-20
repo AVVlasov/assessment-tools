@@ -13,28 +13,30 @@ export interface AvatarInitialsProps extends BoxProps {
   name: string
   size?: number
   live?: boolean
+  initials?: string
 }
 
 export const AvatarInitials = ({
   name,
   size = 48,
   live = true,
+  initials,
   ...rest
 }: AvatarInitialsProps): React.ReactElement => (
   <Box
     w={`${size}px`}
     h={`${size}px`}
-    borderRadius={`${Math.round(size * 0.3)}px`}
+    borderRadius={`${Math.round(size * 0.25)}px`}
     bg={live ? thColors.cyan : '#2B3947'}
     color={live ? thColors.cyanDeep : thColors.muted}
     display="flex"
     alignItems="center"
     justifyContent="center"
     fontWeight="800"
-    fontSize={`${Math.round(size * 0.32)}px`}
+    fontSize={`${Math.round(size * 0.34)}px`}
     flexShrink={0}
     {...rest}
   >
-    {getInitials(name)}
+    {initials || getInitials(name)}
   </Box>
 )

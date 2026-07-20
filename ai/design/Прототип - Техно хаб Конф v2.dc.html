@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060B10;font-family:'Golos Text',system-ui,sans-serif;color:#fff}
+a{color:#7CF29A}a:hover{color:#3DDC50}
+input{outline:none}
+@keyframes popIn{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes floatUp{0%{transform:translateY(14px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.45}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+  <div style="display:flex;justify-content:center;align-items:center;gap:10px;padding:16px;border-bottom:1px solid rgba(255,255,255,.07)">
+    <div style="display:flex;align-items:center;gap:5px;margin-right:10px"><span style="width:12px;height:12px;border-radius:50%;background:#fff"></span><span style="width:12px;height:12px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:12px;height:12px;border-radius:50%;border:1.5px solid #fff"></span></div>
+    <span style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;margin-right:14px">Техно хаб Конф</span>
+    <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+      <button onClick="{{ m.onClick }}" style="height:36px;padding:0 20px;border-radius:30px;border:{{ m.border }};background:{{ m.bg }};color:{{ m.color }};font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">{{ m.label }}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isListener }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;justify-content:center;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.07);flex-wrap:wrap">
+      <span style="font-size:11px;color:rgba(255,255,255,.4);font-weight:600;margin-right:4px">Сценарий:</span>
+      <sc-for list="{{ scenChips }}" as="sn" hint-placeholder-count="6">
+        <button onClick="{{ sn.onClick }}" style="height:28px;padding:0 12px;border-radius:30px;border:{{ sn.border }};background:{{ sn.bg }};color:{{ sn.color }};font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{ sn.label }}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isListener }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;justify-content:center;padding:18px 16px 22px">
+      <div style="width:390px;border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.6)">
+
+        <sc-if value="{{ lsErrScreen }}" hint-placeholder-val="{{ false }}">
+          <div style="background:radial-gradient(140% 100% at 100% 0%,#2FD37B 0%,#12A8A6 22%,#0B3540 50%,#050E14 100%);min-height:736px;display:flex;flex-direction:column;color:#fff;padding:22px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+              <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:5px 13px;font-size:11.5px;font-weight:500">{{ errBadge }}</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+              <div style="width:88px;height:88px;margin:0 auto;border-radius:22px;background:{{ errIconBg }};box-shadow:{{ errIconShadow }};display:flex;align-items:center;justify-content:center;transform:rotate(-6deg)">
+                <span style="font-family:'Unbounded',sans-serif;font-size:32px;font-weight:700;color:{{ errIconColor }}">{{ errIcon }}</span>
+              </div>
+              <div style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.6px;line-height:1.2;margin-top:22px">{{ errTitle }}</div>
+              <div style="font-size:13.5px;color:rgba(255,255,255,.65);margin-top:10px;line-height:1.55;padding:0 8px">{{ errSub }}</div>
+              <sc-if value="{{ errStats }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:10px;margin-top:22px">
+                  <div style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:800;color:#7CF29A">4.5</div><div style="font-size:10.5px;color:rgba(255,255,255,.5);margin-top:2px">ваша оценка</div></div>
+                  <div style="flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:800">14:40</div><div style="font-size:10.5px;color:rgba(255,255,255,.5);margin-top:2px">отправлено в</div></div>
+                </div>
+              </sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <button onClick="{{ errPrimaryAction }}" style="width:100%;height:52px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit">{{ errPrimaryLabel }}</button>
+              <button onClick="{{ errGhostAction }}" style="width:100%;height:48px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ errGhostLabel }}</button>
+              <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.4)">{{ errFoot }}</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ lsStart }}" hint-placeholder-val="{{ true }}">
+          <div style="background:radial-gradient(140% 100% at 100% 0%,#2FD37B 0%,#12A8A6 22%,#0B3540 50%,#050E14 100%);min-height:736px;display:flex;flex-direction:column;color:#fff;padding:22px 22px 26px;box-sizing:border-box">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;align-items:center;gap:5px"><span style="width:13px;height:13px;border-radius:50%;background:#fff"></span><span style="width:13px;height:13px;border-radius:4px;border:1.5px solid #fff"></span><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid #fff"></span></div>
+              <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:5px 13px;font-size:11.5px;font-weight:500;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>{{ hallBadge }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;margin-top:26px">
+              <span style="background:#fff;color:#0B1F24;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px">#</span>
+              <span style="border:1.5px solid #fff;border-radius:30px;padding:0 18px;height:38px;display:flex;align-items:center;font-size:14px;font-weight:500;box-sizing:border-box">{{ startTag }}</span>
+            </div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:29px;font-weight:700;letter-spacing:-1px;line-height:1.12;margin-top:18px">{{ startTitleA }}<br><span style="background:linear-gradient(90deg,#4BE96A,#7CF29A,#4FC9F0);-webkit-background-clip:text;background-clip:text;color:transparent">{{ startTitleB }}</span></div>
+            <div style="font-size:14.5px;color:rgba(255,255,255,.7);margin-top:12px;line-height:1.5">{{ startSub }}</div>
+            <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:18px;margin-top:24px;backdrop-filter:blur(8px)">
+              <div style="display:flex;gap:14px;align-items:center">
+                <span style="width:56px;height:56px;border-radius:14px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;flex-shrink:0">{{ lsSpeakerInitials }}</span>
+                <div><div style="font-size:16px;font-weight:800;line-height:1.25">{{ lsSpeakerName }}</div><div style="font-size:13px;color:rgba(255,255,255,.65);margin-top:2px">{{ lsSpeakerTalk }}<br>{{ lsSpeakerMeta }}</div></div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:16px">
+                <sc-for list="{{ critChips }}" as="cc" hint-placeholder-count="4">
+                  <span style="border:1px solid rgba(255,255,255,.3);border-radius:30px;padding:7px 13px;font-size:10.5px;font-weight:600;text-align:center;text-transform:uppercase;letter-spacing:.4px">{{ cc.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:center;gap:22px;margin-bottom:4px">
+                <div style="text-align:center"><div style="font-size:25px;font-weight:800;color:#7CF29A">~40</div><div style="font-size:11px;color:rgba(255,255,255,.5)">секунд займёт</div></div>
+                <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+                <div style="text-align:center"><div style="font-size:25px;font-weight:800">0</div><div style="font-size:11px;color:rgba(255,255,255,.5)">токенов спишем</div></div>
+              </div>
+              <button onClick="{{ startFlow }}" style="width:100%;height:56px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px rgba(46,200,110,.35)" style-hover="transform:translateY(-2px);transition:all .2s">Начать деплой фидбека</button>
+              <div style="text-align:center;font-size:11.5px;color:rgba(255,255,255,.4)">анонимно · без СМС · без дипфейков</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ lsStep }}" hint-placeholder-val="{{ false }}">
+          <div style="background:radial-gradient(140% 90% at 100% 0%,#2FD37B 0%,#12A8A6 20%,#0B3540 46%,#050E14 100%);min-height:736px;display:flex;flex-direction:column;color:#fff">
+            <div style="padding:18px 20px 0">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:500">{{ lsSpeakerShort }}</span>
+                <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600">{{ stepLabel }}</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:14px">
+                <sc-for list="{{ stepSegs }}" as="seg" hint-placeholder-count="4">
+                  <div style="flex:1;height:5px;border-radius:3px;background:{{ seg.bg }}"></div>
+                </sc-for>
+              </div>
+              <div style="margin-top:22px;animation:floatUp .35s ease">
+                <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:5px 14px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px">{{ critTag }}</span>
+                <div style="font-family:'Unbounded',sans-serif;font-size:23px;font-weight:700;letter-spacing:-0.5px;line-height:1.2;margin-top:13px">{{ critQuestion }}</div>
+                <div style="font-size:13px;color:rgba(255,255,255,.65);margin-top:7px">{{ critHint }}</div>
+              </div>
+            </div>
+            <div style="flex:1;background:#0C1218;border-radius:22px 22px 0 0;margin-top:18px;padding:20px 18px;display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ options }}" as="o" hint-placeholder-count="5">
+                <div onClick="{{ o.onClick }}" style="display:flex;align-items:center;gap:14px;padding:12px 15px;border-radius:12px;background:{{ o.bg }};border:{{ o.border }};cursor:pointer;box-shadow:{{ o.glow }}" style-hover="transform:translateX(3px);transition:all .15s">
+                  <span style="width:44px;height:44px;border-radius:13px;flex-shrink:0;background:{{ o.keyBg }};box-shadow:{{ o.keyShadow }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:{{ o.keyColor }}">{{ o.num }}</span>
+                  <div><div style="font-size:14px;font-weight:700;color:{{ o.titleColor }}">{{ o.title }}</div><div style="font-size:11.5px;color:{{ o.subColor }}">{{ o.sub }}</div></div>
+                </div>
+              </sc-for>
+              <div style="margin-top:auto;display:flex;align-items:center;gap:12px;padding-top:10px">
+                <button onClick="{{ stepBack }}" style="height:42px;padding:0 24px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:rgba(255,255,255,.75);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">Назад</button>
+                <span style="flex:1;text-align:right;font-size:11.5px;color:rgba(255,255,255,.4)">клавиша = ответ, дальше — само</span>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ lsDone }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#0C1218;min-height:736px;display:flex;flex-direction:column;color:#fff;padding:22px;box-sizing:border-box;position:relative;overflow:hidden">
+            <div style="position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#2FD37B 0%,#12A8A6 40%,transparent 68%);filter:blur(50px);opacity:.4"></div>
+            <div style="position:relative;display:flex;justify-content:space-between;align-items:center">
+              <span style="border:1px solid rgba(255,255,255,.6);border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:500">{{ hallBadge }}</span>
+              <span style="border:1px solid #3DDC50;color:#7CF29A;border-radius:30px;padding:4px 12px;font-size:11.5px;font-weight:600">4 / 4 ✓</span>
+            </div>
+            <div style="position:relative;text-align:center;margin-top:34px">
+              <div style="width:100px;height:100px;margin:0 auto;border-radius:26px;background:linear-gradient(180deg,#4BE96A,#1FA53E);box-shadow:0 9px 0 #0F6B26,0 0 60px rgba(61,220,80,.55),inset 0 3px 0 rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;transform:rotate(-6deg);animation:popIn .5s ease">
+                <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#04220C" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div style="font-family:'Unbounded',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.8px;line-height:1.15;margin-top:22px">Фидбек задеплоен<br>в ПРОМ</div>
+              <div style="font-size:13.5px;color:rgba(255,255,255,.6);margin-top:9px;line-height:1.5">Без ревью и канареечного релиза.<br>{{ doneSub2 }}</div>
+            </div>
+            <div style="position:relative;display:flex;gap:10px;margin-top:24px">
+              <div style="flex:1;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px;text-align:center"><div style="font-size:22px;font-weight:800">{{ doneAvg }}</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">ваша средняя</div></div>
+              <div style="flex:1;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px;text-align:center"><div style="font-size:22px;font-weight:800">{{ doneTime }}</div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px">ваше время</div></div>
+            </div>
+            <div style="position:relative;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:15px 16px;margin-top:14px">
+              <div style="font-size:12px;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px">Добавить реакцию — можно несколько</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ reactions }}" as="r" hint-placeholder-count="5">
+                  <span onClick="{{ r.onClick }}" style="border:{{ r.border }};background:{{ r.bg }};color:{{ r.color }};border-radius:30px;padding:8px 13px;font-size:12.5px;font-weight:600;cursor:pointer">{{ r.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="position:relative;margin-top:auto;padding-top:14px">
+              <button onClick="{{ doneGhostAction }}" style="width:100%;height:50px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3DDC50;color:#7CF29A">{{ doneGhostLabel }}</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;max-width:1280px;margin:0 auto;width:100%;box-sizing:border-box">
+      <div style="background:radial-gradient(120% 200% at 95% 0%,#2FD37B 0%,#12A8A6 24%,#0B3540 56%,#0C1218 100%);padding:20px 30px;border-radius:0 0 18px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="font-family:'Unbounded',sans-serif;font-size:19px;font-weight:700;letter-spacing:-0.5px">Пульт организатора</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="height:34px;padding:0 17px;border-radius:30px;border:{{ t.border }};background:{{ t.bg }};color:{{ t.color }};font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:6px 15px;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#3DDC50"></span>{{ totalRatings }} оценок за день</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ tabHalls }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:22px 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:15px">
+          <sc-for list="{{ halls }}" as="h" hint-placeholder-count="3">
+            <div style="background:#141C24;border:{{ h.cardBorder }};border-radius:16px;padding:18px;box-shadow:{{ h.cardGlow }};display:flex;flex-direction:column;gap:14px;opacity:{{ h.opacity }}">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                <sc-if value="{{ h.editing }}" hint-placeholder-val="{{ false }}">
+                  <input value="{{ h.nameDraft }}" onChange="{{ h.onNameDraft }}" style="flex:1;min-width:0;background:#0C1218;border:1px solid #3ED968;border-radius:10px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;padding:8px 10px">
+                  <button onClick="{{ h.onSaveName }}" style="height:32px;padding:0 13px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">Сохранить</button>
+                </sc-if>
+                <sc-if value="{{ h.notEditing }}" hint-placeholder-val="{{ true }}">
+                  <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="width:10px;height:10px;border-radius:50%;background:{{ h.color }};flex-shrink:0"></span><span style="font-size:14.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ h.name }}</span></span>
+                  <span style="border:{{ h.stBorder }};background:{{ h.stBg }};color:{{ h.stColor }};border-radius:30px;padding:4px 12px;font-size:11px;font-weight:600">{{ h.stLabel }}</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ h.editing }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <span style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Цвет зала</span>
+                  <sc-for list="{{ h.colorOpts }}" as="co" hint-placeholder-count="6">
+                    <span onClick="{{ co.onClick }}" style="width:22px;height:22px;border-radius:50%;background:{{ co.bg }};border:{{ co.border }};box-sizing:border-box;cursor:pointer"></span>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div style="display:flex;gap:12px;align-items:center">
+                <span style="width:48px;height:48px;border-radius:12px;background:{{ h.avBg }};color:{{ h.avColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0">{{ h.curInitials }}</span>
+                <div style="min-width:0"><div style="font-size:14px;font-weight:700">{{ h.curName }}</div><div style="font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.35">{{ h.curTalk }}</div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:10.5px;color:rgba(255,255,255,.45);margin-bottom:6px"><span style="text-transform:uppercase;letter-spacing:.5px;font-weight:600">программа зала</span><span>{{ h.progLabel }}</span></div>
+                <div style="display:flex;gap:4px">
+                  <sc-for list="{{ h.segs }}" as="sg" hint-placeholder-count="5">
+                    <div style="flex:1;height:5px;border-radius:3px;background:{{ sg.bg }};animation:{{ sg.anim }}"></div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;background:#0C1218;border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:#7CF29A">{{ h.n }}</div><div style="font-size:10px;color:rgba(255,255,255,.45)">оценок</div></div>
+                <div style="flex:1;background:#0C1218;border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800">{{ h.avg }}</div><div style="font-size:10px;color:rgba(255,255,255,.45)">средняя</div></div>
+                <div style="flex:1;background:#0C1218;border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800">{{ h.conv }}</div><div style="font-size:10px;color:rgba(255,255,255,.45)">конверсия</div></div>
+              </div>
+              <sc-if value="{{ h.warn }}" hint-placeholder-val="{{ false }}">
+                <div style="background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.45);border-radius:10px;padding:9px 12px;font-size:11px;color:#FFC24B;font-weight:600;line-height:1.4">0 оценок у текущего спикера — проверьте, что QR попал на слайд</div>
+              </sc-if>
+              <div onClick="{{ h.onSlide }}" style="display:flex;gap:10px;align-items:center;background:#0C1218;border:1px solid transparent;border-radius:12px;padding:11px 12px;cursor:pointer" style-hover="border-color:rgba(79,201,240,.5)">
+                <div style="width:54px;height:54px;border-radius:9px;background:#fff;padding:4px;flex-shrink:0;box-sizing:border-box"><div style="width:100%;height:100%;background:{{ h.qrPattern }};border-radius:5px"></div></div>
+                <div style="flex:1;min-width:0"><div style="font-size:11.5px;font-weight:700">QR зала №{{ h.num }} · постоянный</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);line-height:1.35">нажмите — PNG для слайда спикера</div></div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button onClick="{{ h.onPrev }}" style="width:44px;height:44px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">←</button>
+                <button onClick="{{ h.onToggle }}" style="flex:1;height:44px;border-radius:30px;border:{{ h.tglBorder }};background:{{ h.tglBg }};color:{{ h.tglColor }};font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">{{ h.tglLabel }}</button>
+                <button onClick="{{ h.onNextSp }}" style="width:44px;height:44px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">→</button>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ h.onReset }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Сбросить</button>
+                <button onClick="{{ h.onEdit }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Редактировать</button>
+                <button onClick="{{ h.onDel }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ h.delBg }};color:{{ h.delColor }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ h.delLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+          <button onClick="{{ addHall }}" style="min-height:220px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.55);font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">+ Создать зал</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabProgram }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px 30px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px;margin-bottom:8px">
+            <div style="flex:1"><div style="font-size:13px;font-weight:700">Пройдено по программе</div><div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-top:2px">{{ progSummary }}</div></div>
+            <div style="width:240px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:{{ progPct }};height:100%;background:linear-gradient(90deg,#2AA0F0,#3ED968)"></div></div>
+            <span style="font-size:15px;font-weight:800;color:#7CF29A">{{ progCount }}</span>
+            <button onClick="{{ addSpeaker }}" style="height:36px;padding:0 18px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">Добавить спикера</button>
+          </div>
+          <div style="display:grid;grid-template-columns:26px 52px 1.5fr 1.2fr 110px 90px 140px;gap:12px;align-items:center;padding:0 18px 8px;font-size:10.5px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.6px">
+            <span></span><span>Время</span><span>Спикер · доклад</span><span>Зал · тип</span><span>Статус</span><span style="text-align:right">Оценки</span><span></span>
+          </div>
+          <sc-for list="{{ speakerRows }}" as="sp" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:26px 52px 1.5fr 1.2fr 110px 90px 140px;gap:12px;align-items:center;background:#141C24;border:{{ sp.border }};border-radius:12px;padding:12px 18px;opacity:{{ sp.op }}">
+              <span onClick="{{ sp.onStatus }}" title="{{ sp.stTitle }}" style="width:24px;height:24px;border-radius:50%;background:{{ sp.mkBg }};border:{{ sp.mkBorder }};color:{{ sp.mkColor }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;box-sizing:border-box;animation:{{ sp.mkAnim }};cursor:{{ sp.stCursor }}" style-hover="border-color:#3DDC50">{{ sp.mk }}</span>
+              <span style="font-size:12.5px;font-weight:700;color:rgba(255,255,255,.6)">{{ sp.time }}</span>
+              <div style="display:flex;align-items:center;gap:11px;min-width:0"><span style="width:36px;height:36px;border-radius:11px;background:{{ sp.avBg }};color:{{ sp.avColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0">{{ sp.initials }}</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:700">{{ sp.name }}</div><div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ sp.talk }}</div></div></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:5px 13px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,.78)"><span style="width:8px;height:8px;border-radius:50%;background:{{ sp.hallColor }};flex-shrink:0"></span>{{ sp.hall }}</span>
+                <span style="border:1px solid rgba(0,174,239,.5);color:#4FC9F0;border-radius:30px;padding:5px 11px;font-size:10.5px;font-weight:600">{{ sp.fmt }}</span>
+              </div>
+              <span onClick="{{ sp.onStatus }}" title="{{ sp.stTitle }}" style="border:{{ sp.stBorder }};background:{{ sp.stBg }};color:{{ sp.stColor }};border-radius:30px;padding:5px 13px;font-size:11px;font-weight:600;width:fit-content;cursor:{{ sp.stCursor }};user-select:none" style-hover="border-color:rgba(61,220,80,.7)">{{ sp.status }}</span>
+              <div style="text-align:right"><span style="font-size:16px;font-weight:800;color:{{ sp.avgColor }}">{{ sp.avg }}</span><span style="font-size:11px;color:rgba(255,255,255,.4)"> · {{ sp.n }}</span></div>
+              <div style="display:flex;gap:6px;justify-content:flex-end">
+                <button onClick="{{ sp.onEdit }}" style="height:30px;padding:0 12px;border-radius:30px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Ред.</button>
+                <button onClick="{{ sp.onDel }}" style="height:30px;padding:0 12px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ sp.delBg }};color:{{ sp.delColor }};font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{ sp.delLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabCriteria }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px 30px;display:grid;grid-template-columns:1.15fr 380px;gap:22px;align-items:start">
+          <div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+              <sc-for list="{{ critSetTabs }}" as="cs" hint-placeholder-count="4">
+                <button onClick="{{ cs.onClick }}" style="height:34px;padding:0 18px;border-radius:30px;border:{{ cs.border }};background:{{ cs.bg }};color:{{ cs.color }};font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ cs.label }}</button>
+              </sc-for>
+              <button onClick="{{ addType }}" style="height:34px;padding:0 15px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.6);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">+ Тип</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap">
+              <sc-if value="{{ typeEditing }}" hint-placeholder-val="{{ false }}">
+                <input value="{{ typeDraft }}" onChange="{{ onTypeDraft }}" style="width:200px;background:#0C1218;border:1px solid #3ED968;border-radius:10px;color:#fff;font-family:inherit;font-size:12.5px;padding:8px 12px">
+                <button onClick="{{ saveType }}" style="height:32px;padding:0 15px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit">Сохранить тип</button>
+                <button onClick="{{ cancelType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Отмена</button>
+              </sc-if>
+              <sc-if value="{{ typeNotEditing }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ editType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Редактировать тип</button>
+                <button onClick="{{ delType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ delTypeBg }};color:{{ delTypeColor }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ delTypeLabel }}</button>
+              </sc-if>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+              <sc-for list="{{ critPills }}" as="cp" hint-placeholder-count="4">
+                <button onClick="{{ cp.onClick }}" style="height:32px;padding:0 15px;border-radius:30px;border:{{ cp.border }};background:{{ cp.bg }};color:{{ cp.color }};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">{{ cp.label }}</button>
+              </sc-for>
+              <button onClick="{{ addPage }}" style="height:32px;padding:0 13px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.6);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">+ Страница</button>
+            </div>
+            <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:10px">
+                <div style="width:160px"><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Тег (бейдж)</div><input value="{{ editTag }}" onChange="{{ onEditTag }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:{{ editTagBorder }};border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+                <div style="flex:1"><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Вопрос (заголовок экрана)</div><input value="{{ editQ }}" onChange="{{ onEditQ }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:{{ editQBorder }};border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+              </div>
+              <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Подсказка (под вопросом)</div><input value="{{ editHint }}" onChange="{{ onEditHint }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+              <div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px">Клавиши 1–5 · заголовок и подпись</div>
+              <sc-for list="{{ editOpts }}" as="eo" hint-placeholder-count="5">
+                <div style="display:flex;gap:8px;align-items:center">
+                  <span style="width:36px;height:36px;border-radius:11px;flex-shrink:0;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 3px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#5E7280">{{ eo.num }}</span>
+                  <input value="{{ eo.title }}" onChange="{{ eo.onTitle }}" style="flex:1;min-width:0;background:#0C1218;border:{{ eo.bT }};border-radius:10px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:10px 12px" style-focus="border-color:#3ED968">
+                  <input value="{{ eo.sub }}" onChange="{{ eo.onSub }}" style="flex:1.3;min-width:0;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:rgba(255,255,255,.65);font-family:inherit;font-size:12.5px;padding:10px 12px" style-focus="border-color:#3ED968">
+                </div>
+              </sc-for>
+              <sc-if value="{{ critWarn }}" hint-placeholder-val="{{ false }}">
+                <div style="background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.45);border-radius:10px;padding:10px 12px;font-size:11.5px;color:#FFC24B;font-weight:600;line-height:1.45">Есть пустые поля — слушатель увидит пустые клавиши. Заполните до запуска голосования.</div>
+              </sc-if>
+              <div style="font-size:11.5px;color:rgba(255,255,255,.4);line-height:1.5">Здесь ровно те поля, что видит слушатель — тег, вопрос, подсказка и пять клавиш. Изменения сразу попадают на экран оценки.</div>
+              <div style="display:flex;gap:8px;margin-top:4px;justify-content:flex-end;align-items:center">
+                <button onClick="{{ delPage }}" style="height:34px;padding:0 14px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ delPageBg }};color:{{ delPageColor }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ delPageLabel }}</button>
+                <button onClick="{{ savePage }}" style="height:36px;padding:0 22px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">{{ saveLabel }}</button>
+              </div>
+            </div>
+          </div>
+          <div style="position:sticky;top:16px">
+            <div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Как видит слушатель</div>
+            <div style="border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:radial-gradient(140% 90% at 100% 0%,#2FD37B 0%,#12A8A6 20%,#0B3540 46%,#050E14 100%)">
+              <div style="padding:14px 16px 0">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:3px 10px;font-size:10px;font-weight:500;color:#fff">{{ previewSpeaker }}</span>
+                  <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:3px 10px;font-size:10px;font-weight:600;color:#fff">{{ previewStep }}</span>
+                </div>
+                <div style="display:flex;gap:5px;margin-top:11px">
+                  <sc-for list="{{ previewSegs }}" as="ps" hint-placeholder-count="4">
+                    <div style="flex:1;height:4px;border-radius:2px;background:{{ ps.bg }}"></div>
+                  </sc-for>
+                </div>
+                <div style="margin-top:16px">
+                  <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:4px 11px;font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#fff">{{ previewTag }}</span>
+                  <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.4px;line-height:1.2;margin-top:10px;color:#fff">{{ previewQ }}</div>
+                  <div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:5px">{{ previewHint }}</div>
+                </div>
+              </div>
+              <div style="background:#0C1218;border-radius:18px 18px 0 0;margin-top:14px;padding:14px 13px 18px;display:flex;flex-direction:column;gap:7px">
+                <sc-for list="{{ previewOpts }}" as="po" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:#141C24;border:1px solid rgba(255,255,255,.08)">
+                    <span style="width:32px;height:32px;border-radius:10px;flex-shrink:0;background:linear-gradient(180deg,#232E3A,#1A222C);box-shadow:0 3px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#5E7280">{{ po.num }}</span>
+                    <div style="min-width:0"><div style="font-size:11.5px;font-weight:700;color:rgba(255,255,255,.88)">{{ po.title }}</div><div style="font-size:9.5px;color:#5E7280">{{ po.sub }}</div></div>
+                  </div>
+                </sc-for>
+                <div style="display:flex;align-items:center;gap:10px;padding-top:8px">
+                  <span style="height:32px;padding:0 18px;border-radius:30px;border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.75);font-size:10.5px;font-weight:500;display:flex;align-items:center">Назад</span>
+                  <span style="flex:1;text-align:right;font-size:9.5px;color:rgba(255,255,255,.4)">клавиша = ответ, дальше — само</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabStats }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px 30px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+            <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.4px">Лидерборд спикеров</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ statFilters }}" as="f" hint-placeholder-count="4">
+                <button onClick="{{ f.onClick }}" style="height:32px;padding:0 15px;border-radius:30px;border:{{ f.border }};background:{{ f.bg }};color:{{ f.color }};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">{{ f.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 110px;gap:14px;align-items:center;padding:0 18px 10px;font-size:10.5px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.6px">
+            <span></span><span>Спикер</span><span>Контент</span><span>Подача</span><span>Слайды</span><span>Польза</span><span style="text-align:right">Итог</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ leaderboard }}" as="l" hint-placeholder-count="4">
+              <div style="display:grid;grid-template-columns:44px 1.5fr repeat(4,1fr) 110px;gap:14px;align-items:center;background:#141C24;border:{{ l.border }};border-radius:12px;padding:13px 18px;box-shadow:{{ l.glow }}">
+                <span style="width:36px;height:36px;border-radius:11px;background:{{ l.rankBg }};box-shadow:{{ l.rankShadow }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:{{ l.rankColor }}">{{ l.rank }}</span>
+                <div style="display:flex;align-items:center;gap:11px;min-width:0"><span style="width:38px;height:38px;border-radius:11px;background:#00AEEF;color:#04222E;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">{{ l.initials }}</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:700">{{ l.name }}</div><div style="font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.sub }}</div></div></div>
+                <sc-for list="{{ l.bars }}" as="b" hint-placeholder-count="4">
+                  <div><div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:4px">{{ b.val }}</div><div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:{{ b.w }};height:100%;background:linear-gradient(90deg,#2AA0F0,#3ED968)"></div></div></div>
+                </sc-for>
+                <div style="text-align:right"><span style="font-size:19px;font-weight:800;color:{{ l.totalColor }}">{{ l.total }}</span><div style="font-size:10px;color:rgba(255,255,255,.4)">{{ l.topReaction }}</div></div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ lbEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#141C24;border:1px dashed rgba(255,255,255,.15);border-radius:12px;padding:28px;text-align:center;color:rgba(255,255,255,.45);font-size:13px">Оценок пока нет — лидерборд соберётся после первых голосов из зала</div>
+            </sc-if>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:18px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:12px;color:rgba(255,255,255,.45);font-weight:600">Топ реакций дня:</span>
+            <span style="background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;border-radius:30px;padding:6px 13px;font-size:12px;font-weight:600">демо не упало ×112</span>
+            <span style="border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:6px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,.8)">заберу в прод ×89</span>
+            <span style="border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:6px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,.8)">хочу слайды ×64</span>
+            <span style="border:1px solid rgba(0,174,239,.6);color:#4FC9F0;border-radius:30px;padding:6px 13px;font-size:12px;font-weight:500">это был дипфейк? ×23</span>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ spModalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ spCancel }}" style="position:fixed;inset:0;background:rgba(2,6,10,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)">
+      <div onClick="{{ stopClick }}" style="width:460px;max-width:100%;background:#141C24;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px;box-sizing:border-box;box-shadow:0 40px 100px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.3px">{{ spModalTitle }}</div>
+        <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Имя спикера</div><input value="{{ spName }}" onChange="{{ onSpName }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+        <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Тема выступления</div><input value="{{ spTalk }}" onChange="{{ onSpTalk }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+        <div style="display:flex;gap:10px">
+          <div style="width:110px"><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Время</div><input value="{{ spTime }}" onChange="{{ onSpTime }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+          <div style="flex:1"><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Зал</div><div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ spHallPills }}" as="hp" hint-placeholder-count="3"><button onClick="{{ hp.onClick }}" style="height:32px;padding:0 13px;border-radius:30px;border:{{ hp.border }};background:{{ hp.bg }};color:{{ hp.color }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ hp.dot }};flex-shrink:0"></span>{{ hp.label }}</button></sc-for>
+          </div></div>
+        </div>
+        <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Тип выступления — задаёт критерии на QR зала</div><div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ spFmtPills }}" as="fp" hint-placeholder-count="3"><button onClick="{{ fp.onClick }}" style="height:32px;padding:0 13px;border-radius:30px;border:{{ fp.border }};background:{{ fp.bg }};color:{{ fp.color }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ fp.label }}</button></sc-for>
+        </div></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5">Когда голосование открыто, QR зала автоматически покажет слушателю страницы оценивания этого типа.</div>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <button onClick="{{ spSave }}" style="flex:1;height:44px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Сохранить</button>
+          <button onClick="{{ spCancel }}" style="height:44px;padding:0 20px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ qrModalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeQr }}" style="position:fixed;inset:0;background:rgba(2,6,10,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)">
+      <div onClick="{{ stopClick }}" style="width:440px;max-width:100%;background:#141C24;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:26px;box-sizing:border-box;box-shadow:0 40px 100px rgba(0,0,0,.7)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+          <div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.3px">QR зала №{{ qrHallNum }}</div>
+            <div style="font-size:12.5px;color:rgba(255,255,255,.5);margin-top:4px">{{ qrHallName }} · сейчас: {{ qrSpeaker }}</div>
+          </div>
+          <button onClick="{{ closeQr }}" style="height:32px;padding:0 14px;border-radius:30px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">Закрыть</button>
+        </div>
+        <div style="display:flex;justify-content:center">
+          <div style="background:#fff;border-radius:14px;padding:14px;box-shadow:0 0 50px rgba(61,220,80,.25)">
+            <div style="width:220px;height:220px">{{ qrImgEl }}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#0C1218;border:1px solid rgba(255,255,255,.1);border-radius:30px;padding:6px 6px 6px 16px;margin-top:18px">
+          <span style="flex:1;font-size:12.5px;color:#7CF29A;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ qrUrl }}</span>
+          <button onClick="{{ copyQrLink }}" style="height:32px;padding:0 14px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">{{ copyLabel }}</button>
+        </div>
+        <button onClick="{{ downloadQr }}" style="width:100%;height:48px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px;box-shadow:0 6px 20px rgba(46,200,110,.3)">Скачать PNG для презентации</button>
+        <div style="text-align:center;font-size:11.5px;color:rgba(255,255,255,.4);margin-top:12px;line-height:1.5">Картинка на белой подложке — вставьте в последний слайд<br>каждого спикера этого зала. Код постоянный.</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    mode: 'listener', lsMode: 'speaker',
+    lsScreen: 'start', lsStepIdx: 0, lsRatings: [0,0,0,0], lsStartAt: 0, lsElapsed: 0, lsReactions: {}, lsSpeakerIdx: 0,
+    adminTab: 'halls', statFilter: 'all', qrHall: null,
+    scenario: 'happy', confirmStop: null,
+    hallEdit: null, hallDraft: '', confirmDelHall: null,
+    spModal: null, spDraft: null, confirmDelSp: null,
+    typeEdit: false, typeDraft: '', confirmDelType: null, confirmDelPage: null, savedFlash: false,
+    critSet: 'speaker', critIdx: 0,
+    critTypes: [ { id: 'speaker', label: 'Доклад' }, { id: 'panel', label: 'Панель' }, { id: 'workshop', label: 'Воркшоп' }, { id: 'conf', label: 'Конференция' } ],
+    crits: {
+      speaker: [
+        { tag: 'Контент', q: 'Насколько глубоко?', hint: 'Качество и глубина материала. Честно — мы никому не скажем.', opts: [
+          ['Пустой промпт', 'вода без единого параметра'],
+          ['Стянуто с хабра', 'где-то я это уже видел'],
+          ['Крепкая база', 'уверенный мидл-контент'],
+          ['Глубокая база', 'конспектировал на телефон'],
+          ['Новая парадигма', 'придётся переосмыслить пайплайн']
+        ]},
+        { tag: 'Подача', q: 'Как спикер держал зал?', hint: 'Ораторское искусство и энергия.', opts: [
+          ['Синтезированный голос', 'монотонно, как TTS без интонаций'],
+          ['Читал со слайдов', 'суфлёр был главным спикером'],
+          ['Уверенный инференс', 'ровно, по делу, без галлюцинаций'],
+          ['Держал зал', 'даже кто пришёл за мерчем — слушали'],
+          ['Стендап-спешл', 'после такого afterparty не нужен']
+        ]},
+        { tag: 'Слайды', q: 'Как вам презентация?', hint: 'Визуал, читаемость, структура.', opts: [
+          ['Шрифт 8pt', 'таблица из экселя на весь экран'],
+          ['Корп-шаблон 2015', 'клипарт, WordArt и буллеты'],
+          ['Чисто и по делу', 'ничего не мешало слушать'],
+          ['Дизайнер бы одобрил', 'приятно смотреть, хочется скачать'],
+          ['Кинцо', 'key visual уровня продакшна']
+        ]},
+        { tag: 'Применимость', q: 'Заберёте себе?', hint: 'Практическая польза доклада для вашей работы.', opts: [
+          ['Просто вайб', 'послушал и забыл — тоже результат'],
+          ['Когда-нибудь', 'в закладки, где всё и умирает'],
+          ['В бэклог', 'может быть, в Q3'],
+          ['Заберу в прод', 'сразу после ревью'],
+          ['Внедрю в понедельник', 'уже пишу RFC команде']
+        ]}
+      ],
+      panel: [
+        { tag: 'Острота', q: 'Насколько жарко было?', hint: 'Настоящий спор или согласованный пресс-релиз?', opts: [
+          ['Корпоративная гармония', 'все со всеми согласны'],
+          ['Вежливый спор', 'разногласия по регламенту'],
+          ['Живая дискуссия', 'были неудобные вопросы'],
+          ['Искры летели', 'кто-то перебивал — и правильно'],
+          ['Чуть не подрались', 'модератор прятался за кафедрой']
+        ]},
+        { tag: 'Модерация', q: 'Как вёл модератор?', hint: 'Темп, вопросы, распределение эфира.', opts: [
+          ['Потерял управление', 'спикеры сами разберутся'],
+          ['Читал с листа', 'вопросы из брифа, без фоллоу-апов'],
+          ['Держал темп', 'никто не монополизировал микрофон'],
+          ['Раскрутил гостей', 'вытащил то, что не говорят со сцены'],
+          ['Дирижёр', 'оркестровал спор как симфонию']
+        ]},
+        { tag: 'Аргументы', q: 'Что с содержанием?', hint: 'Цифры и кейсы или общие слова?', opts: [
+          ['Общие слова', 'AI изменит всё, вот увидите'],
+          ['Маркетинговый питч', 'каждый продавал своё'],
+          ['Есть инсайты', 'пара мыслей ушла в заметки'],
+          ['Цифры и кейсы', 'аргументы можно проверить'],
+          ['Записал каждое слово', 'жду расшифровку']
+        ]},
+        { tag: 'Польза', q: 'Что забираете с собой?', hint: 'Изменит ли дискуссия что-то в вашей работе?', opts: [
+          ['Просто вайб', 'посмотрел на людей — тоже результат'],
+          ['Пару цитат', 'для слайдов на ретро'],
+          ['Новые вопросы', 'теперь есть о чём думать'],
+          ['Поменяю подход', 'к найму или к команде'],
+          ['Пересмотрю запись', 'и покажу руководителю']
+        ]}
+      ],
+      workshop: [
+        { tag: 'Практика', q: 'Сделали руками?', hint: 'Сколько реально сделали сами, а не только послушали.', opts: [
+          ['Только теория', 'сидели и смотрели на экран ведущего'],
+          ['Пара кликов', 'чуть потыкали — и снова лекция'],
+          ['Был hands-on', 'успел повторить основные шаги'],
+          ['Прокачал навык', 'собрал рабочий кусок сам'],
+          ['Ушёл с артефактом', 'ноутбук греется — результат есть']
+        ]},
+        { tag: 'Ведение', q: 'Как вёл ведущий?', hint: 'Темп, пояснения, помощь отстающим.', opts: [
+          ['Потерял зал', 'половина отстала на первом шаге'],
+          ['Сбивчиво', 'пришлось переспрашивать соседей'],
+          ['Ровно вёл', 'всем было понятно, куда кликать'],
+          ['Вытягивал отстающих', 'никто не остался один'],
+          ['Мастер-класс', 'вёл так, что хочется ещё слот']
+        ]},
+        { tag: 'Темп', q: 'Успели программу?', hint: 'Без гонки и без простоя.', opts: [
+          ['Не вписались', 'не дошли даже до середины'],
+          ['Гонка', 'успели, но ничего не закрепили'],
+          ['Нормальный темп', 'успели главное'],
+          ['Комфортно', 'было время на вопросы'],
+          ['Идеальный слот', 'ровно в тайминг и с запасом']
+        ]},
+        { tag: 'Польза', q: 'Заберёте в работу?', hint: 'Поедет ли практика в прод после воркшопа.', opts: [
+          ['Просто вайб', 'интересно, но в прод не поедет'],
+          ['В закладки', 'может пригодится когда-нибудь'],
+          ['В бэклог', 'попробую на следующей задаче'],
+          ['Заберу в работу', 'уже знаю, куда применить'],
+          ['Завтра в проде', 'команде покажу на стендапе']
+        ]}
+      ],
+      conf: [
+        { tag: 'Программа', q: 'Как вам доклады в целом?', hint: 'Вся сетка: три трека, воркшопы, панель.', opts: [
+          ['Реклама вендоров', 'питчи под видом докладов'],
+          ['Ровно', 'послушать можно, пересказать нечего'],
+          ['Пара жемчужин', 'ради них стоило прийти'],
+          ['Сильная сетка', 'разрывался между залами'],
+          ['Огонь по всем трекам', 'хочу записи всего']
+        ]},
+        { tag: 'Организация', q: 'Как прошла логистика?', hint: 'Регистрация, навигация, тайминг.', opts: [
+          ['Хаос', 'где мой бейдж?'],
+          ['Местами тупило', 'очередь длиннее кофе-брейка'],
+          ['Без сбоев', 'всё по расписанию'],
+          ['Чётко', 'как CI/CD на зелёных тестах'],
+          ['Идеально', 'оргкомитету респект']
+        ]},
+        { tag: 'Площадка', q: 'Как вам технохаб?', hint: 'Залы, кофе, wifi, розетки.', opts: [
+          ['Душно', 'и wifi отвалился на демо'],
+          ['Норм', 'но кофе кончился к обеду'],
+          ['Уютно', 'розетки есть — жить можно'],
+          ['Классно', 'фоткал интерьеры для команды'],
+          ['Хочу тут работать', 'где у вас вакансии?']
+        ]},
+        { tag: 'Нетворкинг', q: 'Пообщались?', hint: 'Стендовая зона, кофе-брейки, люди.', opts: [
+          ['Стоял в углу', 'смотрел в телефон'],
+          ['Пара small talk', 'о погоде и LLM'],
+          ['Полезные знакомства', 'обменялись телеграмами'],
+          ['Единомышленники', 'договорились о встрече'],
+          ['Нетворкинг окупился', 'нашёл работу или сотрудника']
+        ]}
+      ]
+    },
+    halls: [
+      { id: 'h1', num: 1, name: 'Гигатрансформация', color: '#4FC9F0', status: 'live', cur: 2, conv: '62%',
+        speakers: [
+          { name: 'Михаил Сукач', talk: '«Когда ИИ не отвечает»', time: '12:40', n: 71, scores: [4.4,4.5,4.1,4.2], org: 'Сбер' },
+          { name: 'Петр Белкин', talk: '«AI в PDLC: как мы перестали готовиться и начали жить»', time: '13:20', n: 68, scores: [4.6,4.2,3.9,4.4], org: 'Сбер' },
+          { name: 'Денис Артюшин', talk: '«От IDE-плагина к агентному сервису»', time: '14:40', n: 148, scores: [4.8,4.7,4.3,4.6], org: 'Т-Банк' },
+          { name: 'Мария Лаврентьева', talk: '«Цифровой иммунитет»', time: '15:20', n: 0, scores: [0,0,0,0], org: 'Сбер' },
+          { name: 'Панельная дискуссия', talk: '«Почему рынок труда перестал работать?»', time: '16:40', n: 0, scores: [0,0,0,0], format: 'panel' }
+        ] },
+      { id: 'h2', num: 2, name: 'AI-инженер', color: '#B18CFF', status: 'live', cur: 2, conv: '48%',
+        speakers: [
+          { name: 'Роман Троицкий', talk: '«Welcome to the new WEB — MCP UI»', time: '13:20', n: 54, scores: [4.5,3.8,4.0,4.2] },
+          { name: 'Игорь Кензин', talk: '«Agentic Search на стероидах»', time: '14:40', n: 92, scores: [4.5,4.0,4.4,4.5] },
+          { name: 'Дмитрий Галкин', talk: '«Строим свою DARK FACTORY»', time: '15:20', n: 0, scores: [0,0,0,0] }
+        ] },
+      { id: 'h3', num: 3, name: 'Дизайн', color: '#FFB020', status: 'break', cur: 2, conv: '—',
+        speakers: [
+          { name: 'Денис Бугров', talk: '«Фрилансер с пайплайном»', time: '12:40', n: 63, scores: [4.6,4.2,3.9,4.4] },
+          { name: 'Юлия Елина', talk: '«Как общаться с нейросетями»', time: '13:20', n: 47, scores: [4.0,3.9,4.1,3.8] },
+          { name: 'Максим Кукушкин', talk: '«AI 3D: нейросети в 3D-продакшне»', time: '16:40', n: 0, scores: [0,0,0,0] }
+        ] }
+    ]
+  };
+  hallPalette = ['#4FC9F0','#B18CFF','#FFB020','#FF7DAE','#3ED968','#F2E14C'];
+  reactionList = ['демо не упало', 'унёс в прод', 'проснулся ради этого', 'хочу слайды', 'это был дипфейк?'];
+  initials(n) { const p = n.split(' '); return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
+  qrCache = {};
+  makeQR(seed) {
+    if (this.qrCache[seed]) return this.qrCache[seed];
+    const n = 25, cell = 10, quiet = 20;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = n * cell + quiet * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0B1F24';
+    let h = 0; for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => { h = (h * 1103515245 + 12345) >>> 0; return h / 4294967296; };
+    const finder = (x, y) => {
+      ctx.fillStyle = '#0B1F24'; ctx.fillRect(quiet + x * cell, quiet + y * cell, 7 * cell, 7 * cell);
+      ctx.fillStyle = '#fff'; ctx.fillRect(quiet + (x + 1) * cell, quiet + (y + 1) * cell, 5 * cell, 5 * cell);
+      ctx.fillStyle = '#0B1F24'; ctx.fillRect(quiet + (x + 2) * cell, quiet + (y + 2) * cell, 3 * cell, 3 * cell);
+    };
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      const inFinder = (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+      if (!inFinder && rnd() > 0.5) ctx.fillRect(quiet + x * cell, quiet + y * cell, cell, cell);
+    }
+    finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+    return (this.qrCache[seed] = canvas.toDataURL('image/png'));
+  }
+  avgOf(s) { const v = s.scores.filter(x => x > 0); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length) : 0; }
+  updCrit(patch) {
+    this.setState(s => {
+      const crits = JSON.parse(JSON.stringify(s.crits));
+      if (!crits[s.critSet] || !crits[s.critSet][s.critIdx]) return {};
+      Object.assign(crits[s.critSet][s.critIdx], patch);
+      return { crits };
+    });
+  }
+  updOpt(j, k, v) {
+    this.setState(s => {
+      const crits = JSON.parse(JSON.stringify(s.crits));
+      if (!crits[s.critSet] || !crits[s.critSet][s.critIdx]) return {};
+      crits[s.critSet][s.critIdx].opts[j][k] = v;
+      return { crits };
+    });
+  }
+  renderVals() {
+    const S = this.state;
+    const grad = 'linear-gradient(90deg,#2AA0F0,#3ED968)';
+    const pill = (sel) => ({
+      bg: sel ? grad : 'transparent',
+      color: sel ? '#fff' : 'rgba(255,255,255,.75)',
+      border: sel ? 'none' : '1px solid rgba(255,255,255,.28)'
+    });
+    const keyUnsel = { bg: 'linear-gradient(180deg,#232E3A,#1A222C)', sh: '0 4px 0 #0B1118,inset 0 1px 0 rgba(255,255,255,.12)', c: '#5E7280' };
+    const keySel = { bg: 'linear-gradient(180deg,#4BE96A,#1FA53E)', sh: '0 4px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4)', c: '#04220C' };
+    const modes = [ ['listener','Слушатель · телефон'], ['admin','Админ · десктоп'] ].map(([v,label]) => ({
+      label, onClick: () => this.setState({ mode: v }), ...pill(S.mode === v)
+    }));
+    // listener
+    const h1 = S.halls[0] || { speakers: [], cur: 0 };
+    const lsSpeaker = h1.speakers[Math.min(h1.cur + S.lsSpeakerIdx, h1.speakers.length - 1)] || { name: 'Спикер ТБД', talk: 'слот свободен', time: '', n: 0, scores: [0,0,0,0] };
+    const isPanel = lsSpeaker.format === 'panel' || /панел|дискусс/i.test(lsSpeaker.name + ' ' + lsSpeaker.talk);
+    const isConf = S.lsMode === 'conf';
+    const baseSet = (id) => (S.crits[id] && S.crits[id].length) ? S.crits[id] : (S.crits[S.critTypes[0].id] || []);
+    const critSet = isConf ? baseSet('conf') : (isPanel ? baseSet('panel') : (lsSpeaker.format === 'workshop' ? baseSet('workshop') : baseSet('speaker')));
+    const crit = critSet[Math.min(S.lsStepIdx, critSet.length - 1)] || { tag: '', q: '', hint: '', opts: [] };
+    const curRating = S.lsRatings[S.lsStepIdx];
+    const rated = S.lsRatings.filter(r => r > 0).length;
+    const userAvg = rated ? (S.lsRatings.filter(r=>r>0).reduce((a,b)=>a+b,0) / rated).toFixed(1) : '—';
+    const reactionSet = isConf ? ['кофе топ', 'мерч огонь', 'wifi выдержал', 'приду ещё', 'где записи?'] : this.reactionList;
+    const reactions = reactionSet.map(r => {
+      const sel = !!S.lsReactions[r];
+      return { label: r, onClick: () => this.setState(s => ({ lsReactions: { ...s.lsReactions, [r]: !s.lsReactions[r] } })),
+        bg: sel ? grad : 'transparent',
+        color: sel ? '#fff' : 'rgba(255,255,255,.8)',
+        border: sel ? '1px solid transparent' : '1px solid rgba(255,255,255,.25)' };
+    });
+    // red team: сценарии слушателя
+    const scen = S.scenario;
+    const lsErr = scen === 'closed' || scen === 'ended' || scen === 'already';
+    const toHappy = (patch) => () => this.setState(Object.assign({ scenario: 'happy', lsScreen: 'start', lsRatings: [0,0,0,0], lsReactions: {}, lsStepIdx: 0 }, patch || {}));
+    const scenChips = [ ['happy','Хэппи пас'], ['closed','Окно оценки закрыто'], ['ended','Конфа завершена'], ['already','Повторная оценка'] ].map(([v,label]) => ({
+      label,
+      onClick: () => this.setState({ scenario: v, lsMode: 'speaker', lsScreen: 'start', lsStepIdx: 0, lsRatings: [0,0,0,0], lsReactions: {}, lsStartAt: Date.now() }),
+      ...pill(scen === v)
+    }));
+    const errScreens = {
+      closed: { badge: 'зал Гигатрансформация', icon: '‖', iconBg: 'linear-gradient(180deg,#57C8F2,#2A8FC0)', iconShadow: '0 9px 0 #17567A,0 0 50px rgba(0,174,239,.35),inset 0 3px 0 rgba(255,255,255,.4)', iconColor: '#03293C',
+        title: 'Окно оценки закрыто', sub: 'Оценки принимаем только во время секции вопросов — голосуют те, кто сейчас в зале, и накрутить постфактум не выйдет.',
+        primary: 'Проверить ещё раз', ghost: 'Оценить конференцию целиком', foot: 'экран обновится сам, когда откроется окно', stats: false },
+      ended: { badge: 'мероприятие завершено', icon: '∎', iconBg: 'linear-gradient(180deg,#57C8F2,#2A8FC0)', iconShadow: '0 9px 0 #17567A,0 0 50px rgba(0,174,239,.35),inset 0 3px 0 rgba(255,255,255,.4)', iconColor: '#03293C',
+        title: 'Голосование завершено', sub: 'Конференция закончилась, приём оценок закрыт. Спасибо, что дожили до конца — записи докладов пришлём на почту.',
+        primary: 'Оценить конференцию целиком', ghost: 'Где записи докладов?', foot: 'QR со слайдов больше не активен', stats: false },
+      already: { badge: 'зал Гигатрансформация', icon: '✓', iconBg: 'linear-gradient(180deg,#4BE96A,#1FA53E)', iconShadow: '0 9px 0 #0F6B26,0 0 50px rgba(61,220,80,.4),inset 0 3px 0 rgba(255,255,255,.4)', iconColor: '#04220C',
+        title: 'Вы уже оценили этот доклад', sub: 'Фидбек по этому спикеру уже в базе — повторные не считаем, чтобы никто не накручивал. Ваш результат:',
+        primary: 'Оценить конференцию целиком', ghost: 'Ждать следующего доклада', foot: 'следующий доклад — в 15:20', stats: true }
+    };
+    const errDef = errScreens[scen];
+    // admin
+    const adminTabs = [ ['halls','Залы'], ['program','Программа'], ['criteria','Критерии'], ['stats','Статистика'] ].map(([v,label]) => ({
+      label, onClick: () => this.setState({ adminTab: v }), ...pill(S.adminTab === v)
+    }));
+    const spDone = (h, idx) => { const sp = h.speakers[idx]; return sp && sp.done !== undefined ? sp.done : idx < h.cur; };
+    const qrPatterns = ['repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 0/8px 8px','repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 50% 0/8px 8px','repeating-conic-gradient(#0B1F24 0 25%,#fff 0 50%) 0 50%/8px 8px'];
+    const halls = S.halls.map((h, i) => {
+      const cur = h.speakers[h.cur] || { name: 'Нет спикеров', talk: 'добавьте в «Программе»', time: '', n: 0, scores: [0,0,0,0] };
+      const live = h.status === 'live';
+      const doneCount = h.speakers.filter((sp, idx) => spDone(h, idx) && !(live && idx === h.cur)).length;
+      return {
+        num: h.num, name: h.name, qrPattern: qrPatterns[i % qrPatterns.length],
+        color: h.color || this.hallPalette[i % this.hallPalette.length],
+        colorOpts: this.hallPalette.map(c => ({
+          bg: c,
+          border: (h.color || this.hallPalette[i % this.hallPalette.length]) === c ? '2.5px solid #fff' : '2px solid rgba(255,255,255,.15)',
+          onClick: () => this.setState(s => ({ halls: s.halls.map((x, k) => k === i ? { ...x, color: c } : x) }))
+        })),
+        warn: live && !cur.n,
+        editing: S.hallEdit === i, notEditing: S.hallEdit !== i,
+        nameDraft: S.hallEdit === i ? S.hallDraft : h.name,
+        onNameDraft: (e) => this.setState({ hallDraft: e.target.value }),
+        onSaveName: () => this.setState(s => {
+          const hs = s.halls.map(x => ({ ...x }));
+          hs[i].name = s.hallDraft.trim() || hs[i].name;
+          return { halls: hs, hallEdit: null };
+        }),
+        onEdit: () => this.setState({ hallEdit: i, hallDraft: h.name }),
+        delLabel: S.confirmDelHall === i ? 'Точно удалить?' : 'Удалить',
+        delBg: S.confirmDelHall === i ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
+        delColor: S.confirmDelHall === i ? '#fff' : '#FF8A8A',
+        onDel: () => {
+          if (this.state.confirmDelHall === i) {
+            clearTimeout(this._dh);
+            this.setState(s => ({ halls: s.halls.filter((x, k) => k !== i), confirmDelHall: null, qrHall: null, hallEdit: null }));
+          } else {
+            this.setState({ confirmDelHall: i });
+            clearTimeout(this._dh); this._dh = setTimeout(() => this.setState({ confirmDelHall: null }), 3000);
+          }
+        },
+        cardBorder: live ? '1.5px solid #3DDC50' : '1px solid rgba(255,255,255,.08)',
+        cardGlow: live ? '0 0 44px rgba(61,220,80,.14)' : 'none',
+        opacity: live ? '1' : '.88',
+        stLabel: live ? 'голосование открыто' : 'голосование закрыто',
+        stBg: live ? grad : 'transparent',
+        stColor: live ? '#fff' : '#4FC9F0',
+        stBorder: live ? 'none' : '1px solid rgba(0,174,239,.7)',
+        curName: cur.name, curTalk: cur.talk + (cur.time ? ' · ' + cur.time : ''),
+        curInitials: this.initials(cur.name),
+        avBg: live ? '#00AEEF' : '#2B3947', avColor: live ? '#04222E' : '#8FA6B8',
+        n: cur.n || '—', avg: cur.n ? this.avgOf(cur).toFixed(1) : '—', conv: live ? h.conv : '—',
+        progLabel: doneCount + ' из ' + h.speakers.length + ' выступили',
+        segs: h.speakers.map((sp, idx) => {
+          const d = spDone(h, idx) && !(live && idx === h.cur);
+          const l = live && idx === h.cur;
+          return { bg: d ? '#3DDC50' : (l ? grad : 'rgba(255,255,255,.15)'), anim: l ? 'livePulse 1.6s ease infinite' : 'none' };
+        }),
+        onPrev: () => this.setState(s => {
+          const hs = s.halls.map((x, k) => k !== i ? x : { ...x, speakers: x.speakers.map(y => ({ ...y })) });
+          const hh = hs[i];
+          if (hh.cur > 0) { hh.cur -= 1; if (hh.speakers[hh.cur]) hh.speakers[hh.cur].done = false; }
+          return { halls: hs };
+        }),
+        onNextSp: () => this.setState(s => {
+          const hs = s.halls.map((x, k) => k !== i ? x : { ...x, speakers: x.speakers.map(y => ({ ...y })) });
+          const hh = hs[i];
+          if (hh.cur < hh.speakers.length - 1) { if (hh.speakers[hh.cur]) hh.speakers[hh.cur].done = true; hh.cur += 1; }
+          return { halls: hs };
+        }),
+        tglLabel: live ? (S.confirmStop === i ? 'Точно остановить?' : 'Остановить голосование') : 'Запустить голосование',
+        tglBg: live ? (S.confirmStop === i ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent') : grad,
+        tglColor: live ? (S.confirmStop === i ? '#fff' : '#FF8A8A') : '#fff',
+        tglBorder: live && S.confirmStop !== i ? '1px solid rgba(255,120,120,.55)' : '1px solid transparent',
+        onToggle: () => {
+          const st = this.state;
+          if (st.halls[i].status !== 'live') {
+            this.setState(s => {
+              const hs = s.halls.map(x => ({ ...x }));
+              hs[i].status = 'live';
+              return { halls: hs, confirmStop: null };
+            });
+          } else if (st.confirmStop === i) {
+            clearTimeout(this._cs);
+            this.setState(s => {
+              const hs = s.halls.map(x => ({ ...x }));
+              hs[i].status = 'break';
+              return { halls: hs, confirmStop: null };
+            });
+          } else {
+            this.setState({ confirmStop: i });
+            clearTimeout(this._cs); this._cs = setTimeout(() => this.setState({ confirmStop: null }), 3000);
+          }
+        },
+        onReset: () => this.setState(s => ({ halls: s.halls.map((x, k) => k !== i ? x : { ...x, cur: 0, status: 'break', speakers: x.speakers.map(y => ({ ...y, done: false })) }) })),
+        onSlide: () => this.setState({ qrHall: i })
+      };
+    });
+    const allSpeakers = [];
+    S.halls.forEach((h, hi) => h.speakers.forEach((sp, idx) => allSpeakers.push({
+      ...sp, hall: h.name, hi, si: idx,
+      isLive: h.status === 'live' && idx === h.cur,
+      isDone: (sp.done !== undefined ? sp.done : idx < h.cur) && !(h.status === 'live' && idx === h.cur),
+      hallColor: h.color || this.hallPalette[hi % this.hallPalette.length]
+    })));
+    allSpeakers.sort((a, b) => a.time.localeCompare(b.time));
+    const speakerRows = allSpeakers.map(sp => {
+      const st = sp.isLive ? 'в эфире' : (sp.isDone ? 'выступил' : 'ожидает');
+      return {
+        time: sp.time, name: sp.name, talk: sp.talk, hall: sp.hall, hallColor: sp.hallColor,
+        stCursor: sp.isLive ? 'default' : 'pointer',
+        stTitle: sp.isLive ? 'спикер сейчас в эфире' : (sp.isDone ? 'нажмите — вернуть в «ожидает»' : 'нажмите — отметить «выступил»'),
+        onStatus: sp.isLive ? null : () => this.setState(s => ({ halls: s.halls.map((x, k) => k !== sp.hi ? x : { ...x, speakers: x.speakers.map((y, j) => j !== sp.si ? y : { ...y, done: !(y.done !== undefined ? y.done : j < x.cur) }) }) })),
+        initials: this.initials(sp.name),
+        avBg: sp.isLive ? '#00AEEF' : '#2B3947', avColor: sp.isLive ? '#04222E' : '#8FA6B8',
+        border: sp.isLive ? '1.5px solid #3DDC50' : '1px solid rgba(255,255,255,.08)',
+        op: sp.isDone ? '.6' : '1',
+        mk: sp.isDone ? '✓' : '',
+        mkBg: sp.isLive ? grad : (sp.isDone ? 'rgba(61,220,80,.12)' : 'transparent'),
+        mkBorder: sp.isLive ? 'none' : (sp.isDone ? '1px solid rgba(61,220,80,.55)' : '1px solid rgba(255,255,255,.2)'),
+        mkColor: '#3DDC50',
+        mkAnim: sp.isLive ? 'livePulse 1.6s ease infinite' : 'none',
+        status: st,
+        stBg: sp.isLive ? grad : 'transparent',
+        stColor: sp.isLive ? '#fff' : (sp.isDone ? '#8FA6B8' : '#4FC9F0'),
+        stBorder: sp.isLive ? 'none' : (sp.isDone ? '1px solid rgba(255,255,255,.2)' : '1px solid rgba(0,174,239,.6)'),
+        avg: sp.n ? this.avgOf(sp).toFixed(1) : '—', avgColor: sp.n ? '#7CF29A' : 'rgba(255,255,255,.35)',
+        n: sp.n ? sp.n + ' оц.' : '—',
+        fmt: sp.format === 'panel' ? 'панель' : (sp.format === 'workshop' ? 'воркшоп' : 'доклад'),
+        onEdit: () => this.setState({ spModal: { hall: sp.hi, idx: sp.si }, spDraft: { name: sp.name, talk: sp.talk, time: sp.time, hall: sp.hi, format: sp.format || 'talk' } }),
+        delLabel: S.confirmDelSp === sp.hi + '-' + sp.si ? 'Точно?' : 'Удал.',
+        delBg: S.confirmDelSp === sp.hi + '-' + sp.si ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
+        delColor: S.confirmDelSp === sp.hi + '-' + sp.si ? '#fff' : '#FF8A8A',
+        onDel: () => {
+          const key = sp.hi + '-' + sp.si;
+          if (this.state.confirmDelSp === key) {
+            clearTimeout(this._ds);
+            this.setState(s => {
+              const hs = s.halls.map(x => ({ ...x, speakers: x.speakers.map(y => ({ ...y })) }));
+              hs[sp.hi].speakers.splice(sp.si, 1);
+              if (hs[sp.hi].cur >= hs[sp.hi].speakers.length) hs[sp.hi].cur = Math.max(0, hs[sp.hi].speakers.length - 1);
+              return { halls: hs, confirmDelSp: null };
+            });
+          } else {
+            this.setState({ confirmDelSp: key });
+            clearTimeout(this._ds); this._ds = setTimeout(() => this.setState({ confirmDelSp: null }), 3000);
+          }
+        }
+      };
+    });
+    const doneTotal = allSpeakers.filter(sp => sp.isDone).length;
+    const liveTotal = allSpeakers.filter(sp => sp.isLive).length;
+    // criteria editor
+    const types = S.critTypes;
+    const curType = types.find(t => t.id === S.critSet) || types[0];
+    const critSetTabs = types.map(t => ({
+      label: t.label, onClick: () => this.setState({ critSet: t.id, critIdx: 0, typeEdit: false }), ...pill(curType.id === t.id)
+    }));
+    const blankPage = () => ({ tag: 'Новый', q: 'Ваш вопрос?', hint: 'Подсказка под вопросом', opts: [['Слабо',''],['Так себе',''],['Норм',''],['Хорошо',''],['Отлично','']] });
+    const editList = (S.crits[curType.id] && S.crits[curType.id].length) ? S.crits[curType.id] : [blankPage()];
+    const edIdx = Math.min(S.critIdx, editList.length - 1);
+    const ed = editList[edIdx];
+    const critPills = editList.map((c, i) => ({
+      label: c.tag || '·', onClick: () => this.setState({ critIdx: i }), ...pill(i === edIdx)
+    }));
+    const statFilters = [{ v: 'all', label: 'Все залы' }].concat(S.halls.map(h => ({ v: h.id, label: h.name }))).map(f => ({
+      label: f.label, onClick: () => this.setState({ statFilter: f.v }), ...pill(S.statFilter === f.v)
+    }));
+    const topReactions = ['«держал зал» ×61', '«заберу в прод» ×47', '«AGI-момент» ×28', '«хочу слайды» ×22', '«демо не упало» ×19'];
+    const rankStyles = [
+      { bg: 'linear-gradient(180deg,#4BE96A,#1FA53E)', sh: '0 3px 0 #0F6B26,inset 0 1px 0 rgba(255,255,255,.4)', c: '#04220C' },
+      { bg: 'linear-gradient(180deg,#E8F2F7,#BFD4DE)', sh: '0 3px 0 #7E97A3,inset 0 1px 0 #fff', c: '#28404E' },
+      { bg: 'linear-gradient(180deg,#3A70C2,#2A55A0)', sh: '0 3px 0 #17325E,inset 0 1px 0 rgba(255,255,255,.3)', c: '#fff' }
+    ];
+    const pool = [];
+    S.halls.forEach(h => { if (S.statFilter === 'all' || S.statFilter === h.id) h.speakers.forEach(sp => { if (sp.n > 0) pool.push({ ...sp, hall: h.name }); }); });
+    pool.sort((a, b) => this.avgOf(b) - this.avgOf(a));
+    const leaderboard = pool.map((sp, i) => {
+      const rs = rankStyles[Math.min(i, 2)];
+      return {
+        rank: i + 1, rankBg: i < 3 ? rs.bg : 'linear-gradient(180deg,#232E3A,#1A222C)',
+        rankShadow: i < 3 ? rs.sh : '0 3px 0 #0B1118', rankColor: i < 3 ? rs.c : '#5E7280',
+        initials: this.initials(sp.name), name: sp.name, sub: sp.hall + ' · ' + sp.n + ' оценок',
+        border: i === 0 ? '1.5px solid #3DDC50' : '1px solid rgba(255,255,255,.08)',
+        glow: i === 0 ? '0 0 30px rgba(61,220,80,.12)' : 'none',
+        bars: sp.scores.map(v => ({ val: v.toFixed(1), w: Math.round(v / 5 * 100) + '%' })),
+        total: this.avgOf(sp).toFixed(1), totalColor: i === 0 ? '#7CF29A' : '#fff',
+        topReaction: topReactions[i % topReactions.length]
+      };
+    });
+    const totalRatings = S.halls.reduce((a, h) => a + h.speakers.reduce((x, sp) => x + sp.n, 0), 0);
+    const qrH = S.qrHall != null ? S.halls[S.qrHall] : null;
+    const goHome = () => this.setState({ lsMode: 'speaker', lsScreen: 'start', lsRatings: [0,0,0,0], lsReactions: {}, lsStepIdx: 0 });
+    return {
+      modes,
+      isListener: S.mode === 'listener', isAdmin: S.mode === 'admin',
+      scenChips,
+      lsErrScreen: lsErr,
+      errBadge: errDef ? errDef.badge : '', errIcon: errDef ? errDef.icon : '',
+      errIconBg: errDef ? errDef.iconBg : '', errIconShadow: errDef ? errDef.iconShadow : '', errIconColor: errDef ? errDef.iconColor : '',
+      errTitle: errDef ? errDef.title : '', errSub: errDef ? errDef.sub : '',
+      errPrimaryLabel: errDef ? errDef.primary : '', errGhostLabel: errDef ? errDef.ghost : '',
+      errFoot: errDef ? errDef.foot : '', errStats: !!(errDef && errDef.stats),
+      errPrimaryAction: (scen === 'already' || scen === 'ended') ? toHappy({ lsMode: 'conf' }) : toHappy(),
+      errGhostAction: scen === 'closed' ? toHappy({ lsMode: 'conf' }) : toHappy(),
+      lsStart: !lsErr && S.lsScreen === 'start', lsStep: !lsErr && S.lsScreen === 'step', lsDone: !lsErr && S.lsScreen === 'done',
+      lsSpeakerName: isConf ? 'Техно хаб Конф' : lsSpeaker.name,
+      lsSpeakerTalk: isConf ? '3 трека · 12 докладов · 1 панель' : lsSpeaker.talk,
+      lsSpeakerMeta: isConf ? '11 июля · Санкт-Петербург' : ((lsSpeaker.org ? lsSpeaker.org + ' · ' : (isPanel ? '5 спикеров · ' : '')) + lsSpeaker.time),
+      lsSpeakerInitials: isConf ? 'ТК' : this.initials(lsSpeaker.name),
+      lsSpeakerShort: isConf ? 'Техно хаб Конф' : lsSpeaker.name,
+      doneSub2: isConf ? 'Оргкомитет прочитает всё. Даже про кофе.' : (isPanel ? 'Участники панели получат его после дискуссии.' : (lsSpeaker.name.split(' ')[0] + ' получит его после доклада.')),
+      hallBadge: isConf ? 'вся конференция' : 'зал Гигатрансформация',
+      startTag: isConf ? 'оцениконфу' : 'оцениспикера',
+      startTitleA: isConf ? 'Последний коммит дня.' : 'QR отсканирован.',
+      startTitleB: isConf ? 'Оцените конференцию' : 'Вы уже лучше половины зала',
+      startSub: isConf ? 'Четыре клавиши про весь день: программа, организация, площадка, нетворкинг.' : 'Осталось нажать 4 клавиши. Никакой регистрации — мы верим, что вы не бот.',
+      critChips: critSet.map(c => ({ label: c.tag })),
+      startFlow: () => this.setState({ lsScreen: 'step', lsStepIdx: 0, lsRatings: [0,0,0,0], lsReactions: {}, lsStartAt: Date.now() }),
+      stepLabel: (S.lsStepIdx + 1) + ' / 4',
+      stepSegs: [0,1,2,3].map(i => ({ bg: i <= S.lsStepIdx ? grad : 'rgba(255,255,255,.15)' })),
+      critTag: crit.tag, critQuestion: crit.q, critHint: crit.hint,
+      options: crit.opts.map(([t, sub], i) => {
+        const sel = curRating === i + 1;
+        return {
+          num: i + 1, title: t, sub,
+          bg: sel ? 'rgba(61,220,80,.08)' : '#141C24',
+          border: sel ? '1.5px solid #3DDC50' : '1px solid rgba(255,255,255,.08)',
+          glow: sel ? '0 0 26px rgba(61,220,80,.2)' : 'none',
+          keyBg: sel ? keySel.bg : keyUnsel.bg, keyShadow: sel ? keySel.sh : keyUnsel.sh, keyColor: sel ? keySel.c : keyUnsel.c,
+          titleColor: sel ? '#7CF29A' : 'rgba(255,255,255,.88)',
+          subColor: sel ? 'rgba(124,242,154,.7)' : '#5E7280',
+          onClick: () => {
+            const r = [...this.state.lsRatings]; r[this.state.lsStepIdx] = i + 1;
+            this.setState({ lsRatings: r });
+            clearTimeout(this._adv);
+            this._adv = setTimeout(() => {
+              const s = this.state;
+              if (s.lsScreen !== 'step') return;
+              if (s.lsStepIdx < 3) this.setState({ lsStepIdx: s.lsStepIdx + 1 });
+              else this.setState({ lsScreen: 'done', lsElapsed: Math.round((Date.now() - s.lsStartAt) / 1000) });
+            }, 450);
+          }
+        };
+      }),
+      stepBack: () => S.lsStepIdx > 0 ? this.setState({ lsStepIdx: S.lsStepIdx - 1 }) : this.setState({ lsScreen: 'start' }),
+      doneAvg: userAvg, doneTime: S.lsElapsed + 'с',
+      reactions,
+      doneGhostLabel: isConf ? 'На главную' : 'Оценить конференцию целиком',
+      doneGhostAction: isConf ? goHome : () => this.setState({ lsMode: 'conf', lsScreen: 'start', lsRatings: [0,0,0,0], lsReactions: {}, lsStepIdx: 0 }),
+      adminTabs, totalRatings,
+      tabHalls: S.adminTab === 'halls', tabProgram: S.adminTab === 'program', tabCriteria: S.adminTab === 'criteria', tabStats: S.adminTab === 'stats',
+      halls, speakerRows, statFilters, leaderboard,
+      lbEmpty: leaderboard.length === 0,
+      addHall: () => this.setState(s => ({ halls: s.halls.concat([{ id: 'h' + Date.now(), num: s.halls.length + 1, name: 'Новый зал ' + (s.halls.length + 1), color: this.hallPalette[s.halls.length % this.hallPalette.length], status: 'break', cur: 0, conv: '—', speakers: [] }]) })),
+      addSpeaker: () => this.setState({ spModal: { hall: 0, idx: null }, spDraft: { name: '', talk: '', time: '12:00', hall: 0, format: 'talk' } }),
+      spModalOpen: !!S.spModal,
+      spModalTitle: S.spModal && S.spModal.idx != null ? 'Редактировать спикера' : 'Новый спикер',
+      spName: S.spDraft ? S.spDraft.name : '', onSpName: (e) => this.setState(s => ({ spDraft: { ...s.spDraft, name: e.target.value } })),
+      spTalk: S.spDraft ? S.spDraft.talk : '', onSpTalk: (e) => this.setState(s => ({ spDraft: { ...s.spDraft, talk: e.target.value } })),
+      spTime: S.spDraft ? S.spDraft.time : '', onSpTime: (e) => this.setState(s => ({ spDraft: { ...s.spDraft, time: e.target.value } })),
+      spHallPills: S.halls.map((h, k) => ({ label: h.name, dot: h.color || this.hallPalette[k % this.hallPalette.length], onClick: () => this.setState(s => ({ spDraft: { ...s.spDraft, hall: k } })), ...pill(!!S.spDraft && S.spDraft.hall === k) })),
+      spFmtPills: [ ['talk','Доклад'], ['panel','Панель'], ['workshop','Воркшоп'] ].map(([v,label]) => ({ label, onClick: () => this.setState(s => ({ spDraft: { ...s.spDraft, format: v } })), ...pill(!!S.spDraft && S.spDraft.format === v) })),
+      spSave: () => this.setState(s => {
+        if (!s.spDraft || !s.spDraft.name.trim()) return { spModal: null, spDraft: null };
+        const hs = s.halls.map(x => ({ ...x, speakers: x.speakers.map(y => ({ ...y })) }));
+        const d = s.spDraft;
+        const rec = { name: d.name, talk: d.talk, time: d.time, n: 0, scores: [0,0,0,0] };
+        if (d.format !== 'talk') rec.format = d.format;
+        if (s.spModal.idx != null) {
+          const old = hs[s.spModal.hall].speakers[s.spModal.idx];
+          rec.n = old.n; rec.scores = old.scores; if (old.done !== undefined) rec.done = old.done;
+          if (s.spModal.hall === d.hall) hs[d.hall].speakers[s.spModal.idx] = rec;
+          else { hs[s.spModal.hall].speakers.splice(s.spModal.idx, 1); hs[d.hall].speakers.push(rec); }
+        } else {
+          hs[d.hall].speakers.push(rec);
+        }
+        return { halls: hs, spModal: null, spDraft: null };
+      }),
+      spCancel: () => this.setState({ spModal: null, spDraft: null }),
+      progSummary: S.halls.length + ' зала · ' + liveTotal + ' в эфире сейчас',
+      progPct: Math.round(doneTotal / allSpeakers.length * 100) + '%',
+      progCount: doneTotal + ' / ' + allSpeakers.length,
+      critSetTabs, critPills,
+      editTag: ed.tag, onEditTag: (e) => this.updCrit({ tag: e.target.value }),
+      editQ: ed.q, onEditQ: (e) => this.updCrit({ q: e.target.value }),
+      editHint: ed.hint, onEditHint: (e) => this.updCrit({ hint: e.target.value }),
+      editTagBorder: ed.tag.trim() ? '1px solid rgba(255,255,255,.12)' : '1px solid rgba(229,72,77,.7)',
+      editQBorder: ed.q.trim() ? '1px solid rgba(255,255,255,.12)' : '1px solid rgba(229,72,77,.7)',
+      critWarn: !ed.tag.trim() || !ed.q.trim() || ed.opts.some(o => !o[0].trim()),
+      addType: () => this.setState(s => {
+        const id = 'type' + Date.now();
+        const crits = JSON.parse(JSON.stringify(s.crits));
+        crits[id] = [blankPage()];
+        return { crits, critTypes: s.critTypes.concat([{ id, label: 'Новый тип' }]), critSet: id, critIdx: 0, typeEdit: true, typeDraft: 'Новый тип' };
+      }),
+      typeEditing: S.typeEdit, typeNotEditing: !S.typeEdit,
+      typeDraft: S.typeDraft,
+      onTypeDraft: (e) => this.setState({ typeDraft: e.target.value }),
+      editType: () => this.setState({ typeEdit: true, typeDraft: curType.label }),
+      saveType: () => this.setState(s => ({ critTypes: s.critTypes.map(t => t.id === curType.id ? { ...t, label: s.typeDraft.trim() || t.label } : t), typeEdit: false })),
+      cancelType: () => this.setState({ typeEdit: false }),
+      delTypeLabel: S.confirmDelType ? 'Точно удалить тип?' : 'Удалить тип',
+      delTypeBg: S.confirmDelType ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
+      delTypeColor: S.confirmDelType ? '#fff' : '#FF8A8A',
+      delType: () => {
+        if (this.state.confirmDelType) {
+          clearTimeout(this._dt);
+          this.setState(s => {
+            if (s.critTypes.length <= 1) return { confirmDelType: null };
+            const rest = s.critTypes.filter(t => t.id !== curType.id);
+            const crits = JSON.parse(JSON.stringify(s.crits));
+            delete crits[curType.id];
+            return { crits, critTypes: rest, critSet: rest[0].id, critIdx: 0, confirmDelType: null, typeEdit: false };
+          });
+        } else {
+          this.setState({ confirmDelType: true });
+          clearTimeout(this._dt); this._dt = setTimeout(() => this.setState({ confirmDelType: null }), 3000);
+        }
+      },
+      addPage: () => this.setState(s => {
+        const crits = JSON.parse(JSON.stringify(s.crits));
+        (crits[curType.id] = crits[curType.id] || []).push(blankPage());
+        return { crits, critIdx: crits[curType.id].length - 1 };
+      }),
+      savePage: () => {
+        this.setState({ savedFlash: true });
+        clearTimeout(this._sv); this._sv = setTimeout(() => this.setState({ savedFlash: false }), 1600);
+      },
+      saveLabel: S.savedFlash ? 'Сохранено ✓' : 'Сохранить',
+      delPageLabel: S.confirmDelPage ? 'Точно?' : 'Удалить страницу',
+      delPageBg: S.confirmDelPage ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
+      delPageColor: S.confirmDelPage ? '#fff' : '#FF8A8A',
+      delPage: () => {
+        if (this.state.confirmDelPage) {
+          clearTimeout(this._dp);
+          this.setState(s => {
+            const crits = JSON.parse(JSON.stringify(s.crits));
+            if (!crits[curType.id] || crits[curType.id].length <= 1) return { confirmDelPage: null };
+            crits[curType.id].splice(edIdx, 1);
+            return { crits, critIdx: Math.max(0, edIdx - 1), confirmDelPage: null };
+          });
+        } else {
+          this.setState({ confirmDelPage: true });
+          clearTimeout(this._dp); this._dp = setTimeout(() => this.setState({ confirmDelPage: null }), 3000);
+        }
+      },
+      editOpts: ed.opts.map(([t, s], j) => ({
+        num: j + 1, title: t, sub: s,
+        bT: t.trim() ? '1px solid rgba(255,255,255,.12)' : '1px solid rgba(229,72,77,.7)',
+        onTitle: (e) => this.updOpt(j, 0, e.target.value),
+        onSub: (e) => this.updOpt(j, 1, e.target.value)
+      })),
+      previewSpeaker: curType.id === 'conf' ? 'Техно хаб Конф' : (curType.id === 'panel' ? 'Панельная дискуссия' : (curType.id === 'workshop' ? 'Воркшоп · Gen AI' : 'Денис Артюшин')),
+      previewStep: (edIdx + 1) + ' / ' + editList.length,
+      previewSegs: editList.map((c, i) => ({ bg: i <= edIdx ? grad : 'rgba(255,255,255,.15)' })),
+      previewTag: ed.tag, previewQ: ed.q, previewHint: ed.hint,
+      previewOpts: ed.opts.map(([t, s], i) => ({ num: i + 1, title: t, sub: s })),
+      qrModalOpen: qrH != null,
+      qrSpeaker: qrH ? ((qrH.speakers[qrH.cur] || {}).name || '—') : '',
+      qrHallName: qrH ? qrH.name : '',
+      qrHallNum: qrH ? qrH.num : '',
+      qrUrl: qrH ? 'thconf.sber.ru/rate/hall-' + qrH.num : '',
+      qrImgEl: qrH ? React.createElement('img', { src: this.makeQR('thconf.sber.ru/rate/hall-' + qrH.num), alt: 'QR зала', style: { width: 220, height: 220, display: 'block' } }) : null,
+      copyLabel: S.copied ? 'Скопировано' : 'Копировать',
+      copyQrLink: () => {
+        if (qrH && navigator.clipboard) navigator.clipboard.writeText('https://thconf.sber.ru/rate/hall-' + qrH.num);
+        this.setState({ copied: true });
+        clearTimeout(this._cp); this._cp = setTimeout(() => this.setState({ copied: false }), 1500);
+      },
+      downloadQr: () => {
+        if (!qrH) return;
+        const a = document.createElement('a');
+        a.href = this.makeQR('thconf.sber.ru/rate/hall-' + qrH.num);
+        a.download = 'qr-hall-' + qrH.num + '.png';
+        a.click();
+      },
+      stopClick: (e) => e.stopPropagation(),
+      closeQr: () => this.setState({ qrHall: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

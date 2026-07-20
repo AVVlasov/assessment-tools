@@ -195,7 +195,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
     criteriaType: 'speaker',
     criteria: [
       {
-        name: 'Контент',
+        name: 'Насколько глубоко?',
         tag: 'Контент',
         hint: 'Качество и глубина материала. Честно — мы никому не скажем.',
         maxScore: 5,
@@ -208,7 +208,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Подача',
+        name: 'Как спикер держал зал?',
         tag: 'Подача',
         hint: 'Ораторское искусство и энергия.',
         maxScore: 5,
@@ -221,7 +221,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Слайды',
+        name: 'Как вам презентация?',
         tag: 'Слайды',
         hint: 'Визуал, читаемость, структура.',
         maxScore: 5,
@@ -234,7 +234,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Применимость',
+        name: 'Заберёте себе?',
         tag: 'Применимость',
         hint: 'Практическая польза доклада для вашей работы.',
         maxScore: 5,
@@ -254,7 +254,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
     criteriaType: 'panel',
     criteria: [
       {
-        name: 'Острота',
+        name: 'Насколько жарко было?',
         tag: 'Острота',
         hint: 'Настоящий спор или согласованный пресс-релиз?',
         maxScore: 5,
@@ -267,7 +267,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Модерация',
+        name: 'Как вёл модератор?',
         tag: 'Модерация',
         hint: 'Темп, вопросы, распределение эфира.',
         maxScore: 5,
@@ -280,7 +280,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Аргументы',
+        name: 'Что с содержанием?',
         tag: 'Аргументы',
         hint: 'Цифры и кейсы или общие слова?',
         maxScore: 5,
@@ -293,7 +293,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Польза',
+        name: 'Что забираете с собой?',
         tag: 'Польза',
         hint: 'Изменит ли дискуссия что-то в вашей работе?',
         maxScore: 5,
@@ -313,7 +313,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
     criteriaType: 'workshop',
     criteria: [
       {
-        name: 'Практика',
+        name: 'Сделали руками?',
         tag: 'Практика',
         hint: 'Сколько реально сделали руками, а не только послушали.',
         maxScore: 5,
@@ -326,7 +326,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Ведение',
+        name: 'Как вёл ведущий?',
         tag: 'Ведение',
         hint: 'Как ведущий держал группу: темп, пояснения, помощь.',
         maxScore: 5,
@@ -339,7 +339,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Темп',
+        name: 'Успели программу?',
         tag: 'Темп',
         hint: 'Успели ли пройти программу без гонки и простоя.',
         maxScore: 5,
@@ -352,7 +352,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Польза',
+        name: 'Заберёте в работу?',
         tag: 'Польза',
         hint: 'Заберёте ли практику в работу после воркшопа.',
         maxScore: 5,
@@ -372,7 +372,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
     criteriaType: 'event',
     criteria: [
       {
-        name: 'Программа',
+        name: 'Как вам доклады в целом?',
         tag: 'Программа',
         hint: 'Вся сетка: треки, воркшопы, панель.',
         maxScore: 5,
@@ -385,7 +385,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Организация',
+        name: 'Как прошла логистика?',
         tag: 'Организация',
         hint: 'Регистрация, навигация, тайминг.',
         maxScore: 5,
@@ -398,7 +398,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Площадка',
+        name: 'Как вам технохаб?',
         tag: 'Площадка',
         hint: 'Залы, кофе, wifi, розетки.',
         maxScore: 5,
@@ -411,7 +411,7 @@ const CONFERENCE_DEFAULT_CRITERIA = [
         ])
       },
       {
-        name: 'Нетворкинг',
+        name: 'Пообщались?',
         tag: 'Нетворкинг',
         hint: 'Стендовая зона, кофе-брейки, люди.',
         maxScore: 5,

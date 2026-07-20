@@ -25,7 +25,7 @@ const variantStyles: Record<PillVariant, BoxProps> = {
   green: {
     border: 'none',
     bg: thColors.gradientGreenShort,
-    color: '#06220D',
+    color: '#FFFFFF',
   },
   cyan: {
     border: `1.5px solid rgba(0,174,239,0.6)`,

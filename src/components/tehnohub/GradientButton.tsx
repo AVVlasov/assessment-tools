@@ -13,9 +13,9 @@ export interface GradientButtonProps extends BoxProps {
 const styles: Record<GradientButtonVariant, BoxProps> = {
   primary: {
     bg: thColors.gradientGreen,
-    color: '#06220D',
+    color: '#FFFFFF',
     border: 'none',
-    boxShadow: '0 8px 24px rgba(61,220,80,0.3)',
+    boxShadow: '0 10px 30px rgba(46,200,110,0.35)',
   },
   secondary: {
     bg: thColors.keyUnsel,
@@ -26,12 +26,12 @@ const styles: Record<GradientButtonVariant, BoxProps> = {
   ghost: {
     bg: 'transparent',
     color: 'white',
-    border: `1.5px solid ${thColors.borderStrong}`,
+    border: '1px solid rgba(255,255,255,0.28)',
   },
   cyan: {
     bg: 'transparent',
     color: thColors.cyanLight,
-    border: '1.5px solid rgba(0,174,239,0.6)',
+    border: '1px solid rgba(0,174,239,0.7)',
   },
   key: {
     bg: thColors.keySel,
@@ -68,8 +68,8 @@ export const GradientButton = ({
       h="48px"
       px="22px"
       borderRadius="30px"
-      fontSize="14.5px"
-      fontWeight="800"
+      fontSize="14px"
+      fontWeight="700"
       fontFamily="inherit"
       cursor={disabled ? 'not-allowed' : 'pointer'}
       transition="all 0.15s"

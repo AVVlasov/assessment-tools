@@ -143,7 +143,7 @@ router.put('/:id', async (req, res) => {
   try {
     const {
       type, name, projectName, caseDescription,
-      hallId, scheduledTime, org, format, order
+      hallId, scheduledTime, org, format, order, programDone
     } = req.body;
     
     const team = await Team.findById(req.params.id);
@@ -188,6 +188,7 @@ router.put('/:id', async (req, res) => {
       team.format = ['panel', 'workshop'].includes(format) ? format : 'talk';
     }
     if (order !== undefined) team.order = order;
+    if (programDone !== undefined) team.programDone = !!programDone;
     
     await team.save();
     res.json(team);

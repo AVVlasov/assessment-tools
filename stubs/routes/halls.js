@@ -2,6 +2,8 @@ const router = require('express').Router();
 const { Hall, Team, Event, ListenerRating } = require('../models');
 const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
 
+const HALL_PALETTE = ['#4FC9F0', '#B18CFF', '#FFB020', '#FF7DAE', '#3ED968', '#F2E14C'];
+
 const avgOfScores = (scores) => {
   if (!scores || !scores.length) return 0;
   return scores.reduce((a, b) => a + b, 0) / scores.length;
@@ -17,7 +19,11 @@ router.get('/', async (req, res) => {
     const halls = await Hall.find({ eventId }).sort({ order: 1, num: 1 });
     const speakers = await Team.find({ eventId, type: 'speaker' }).sort({ order: 1, scheduledTime: 1 });
 
-    const enriched = await Promise.all(halls.map(async (hall) => {
+    const enriched = await Promise.all(halls.map(async (hall, i) => {
+      if (!hall.color) {
+        hall.color = HALL_PALETTE[i % HALL_PALETTE.length];
+        await hall.save();
+      }
       const hallSpeakers = speakers.filter((s) => String(s.hallId) === String(hall._id));
       const cur = hallSpeakers[hall.currentSpeakerIndex] || hallSpeakers[0] || null;
       let n = 0;
@@ -63,6 +69,7 @@ router.post('/', async (req, res) => {
       num: num || count + 1,
       qrNote: sanitizeText(qrNote || 'сам переключается на текущего спикера'),
       order: order ?? count,
+      color: req.body.color || HALL_PALETTE[count % HALL_PALETTE.length],
       status: 'break',
       currentSpeakerIndex: 0
     });
@@ -106,15 +113,29 @@ router.put('/:id', async (req, res) => {
     if (!hall) {
       return res.status(404).json({ error: 'Hall not found' });
     }
-    const { name, num, qrNote, status, order, currentSpeakerIndex } = req.body;
+    const { name, num, qrNote, status, order, currentSpeakerIndex, color } = req.body;
     if (name !== undefined) hall.name = name;
     if (num !== undefined) hall.num = num;
     if (qrNote !== undefined) hall.qrNote = qrNote;
     if (status !== undefined) hall.status = status;
     if (order !== undefined) hall.order = order;
-    if (currentSpeakerIndex !== undefined) hall.currentSpeakerIndex = currentSpeakerIndex;
+    if (color !== undefined) hall.color = color;
+    if (currentSpeakerIndex !== undefined) {
+      hall.currentSpeakerIndex = currentSpeakerIndex;
+    }
+
+    const speakers = await Team.find({ eventId: hall.eventId, type: 'speaker', hallId: hall._id })
+      .sort({ order: 1, scheduledTime: 1 });
+    // Sync voting flags whenever status or current speaker changes
+    if (status !== undefined || currentSpeakerIndex !== undefined) {
+      await syncHallVoting(hall, speakers);
+    }
     await hall.save();
-    res.json(hall);
+    res.json({
+      ...hall.toObject(),
+      speakers,
+      currentSpeaker: speakers[hall.currentSpeakerIndex] || null
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -250,7 +271,10 @@ router.post('/:id/restart', async (req, res) => {
     hall.currentSpeakerIndex = 0;
     const speakers = await Team.find({ eventId: hall.eventId, type: 'speaker', hallId: hall._id })
       .sort({ order: 1, scheduledTime: 1 });
-    await syncHallVoting(hall, speakers);
+    await Team.updateMany(
+      { eventId: hall.eventId, type: 'speaker', hallId: hall._id },
+      { $set: { programDone: false, isActiveForVoting: false, votingStatus: 'not_evaluated' } }
+    );
     await hall.save();
 
     let deleted = 0;
@@ -263,11 +287,102 @@ router.post('/:id/restart', async (req, res) => {
       deleted = result.deletedCount || 0;
     }
 
+    const refreshed = await Team.find({ eventId: hall.eventId, type: 'speaker', hallId: hall._id })
+      .sort({ order: 1, scheduledTime: 1 });
+
+    res.json({
+      ...hall.toObject(),
+      speakers: refreshed,
+      currentSpeaker: refreshed[0] || null,
+      deletedRatings: deleted
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/halls/:id/shift — ← / → спикер (index + programDone; голосование остаётся открытым)
+router.post('/:id/shift', async (req, res) => {
+  try {
+    const hall = await Hall.findById(req.params.id);
+    if (!hall) {
+      return res.status(404).json({ error: 'Hall not found' });
+    }
+    const delta = Number(req.body?.delta);
+    if (delta !== 1 && delta !== -1) {
+      return res.status(400).json({ error: 'delta must be 1 or -1' });
+    }
+
+    const speakers = await Team.find({ eventId: hall.eventId, type: 'speaker', hallId: hall._id })
+      .sort({ order: 1, scheduledTime: 1 });
+    if (!speakers.length) {
+      return res.status(400).json({ error: 'No speakers in this hall' });
+    }
+
+    const cur = hall.currentSpeakerIndex || 0;
+    const next = Math.min(Math.max(0, cur + delta), speakers.length - 1);
+    if (next === cur) {
+      let n = 0;
+      let avg = 0;
+      const currentSpeaker = speakers[cur] || null;
+      if (currentSpeaker) {
+        const ratings = await ListenerRating.find({
+          teamId: currentSpeaker._id,
+          targetType: { $in: ['speaker', 'panel', 'workshop'] }
+        }).select('averageScore');
+        n = ratings.length;
+        avg = n ? ratings.reduce((a, r) => a + r.averageScore, 0) / n : 0;
+      }
+      return res.json({
+        ...hall.toObject(),
+        speakers,
+        currentSpeaker,
+        ratingsCount: n,
+        averageScore: avg ? Number(avg.toFixed(1)) : 0
+      });
+    }
+
+    if (delta > 0 && speakers[cur]) {
+      speakers[cur].programDone = true;
+    }
+    if (delta < 0 && speakers[next]) {
+      speakers[next].programDone = false;
+    }
+
+    hall.currentSpeakerIndex = next;
+
+    const doneUpdates = [];
+    if (delta > 0 && speakers[cur]) {
+      doneUpdates.push(speakers[cur].save());
+    }
+    if (delta < 0 && speakers[next]) {
+      doneUpdates.push(speakers[next].save());
+    }
+
+    await Promise.all([
+      ...doneUpdates,
+      syncHallVoting(hall, speakers),
+      hall.save(),
+    ]);
+
+    const currentSpeaker = speakers[next] || null;
+    let n = 0;
+    let avg = 0;
+    if (currentSpeaker) {
+      const ratings = await ListenerRating.find({
+        teamId: currentSpeaker._id,
+        targetType: { $in: ['speaker', 'panel', 'workshop'] }
+      }).select('averageScore');
+      n = ratings.length;
+      avg = n ? ratings.reduce((a, r) => a + r.averageScore, 0) / n : 0;
+    }
+
     res.json({
       ...hall.toObject(),
       speakers,
-      currentSpeaker: speakers[0] || null,
-      deletedRatings: deleted
+      currentSpeaker,
+      ratingsCount: n,
+      averageScore: avg ? Number(avg.toFixed(1)) : 0
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

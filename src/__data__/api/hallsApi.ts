@@ -17,7 +17,7 @@ export const hallsApi = createApi({
     }),
     updateHall: builder.mutation<Hall, { id: string; data: UpdateHallRequest }>({
       query: ({ id, data }) => ({ url: `/halls/${id}`, method: 'PUT', body: data }),
-      invalidatesTags: ['Hall', 'ListenerStats'],
+      invalidatesTags: ['Hall', 'ListenerStats', 'ListenerHall'],
     }),
     deleteHall: builder.mutation<{ message: string }, string>({
       query: (id) => ({ url: `/halls/${id}`, method: 'DELETE' }),
@@ -42,6 +42,46 @@ export const hallsApi = createApi({
         body: { clearRatings: !!clearRatings },
       }),
       invalidatesTags: ['Hall', 'ListenerStats', 'ListenerHall'],
+    }),
+    shiftHallSpeaker: builder.mutation<Hall, { id: string; delta: 1 | -1; eventId: string }>({
+      query: ({ id, delta }) => ({
+        url: `/halls/${id}/shift`,
+        method: 'POST',
+        body: { delta },
+      }),
+      async onQueryStarted({ id, delta, eventId }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          hallsApi.util.updateQueryData('getHalls', eventId, (draft) => {
+            const hall = draft.find((h) => h._id === id)
+            if (!hall?.speakers?.length) return
+            const cur = hall.currentSpeakerIndex || 0
+            const next = Math.min(Math.max(0, cur + delta), hall.speakers.length - 1)
+            if (next === cur) return
+            if (delta > 0 && hall.speakers[cur]) {
+              hall.speakers[cur].programDone = true
+            }
+            if (delta < 0 && hall.speakers[next]) {
+              hall.speakers[next].programDone = false
+            }
+            hall.currentSpeakerIndex = next
+            hall.currentSpeaker = hall.speakers[next]
+            hall.ratingsCount = 0
+            hall.averageScore = 0
+          })
+        )
+        try {
+          const { data } = await queryFulfilled
+          dispatch(
+            hallsApi.util.updateQueryData('getHalls', eventId, (draft) => {
+              const idx = draft.findIndex((h) => h._id === id)
+              if (idx >= 0) draft[idx] = data
+            })
+          )
+        } catch {
+          patch.undo()
+        }
+      },
+      invalidatesTags: ['ListenerStats', 'ListenerHall'],
     }),
     setHallSpeaker: builder.mutation<Hall, { id: string; speakerId: string }>({
       query: ({ id, speakerId }) => ({
@@ -69,6 +109,7 @@ export const {
   usePauseHallMutation,
   usePauseAllHallsMutation,
   useRestartHallMutation,
+  useShiftHallSpeakerMutation,
   useSetHallSpeakerMutation,
   useGetHallQrQuery,
   useLazyGetHallQrQuery,

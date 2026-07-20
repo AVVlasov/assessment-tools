@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import { Box, Flex, Input, Text, Grid } from '@chakra-ui/react'
 import { QRCodeSVG } from 'qrcode.react'
+import { LuPencil, LuRotateCcw, LuTrash2 } from 'react-icons/lu'
 import {
   AvatarInitials,
   GradientButton,
-  Pill,
   QrModal,
   StatusBadge,
   SurfaceCard,
@@ -18,72 +18,136 @@ import {
   usePauseAllHallsMutation,
   usePauseHallMutation,
   useRestartHallMutation,
+  useShiftHallSpeakerMutation,
+  useUpdateHallMutation,
 } from '../../../__data__/api'
-import {
-  useGetListenerStatsQuery,
-  useResetEventRatingsMutation,
-  useResetHallRatingsMutation,
-  useResetSpeakerRatingsMutation,
-} from '../../../__data__/api/listenerApi'
+import { useGetListenerStatsQuery } from '../../../__data__/api/listenerApi'
 import { getHallRateUrl } from '../../../__data__/urls'
+import type { Team } from '../../../types'
 import { t } from '../../../utils/locale'
+
+const HALL_PALETTE = ['#4FC9F0', '#B18CFF', '#FFB020', '#FF7DAE', '#3ED968', '#F2E14C']
+
+const isSpeakerDone = (sp: Team, idx: number, currentIdx: number, live: boolean): boolean => {
+  if (live && idx === currentIdx) return false
+  if (sp.programDone === true) return true
+  if (sp.programDone === false) return false
+  return idx < currentIdx
+}
+
+const IconBtn = ({
+  label,
+  danger,
+  active,
+  onClick,
+  children,
+}: {
+  label: string
+  danger?: boolean
+  active?: boolean
+  onClick: () => void
+  children: React.ReactNode
+}): React.ReactElement => (
+  <Box
+    as="button"
+    type="button"
+    aria-label={label}
+    title={label}
+    w="36px"
+    h="36px"
+    display="inline-flex"
+    alignItems="center"
+    justifyContent="center"
+    borderRadius="10px"
+    border={
+      danger
+        ? active
+          ? 'none'
+          : '1px solid rgba(255,120,120,0.45)'
+        : '1px solid rgba(255,255,255,0.2)'
+    }
+    bg={active ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent'}
+    color={danger ? (active ? '#fff' : '#FF8A8A') : 'rgba(255,255,255,0.7)'}
+    cursor="pointer"
+    fontFamily="inherit"
+    transition="all 0.15s"
+    _hover={{
+      borderColor: danger ? '#FF4444' : thColors.green,
+      color: danger ? '#FF4444' : thColors.greenLight,
+      bg: active ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'rgba(255,255,255,0.04)',
+    }}
+    onClick={onClick}
+  >
+    {children}
+  </Box>
+)
 
 interface HallsTabProps {
   eventId: string
 }
 
 export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
-  const { data: halls = [], isLoading } = useGetHallsQuery(eventId)
-  const { data: stats } = useGetListenerStatsQuery({ eventId })
+  const { data: halls = [], isLoading } = useGetHallsQuery(eventId, { pollingInterval: 8000 })
+  const { data: stats } = useGetListenerStatsQuery({ eventId }, { pollingInterval: 8000 })
   const [createHall] = useCreateHallMutation()
   const [deleteHall] = useDeleteHallMutation()
   const [nextSpeaker] = useNextHallSpeakerMutation()
   const [pauseHall] = usePauseHallMutation()
   const [pauseAllHalls] = usePauseAllHallsMutation()
   const [restartHall] = useRestartHallMutation()
-  const [resetSpeakerRatings] = useResetSpeakerRatingsMutation()
-  const [resetHallRatings] = useResetHallRatingsMutation()
-  const [resetEventRatings] = useResetEventRatingsMutation()
-  const [name, setName] = useState('')
+  const [updateHall] = useUpdateHallMutation()
+  const [shiftSpeakerMut] = useShiftHallSpeakerMutation()
   const [qrHallId, setQrHallId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [nameDraft, setNameDraft] = useState('')
+  const [confirmStop, setConfirmStop] = useState<string | null>(null)
+  const [confirmDel, setConfirmDel] = useState<string | null>(null)
 
   const qrHall = useMemo(() => halls.find((h) => h._id === qrHallId) || null, [halls, qrHallId])
-  const hasLiveHall = halls.some((h) => h.status === 'live')
 
-  const handleAdd = async (): Promise<void> => {
-    if (!name.trim()) return
-    await createHall({ eventId, name: name.trim() })
-    setName('')
+  const saveName = async (id: string): Promise<void> => {
+    const trimmed = nameDraft.trim()
+    if (trimmed) await updateHall({ id, data: { name: trimmed } })
+    setEditingId(null)
   }
 
-  const downloadAll = (): void => {
-    halls.forEach((h, i) => {
-      setTimeout(() => {
-        const svg = document.getElementById(`qr-hall-${h._id}`)
-        if (!svg) return
-        const serializer = new XMLSerializer()
-        const source = serializer.serializeToString(svg)
-        const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' })
-        const canvas = document.createElement('canvas')
-        canvas.width = 440
-        canvas.height = 440
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-        const img = new Image()
-        const url = URL.createObjectURL(blob)
-        img.onload = () => {
-          ctx.fillStyle = '#fff'
-          ctx.fillRect(0, 0, 440, 440)
-          ctx.drawImage(img, 20, 20, 400, 400)
-          const a = document.createElement('a')
-          a.href = canvas.toDataURL('image/png')
-          a.download = `qr-hall-${h.num}.png`
-          a.click()
-          URL.revokeObjectURL(url)
-        }
-        img.src = url
-      }, i * 300)
-    })
+  const shiftSpeaker = (hallId: string, delta: 1 | -1): void => {
+    const hall = halls.find((h) => h._id === hallId)
+    if (!hall?.speakers?.length) return
+    const cur = hall.currentSpeakerIndex || 0
+    const next = Math.min(Math.max(0, cur + delta), hall.speakers.length - 1)
+    if (next === cur) return
+    setConfirmStop(null)
+    void shiftSpeakerMut({ id: hallId, delta, eventId })
+  }
+
+  const toggleVoting = async (hallId: string): Promise<void> => {
+    const hall = halls.find((h) => h._id === hallId)
+    if (!hall) return
+    if (hall.status !== 'live') {
+      setConfirmStop(null)
+      // One live hall at a time across the event
+      await pauseAllHalls({ eventId })
+      await nextSpeaker(hallId)
+      return
+    }
+    if (confirmStop === hallId) {
+      setConfirmStop(null)
+      await pauseHall(hallId)
+      return
+    }
+    setConfirmStop(hallId)
+    setTimeout(() => setConfirmStop((c) => (c === hallId ? null : c)), 3000)
+  }
+
+  const handleDelete = async (hallId: string): Promise<void> => {
+    if (confirmDel === hallId) {
+      setConfirmDel(null)
+      await deleteHall(hallId)
+      return
+    }
+    setConfirmDel(hallId)
+    setTimeout(() => setConfirmDel((c) => (c === hallId ? null : c)), 3000)
   }
 
   if (isLoading) {
@@ -92,274 +156,381 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
 
   return (
     <Box>
-      <Flex justify="space-between" align="center" mb="18px" flexWrap="wrap" gap="10px">
-        <Pill variant="outline" dot>
-          {stats?.totalRatings ?? 0} {t('admin.ratingsToday')}
-        </Pill>
-        <Flex gap="8px" flexWrap="wrap">
-          <GradientButton
-            h="36px"
-            fontSize="12px"
-            variant="ghost"
-            color="#FF6B6B"
-            borderColor="rgba(255,100,100,0.45)"
-            disabled={!hasLiveHall}
-            onClick={() => {
-              if (window.confirm(t('admin.confirmStopAllVoting'))) {
-                void pauseAllHalls({ eventId })
-              }
-            }}
-          >
-            {t('admin.stopAllVoting')}
-          </GradientButton>
-          <GradientButton
-            h="36px"
-            fontSize="12px"
-            variant="ghost"
-            color="#FF6B6B"
-            borderColor="rgba(255,100,100,0.45)"
-            onClick={() => {
-              if (window.confirm(t('admin.confirmResetEvent'))) {
-                void resetEventRatings(eventId)
-              }
-            }}
-          >
-            {t('admin.resetAllRatings')}
-          </GradientButton>
-          <GradientButton h="36px" fontSize="12.5px" onClick={downloadAll} disabled={!halls.length}>
-            {t('admin.downloadAllQr')}
-          </GradientButton>
-        </Flex>
-      </Flex>
+      <Grid templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="15px">
+        {halls.map((h) => {
+          const live = h.status === 'live'
+          const cur = h.currentSpeaker
+          const speakers = h.speakers || []
+          const url = getHallRateUrl(h.token)
+          const warn = live && !(h.ratingsCount && h.ratingsCount > 0)
+          const curIdx = h.currentSpeakerIndex || 0
+          const hallColor = h.color || HALL_PALETTE[(h.num - 1) % HALL_PALETTE.length]
+          const doneCount = speakers.filter((sp, idx) => isSpeakerDone(sp, idx, curIdx, live)).length
+          const stopConfirm = confirmStop === h._id
+          const delConfirm = confirmDel === h._id
+          const hallRatings = (stats?.speakerRows || [])
+            .filter((r) => r.hallId === h._id)
+            .reduce((a, r) => a + (r.n || 0), 0)
+          const maxHallRatings = Math.max(
+            1,
+            ...(stats?.halls || []).map((hh) =>
+              (stats?.speakerRows || [])
+                .filter((r) => r.hallId === hh._id)
+                .reduce((a, r) => a + (r.n || 0), 0)
+            )
+          )
+          const conversion =
+            live && hallRatings > 0
+              ? `${Math.min(99, Math.round((hallRatings / maxHallRatings) * 100))}%`
+              : '—'
 
-      <Flex gap="10px" mb="18px" flexWrap="wrap">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder={t('admin.hallName')}
-          bg={thColors.card}
-          borderColor={thColors.border}
-          color="white"
-          borderRadius="30px"
-          h="42px"
-          maxW="320px"
-          _placeholder={{ color: thColors.mutedDark }}
-        />
-        <GradientButton h="42px" onClick={handleAdd}>
-          {t('admin.addHall')}
-        </GradientButton>
-      </Flex>
-
-      {!halls.length ? (
-        <Text color={thColors.textFaint}>{t('admin.noHalls')}</Text>
-      ) : (
-        <Grid templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="15px">
-          {halls.map((h) => {
-            const live = h.status === 'live'
-            const cur = h.currentSpeaker
-            const url = getHallRateUrl(h.token)
-            return (
-              <SurfaceCard key={h._id} highlighted={live} opacity={live ? 1 : 0.88}>
-                <Flex justify="space-between" align="center" gap="8px" mb="14px">
-                  <Text fontSize="14.5px" fontWeight="800">
-                    {h.name}
-                  </Text>
-                  <StatusBadge status={live ? 'live' : 'break'} />
-                </Flex>
-
-                <Flex gap="12px" align="center" mb="14px">
-                  <AvatarInitials name={cur?.name || '—'} size={48} live={live} />
-                  <Box minW={0}>
-                    <Text fontSize="14px" fontWeight="700">
-                      {cur?.name || '—'}
-                    </Text>
-                    <Text fontSize="11.5px" color={thColors.textFaint} lineHeight="1.35">
-                      {cur ? `${cur.projectName} · ${cur.scheduledTime || ''}` : 'Нет спикера'}
-                    </Text>
-                  </Box>
-                </Flex>
-
-                <Flex gap="8px" mb="14px">
-                  {[
-                    {
-                      v: h.ratingsCount != null && h.ratingsCount > 0 ? h.ratingsCount : '—',
-                      l: t('admin.ratings'),
-                      c: thColors.greenLight,
-                    },
-                    {
-                      v: h.averageScore ? h.averageScore : '—',
-                      l: t('admin.average'),
-                      c: 'white',
-                    },
-                    { v: '—', l: t('admin.conversion'), c: 'white' },
-                  ].map((m) => (
-                    <Box
-                      key={m.l}
+          return (
+            <SurfaceCard key={h._id} highlighted={live} opacity={live ? 1 : 0.88} borderRadius="16px">
+              <Flex justify="space-between" align="center" gap="8px" mb="14px">
+                {editingId === h._id ? (
+                  <>
+                    <Input
+                      value={nameDraft}
+                      onChange={(e) => setNameDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') void saveName(h._id)
+                        if (e.key === 'Escape') setEditingId(null)
+                      }}
+                      autoFocus
                       flex="1"
+                      minW={0}
+                      h="34px"
                       bg={thColors.surface}
-                      borderRadius="14px"
-                      p="10px"
-                      textAlign="center"
+                      borderColor={thColors.green}
+                      color="white"
+                      borderRadius="10px"
+                      fontSize="13px"
+                      fontWeight="700"
+                    />
+                    <GradientButton
+                      h="32px"
+                      px="13px"
+                      fontSize="11.5px"
+                      flexShrink={0}
+                      onClick={() => void saveName(h._id)}
                     >
-                      <Text fontSize="18px" fontWeight="800" color={m.c}>
-                        {m.v}
+                      {t('admin.saveName')}
+                    </GradientButton>
+                  </>
+                ) : (
+                  <>
+                    <Flex align="center" gap="8px" minW={0} flex="1">
+                      <Box
+                        w="10px"
+                        h="10px"
+                        borderRadius="50%"
+                        bg={hallColor}
+                        flexShrink={0}
+                      />
+                      <Text fontSize="14.5px" fontWeight="800" truncate>
+                        {h.name}
                       </Text>
-                      <Text fontSize="10px" color="rgba(255,255,255,0.45)">
-                        {m.l}
-                      </Text>
-                    </Box>
+                    </Flex>
+                    <StatusBadge status={live ? 'live' : 'break'} />
+                  </>
+                )}
+              </Flex>
+
+              {editingId === h._id && (
+                <Flex gap="8px" align="center" flexWrap="wrap" mb="14px">
+                  <Text
+                    fontSize="10.5px"
+                    color="rgba(255,255,255,0.45)"
+                    fontWeight="600"
+                    textTransform="uppercase"
+                    letterSpacing="0.5px"
+                  >
+                    {t('admin.hallColor')}
+                  </Text>
+                  {HALL_PALETTE.map((c) => (
+                    <Box
+                      key={c}
+                      as="button"
+                      type="button"
+                      w="22px"
+                      h="22px"
+                      borderRadius="50%"
+                      bg={c}
+                      border={hallColor === c ? '2.5px solid #fff' : '2px solid rgba(255,255,255,0.15)'}
+                      cursor="pointer"
+                      onClick={() => void updateHall({ id: h._id, data: { color: c } })}
+                    />
                   ))}
                 </Flex>
+              )}
 
-                <Flex
-                  gap="10px"
-                  align="center"
-                  bg={thColors.surface}
-                  borderRadius="16px"
-                  p="11px 12px"
+              <Flex gap="12px" align="center" mb="14px">
+                <AvatarInitials name={cur?.name || '—'} size={48} live={live} />
+                <Box minW={0}>
+                  <Text fontSize="14px" fontWeight="700">
+                    {cur?.name || t('listener.noSpeaker')}
+                  </Text>
+                  <Text fontSize="11.5px" color={thColors.textFaint} lineHeight="1.35">
+                    {cur
+                      ? `${cur.projectName}${cur.scheduledTime ? ` · ${cur.scheduledTime}` : ''}`
+                      : t('admin.addSpeakersHint')}
+                  </Text>
+                </Box>
+              </Flex>
+
+              <Box mb="14px">
+                <Flex justify="space-between" fontSize="10.5px" color="rgba(255,255,255,0.45)" mb="6px">
+                  <Text textTransform="uppercase" letterSpacing="0.5px" fontWeight="600">
+                    {t('admin.hallProgram')}
+                  </Text>
+                  <Text>
+                    {doneCount} {t('admin.of')} {Math.max(speakers.length, 1)} {t('admin.spoke')}
+                  </Text>
+                </Flex>
+                <Flex gap="4px">
+                  {(speakers.length ? speakers : [{ _id: 'empty' } as Team]).map((sp, idx) => {
+                    const done = speakers.length > 0 && isSpeakerDone(sp, idx, curIdx, live)
+                    const current = live && speakers.length > 0 && idx === curIdx
+                    return (
+                      <Box
+                        key={sp._id || idx}
+                        flex="1"
+                        h="5px"
+                        borderRadius="3px"
+                        bg={
+                          done
+                            ? thColors.green
+                            : current
+                              ? thColors.gradientGreen
+                              : 'rgba(255,255,255,0.15)'
+                        }
+                        animation={current ? 'livePulse 1.6s ease infinite' : undefined}
+                      />
+                    )
+                  })}
+                </Flex>
+              </Box>
+
+              <Flex gap="8px" mb="14px">
+                {[
+                  {
+                    v: h.ratingsCount != null && h.ratingsCount > 0 ? h.ratingsCount : '—',
+                    l: t('admin.ratings'),
+                    c: thColors.greenLight,
+                  },
+                  {
+                    v: h.averageScore ? h.averageScore : '—',
+                    l: t('admin.average'),
+                    c: 'white' as const,
+                  },
+                  {
+                    v: conversion,
+                    l: t('admin.conversion'),
+                    c: 'white' as const,
+                  },
+                ].map((m) => (
+                  <Box
+                    key={m.l}
+                    flex="1"
+                    bg={thColors.surface}
+                    borderRadius="10px"
+                    p="10px"
+                    textAlign="center"
+                  >
+                    <Text fontSize="18px" fontWeight="800" color={m.c}>
+                      {m.v}
+                    </Text>
+                    <Text fontSize="10px" color="rgba(255,255,255,0.45)">
+                      {m.l}
+                    </Text>
+                  </Box>
+                ))}
+              </Flex>
+
+              {warn && (
+                <Box
+                  bg="rgba(255,176,32,0.1)"
+                  border="1px solid rgba(255,176,32,0.45)"
+                  borderRadius="10px"
+                  p="9px 12px"
                   mb="14px"
                 >
-                  <Box
-                    w="54px"
-                    h="54px"
-                    borderRadius="9px"
-                    bg="white"
-                    p="4px"
-                    flexShrink={0}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <QRCodeSVG id={`qr-hall-${h._id}`} value={url} size={46} />
-                  </Box>
-                  <Box flex="1" minW={0}>
-                    <Text fontSize="11.5px" fontWeight="700">
-                      {t('admin.qrPermanent')} №{h.num}
-                    </Text>
-                    <Text fontSize="10.5px" color={thColors.textFaint} lineHeight="1.35">
-                      {h.qrNote}
-                    </Text>
-                  </Box>
-                </Flex>
+                  <Text fontSize="11px" color="#FFC24B" fontWeight="600" lineHeight="1.4">
+                    {t('admin.warnNoRatings')}
+                  </Text>
+                </Box>
+              )}
 
-                <Flex gap="8px" mb="8px">
-                  <GradientButton
-                    flex="1"
-                    h="42px"
-                    borderRadius="14px"
-                    variant={live ? 'key' : 'ghost'}
-                    color={live ? undefined : thColors.greenLight}
-                    borderColor={live ? undefined : thColors.green}
-                    fontSize="12.5px"
-                    onClick={() => nextSpeaker(h._id)}
-                  >
-                    {live ? t('admin.nextSpeaker') : t('admin.startSpeaker')}
-                  </GradientButton>
-                  <GradientButton
-                    variant="secondary"
-                    h="42px"
-                    borderRadius="14px"
-                    fontSize="12.5px"
-                    onClick={() => setQrHallId(h._id)}
-                  >
-                    {t('admin.qrForSlide')}
-                  </GradientButton>
-                </Flex>
+              <Flex
+                gap="10px"
+                align="center"
+                bg={thColors.surface}
+                borderRadius="12px"
+                p="11px 12px"
+                mb="14px"
+                cursor="pointer"
+                border="1px solid transparent"
+                _hover={{ borderColor: 'rgba(79,201,240,0.5)' }}
+                onClick={() => setQrHallId(h._id)}
+              >
+                <Box
+                  w="54px"
+                  h="54px"
+                  borderRadius="9px"
+                  bg="white"
+                  p="4px"
+                  flexShrink={0}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <QRCodeSVG id={`qr-hall-${h._id}`} value={url} size={46} />
+                </Box>
+                <Box flex="1" minW={0}>
+                  <Text fontSize="11.5px" fontWeight="700">
+                    {t('admin.qrPermanent')} №{h.num} · {t('admin.qrPermanentSuffix')}
+                  </Text>
+                  <Text fontSize="10.5px" color={thColors.textFaint} lineHeight="1.35">
+                    {t('admin.qrClickHint')}
+                  </Text>
+                </Box>
+              </Flex>
 
-                <Flex gap="6px" flexWrap="wrap">
-                  {live && (
-                    <GradientButton
-                      h="34px"
-                      px="12px"
-                      fontSize="11px"
-                      variant="cyan"
-                      borderRadius="12px"
-                      onClick={() => pauseHall(h._id)}
+              <Flex gap="8px" align="center">
+                <GradientButton
+                  w="44px"
+                  h="44px"
+                  px="0"
+                  variant="ghost"
+                  flexShrink={0}
+                  fontSize="15px"
+                  boxShadow="none"
+                  onClick={() => void shiftSpeaker(h._id, -1)}
+                >
+                  ←
+                </GradientButton>
+                <GradientButton
+                  flex="1"
+                  h="44px"
+                  fontSize="13px"
+                  fontWeight="600"
+                  variant="ghost"
+                  boxShadow="none"
+                  border={
+                    live && !stopConfirm
+                      ? '1px solid rgba(255,120,120,0.55)'
+                      : live && stopConfirm
+                        ? '1px solid transparent'
+                        : '1px solid transparent'
+                  }
+                  bg={
+                    live
+                      ? stopConfirm
+                        ? 'linear-gradient(90deg,#E5484D,#C63A66)'
+                        : 'transparent'
+                      : thColors.gradientGreen
+                  }
+                  color={live ? (stopConfirm ? '#fff' : '#FF8A8A') : '#FFFFFF'}
+                  _hover={
+                    live && !stopConfirm
+                      ? { borderColor: '#FF4444', color: '#FF4444', bg: 'transparent' }
+                      : live && stopConfirm
+                        ? { transform: 'translateY(-1px)' }
+                        : { transform: 'translateY(-2px)', bg: thColors.gradientGreen }
+                  }
+                  onClick={() => void toggleVoting(h._id)}
+                >
+                  {live
+                    ? stopConfirm
+                      ? t('admin.confirmStop')
+                      : t('admin.pauseHall')
+                    : t('admin.startVoting')}
+                </GradientButton>
+                <GradientButton
+                  w="44px"
+                  h="44px"
+                  px="0"
+                  variant="ghost"
+                  flexShrink={0}
+                  fontSize="15px"
+                  boxShadow="none"
+                  onClick={() => void shiftSpeaker(h._id, 1)}
+                >
+                  →
+                </GradientButton>
+              </Flex>
+
+              <Flex justify="flex-end" align="center" gap="6px" mt="10px">
+                {delConfirm ? (
+                  <GradientButton
+                    h="36px"
+                    px="14px"
+                    fontSize="12px"
+                    fontWeight="600"
+                    variant="ghost"
+                    color="#fff"
+                    border="none"
+                    bg="linear-gradient(90deg,#E5484D,#C63A66)"
+                    boxShadow="none"
+                    onClick={() => void handleDelete(h._id)}
+                  >
+                    {t('admin.confirmDelete')}
+                  </GradientButton>
+                ) : (
+                  <>
+                    <IconBtn
+                      label={t('admin.resetHall')}
+                      onClick={() => void restartHall({ id: h._id, clearRatings: false })}
                     >
-                      {t('admin.pauseHall')}
-                    </GradientButton>
-                  )}
-                  <GradientButton
-                    h="34px"
-                    px="12px"
-                    fontSize="11px"
-                    variant="ghost"
-                    borderRadius="12px"
-                    onClick={() => restartHall({ id: h._id, clearRatings: false })}
-                  >
-                    {t('admin.restartHall')}
-                  </GradientButton>
-                  <GradientButton
-                    h="34px"
-                    px="12px"
-                    fontSize="11px"
-                    variant="ghost"
-                    borderRadius="12px"
-                    color="#FFB4B4"
-                    borderColor="rgba(255,100,100,0.4)"
-                    onClick={() => {
-                      if (window.confirm(t('admin.confirmRestartClear'))) {
-                        void restartHall({ id: h._id, clearRatings: true })
-                      }
-                    }}
-                  >
-                    {t('admin.restartHallClear')}
-                  </GradientButton>
-                  {cur && (
-                    <GradientButton
-                      h="34px"
-                      px="12px"
-                      fontSize="11px"
-                      variant="ghost"
-                      borderRadius="12px"
-                      color="#FFB4B4"
-                      borderColor="rgba(255,100,100,0.4)"
+                      <LuRotateCcw size={16} />
+                    </IconBtn>
+                    <IconBtn
+                      label={t('admin.editHall')}
                       onClick={() => {
-                        if (window.confirm(t('admin.confirmResetSpeaker'))) {
-                          void resetSpeakerRatings(cur._id)
-                        }
+                        setEditingId(h._id)
+                        setNameDraft(h.name)
                       }}
                     >
-                      {t('admin.resetCurrentRatings')}
-                    </GradientButton>
-                  )}
-                  <GradientButton
-                    h="34px"
-                    px="12px"
-                    fontSize="11px"
-                    variant="ghost"
-                    borderRadius="12px"
-                    color="#FFB4B4"
-                    borderColor="rgba(255,100,100,0.4)"
-                    onClick={() => {
-                      if (window.confirm(t('admin.confirmResetHall'))) {
-                        void resetHallRatings(h._id)
-                      }
-                    }}
-                  >
-                    {t('admin.resetHallRatings')}
-                  </GradientButton>
-                  <GradientButton
-                    h="34px"
-                    px="12px"
-                    fontSize="11px"
-                    variant="ghost"
-                    borderRadius="12px"
-                    color="#FF6B6B"
-                    borderColor="rgba(255,80,80,0.5)"
-                    onClick={() => {
-                      if (window.confirm(t('admin.confirmDeleteHall'))) {
-                        void deleteHall(h._id)
-                      }
-                    }}
-                  >
-                    {t('admin.deleteHall')}
-                  </GradientButton>
-                </Flex>
-              </SurfaceCard>
-            )
-          })}
-        </Grid>
+                      <LuPencil size={16} />
+                    </IconBtn>
+                    <IconBtn label={t('admin.deleteHall')} danger onClick={() => void handleDelete(h._id)}>
+                      <LuTrash2 size={16} />
+                    </IconBtn>
+                  </>
+                )}
+              </Flex>
+            </SurfaceCard>
+          )
+        })}
+
+        <Box
+          as="button"
+          minH="220px"
+          borderRadius="16px"
+          border="1.5px dashed rgba(255,255,255,0.2)"
+          bg="transparent"
+          color="rgba(255,255,255,0.55)"
+          fontSize="13.5px"
+          fontWeight="600"
+          cursor="pointer"
+          fontFamily="inherit"
+          transition="all 0.15s"
+          _hover={{ borderColor: thColors.green, color: thColors.greenLight }}
+          onClick={() => {
+            void createHall({
+              eventId,
+              name: `${t('admin.newHall')} ${halls.length + 1}`,
+            })
+          }}
+        >
+          + {t('admin.createHall')}
+        </Box>
+      </Grid>
+
+      {!halls.length && (
+        <Text color={thColors.textFaint} mt="12px">
+          {t('admin.noHalls')}
+        </Text>
       )}
 
       <QrModal

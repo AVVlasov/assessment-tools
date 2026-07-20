@@ -90,7 +90,7 @@ export const QrModal = ({
         maxW="100%"
         bg={thColors.card}
         border={`1px solid ${thColors.border}`}
-        borderRadius="26px"
+        borderRadius="18px"
         p="26px"
         boxShadow="0 40px 100px rgba(0,0,0,0.7)"
         onClick={(e) => e.stopPropagation()}
@@ -114,7 +114,7 @@ export const QrModal = ({
         <Flex justify="center">
           <Box
             bg="white"
-            borderRadius="20px"
+            borderRadius="14px"
             p="14px"
             boxShadow="0 0 50px rgba(61,220,80,0.25)"
           >
@@ -144,7 +144,7 @@ export const QrModal = ({
           >
             {url}
           </Text>
-          <GradientButton variant="secondary" h="32px" px="14px" fontSize="12px" onClick={handleCopy}>
+          <GradientButton variant="ghost" h="32px" px="14px" fontSize="12px" onClick={handleCopy}>
             {copied ? copiedLabel : copyLabel}
           </GradientButton>
         </Flex>

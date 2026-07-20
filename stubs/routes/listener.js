@@ -75,14 +75,54 @@ router.get('/hall/:token', async (req, res) => {
       });
     }
 
+    // Персональный контекст сессии: уже ли слушатель оценил текущего спикера / конференцию
+    const sessionId = req.query.sessionId;
+    let alreadyRatedSpeaker = false;
+    let alreadyRatedEvent = false;
+    let previousSpeakerRating = null;
+    let previousEventRating = null;
+    if (sessionId) {
+      if (currentSpeaker) {
+        const prev = await ListenerRating.findOne({
+          sessionId,
+          teamId: currentSpeaker._id,
+          targetType: { $in: SESSION_TARGET_TYPES }
+        });
+        if (prev) {
+          alreadyRatedSpeaker = true;
+          previousSpeakerRating = {
+            averageScore: prev.averageScore,
+            elapsedSeconds: prev.elapsedSeconds,
+            reactions: prev.reactions || [],
+            createdAt: prev.createdAt
+          };
+        }
+      }
+      const prevEvent = await ListenerRating.findOne({ sessionId, eventId: hall.eventId, targetType: 'event' });
+      if (prevEvent) {
+        alreadyRatedEvent = true;
+        previousEventRating = {
+          averageScore: prevEvent.averageScore,
+          elapsedSeconds: prevEvent.elapsedSeconds,
+          reactions: prevEvent.reactions || [],
+          createdAt: prevEvent.createdAt
+        };
+      }
+    }
+
     res.json({
       hall,
       event,
+      eventEnded: event.status === 'completed',
       currentSpeaker,
       nextSpeaker,
       speakers,
       isPanel,
       isWorkshop,
+      alreadyRatedSpeaker,
+      alreadyRatedEvent,
+      previousSpeakerRating,
+      previousEventRating,
       criteria: {
         speaker: speakerCriteria,
         panel: panelCriteria,
@@ -194,6 +234,37 @@ router.post('/ratings', async (req, res) => {
   }
 });
 
+// POST /api/listener/ratings/reactions — обновить только реакции существующей оценки
+router.post('/ratings/reactions', async (req, res) => {
+  try {
+    const { eventId, teamId, targetType = 'speaker', sessionId, reactions = [] } = req.body;
+
+    if (!sessionId || (!teamId && targetType !== 'event')) {
+      return res.status(400).json({ error: 'sessionId and target are required' });
+    }
+
+    const filter = targetType === 'event'
+      ? { sessionId, eventId, targetType: 'event' }
+      : { sessionId, teamId, targetType };
+
+    const cleanedReactions = sanitizeStringArray(reactions);
+
+    const rating = await ListenerRating.findOneAndUpdate(
+      filter,
+      { reactions: cleanedReactions },
+      { new: true }
+    );
+
+    if (!rating) {
+      return res.status(404).json({ error: 'Rating not found for this session' });
+    }
+
+    res.json({ rating });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET /api/listener/stats?eventId=&hallId=
 router.get('/stats', async (req, res) => {
   try {
@@ -210,12 +281,25 @@ router.get('/stats', async (req, res) => {
     const halls = await Hall.find({ eventId }).sort({ order: 1, num: 1 });
     const hallMap = Object.fromEntries(halls.map((h) => [String(h._id), h]));
     const criteriaBlocks = await Criteria.find({ eventId }).sort({ order: 1 });
-    const criteriaByType = {
-      speaker: flattenCriteria(criteriaBlocks, 'speaker').map((c) => c.name),
-      panel: flattenCriteria(criteriaBlocks, 'panel').map((c) => c.name),
-      workshop: flattenCriteria(criteriaBlocks, 'workshop').map((c) => c.name),
-      event: flattenCriteria(criteriaBlocks, 'event').map((c) => c.name)
+    const flatByType = {
+      speaker: flattenCriteria(criteriaBlocks, 'speaker'),
+      panel: flattenCriteria(criteriaBlocks, 'panel'),
+      workshop: flattenCriteria(criteriaBlocks, 'workshop'),
+      event: flattenCriteria(criteriaBlocks, 'event')
     };
+    const criteriaByType = {
+      speaker: flatByType.speaker.map((c) => c.name),
+      panel: flatByType.panel.map((c) => c.name),
+      workshop: flatByType.workshop.map((c) => c.name),
+      event: flatByType.event.map((c) => c.name)
+    };
+    const tagByName = {};
+    Object.values(flatByType).forEach((list) => {
+      list.forEach((c) => {
+        if (c.name) tagByName[c.name] = c.tag || c.name;
+        if (c.tag) tagByName[c.tag] = c.tag;
+      });
+    });
 
     const leaderboard = [];
     const reactionCounts = {};
@@ -235,8 +319,9 @@ router.get('/stats', async (req, res) => {
             ? s.criterionName
             : (fallbackNames[idx] || null);
           if (!name || hasBrokenEncoding(name)) return;
-          if (!criterionAgg[name]) criterionAgg[name] = [];
-          criterionAgg[name].push(s.score);
+          const label = tagByName[name] || name;
+          if (!criterionAgg[label]) criterionAgg[label] = [];
+          criterionAgg[label].push(s.score);
         });
         (r.reactions || []).forEach((rx) => {
           if (!isUsableText(rx)) return;
@@ -283,14 +368,29 @@ router.get('/stats', async (req, res) => {
 
     // Speakers table rows
     const allSpeakers = await Team.find({ eventId, type: 'speaker' }).sort({ scheduledTime: 1, order: 1 });
+    const speakersByHall = {};
+    allSpeakers.forEach((sp) => {
+      const key = String(sp.hallId || '');
+      if (!speakersByHall[key]) speakersByHall[key] = [];
+      speakersByHall[key].push(sp);
+    });
+    Object.values(speakersByHall).forEach((list) => {
+      list.sort((a, b) => (a.order || 0) - (b.order || 0) || String(a.scheduledTime || '').localeCompare(String(b.scheduledTime || '')));
+    });
+
     const speakerRows = await Promise.all(allSpeakers.map(async (sp) => {
       const hall = hallMap[String(sp.hallId)];
+      const hallSpeakers = speakersByHall[String(sp.hallId || '')] || [];
+      const idx = hallSpeakers.findIndex((s) => String(s._id) === String(sp._id));
       const ratings = await ListenerRating.find({
         teamId: sp._id,
         targetType: { $in: SESSION_TARGET_TYPES }
       });
-      const isLive = hall && hall.status === 'live' &&
-        String((await Team.find({ hallId: hall._id, type: 'speaker' }).sort({ order: 1, scheduledTime: 1 }))[hall.currentSpeakerIndex]?._id) === String(sp._id);
+      const isLive = !!(hall && hall.status === 'live' && idx === hall.currentSpeakerIndex);
+      const isDone = !isLive && (
+        sp.programDone === true ||
+        (sp.programDone !== false && idx >= 0 && idx < (hall?.currentSpeakerIndex || 0))
+      );
       const avg = ratings.length
         ? ratings.reduce((a, r) => a + r.averageScore, 0) / ratings.length
         : 0;
@@ -301,7 +401,9 @@ router.get('/stats', async (req, res) => {
         talk: sp.projectName,
         hall: hall ? hall.name : '—',
         hallId: sp.hallId,
-        status: isLive ? 'live' : (ratings.length ? 'done' : 'waiting'),
+        hallColor: hall?.color || '#4FC9F0',
+        status: isLive ? 'live' : (isDone ? 'done' : 'waiting'),
+        programDone: !!isDone,
         avg: ratings.length ? Number(avg.toFixed(1)) : null,
         n: ratings.length,
         format: sp.format,

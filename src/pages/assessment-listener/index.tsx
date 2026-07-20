@@ -13,6 +13,7 @@ import { thColors } from '../../theme'
 import {
   useCreateListenerRatingMutation,
   useGetListenerHallQuery,
+  useUpdateListenerReactionsMutation,
 } from '../../__data__/api'
 import type { ListenerCriterion, ListenerTargetType } from '../../types'
 import { t } from '../../utils/locale'
@@ -42,11 +43,17 @@ const defaultOptions = (max = 5) =>
 
 export const AssessmentListenerPage: React.FC = () => {
   const { token = '' } = useParams<{ token: string }>()
-  const { data, isLoading, error, refetch } = useGetListenerHallQuery(token, {
-    skip: !token,
-    pollingInterval: 5000,
-  })
+  const sessionId = useMemo(() => getSessionId(), [])
+  const { data, isLoading, error, refetch } = useGetListenerHallQuery(
+    { token, sessionId },
+    {
+      skip: !token,
+      pollingInterval: 5000,
+    }
+  )
   const [createRating] = useCreateListenerRatingMutation()
+  const [updateReactions] = useUpdateListenerReactionsMutation()
+  const reactionSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [mode, setMode] = useState<Mode>('speaker')
   const [screen, setScreen] = useState<Screen>('start')
@@ -129,7 +136,7 @@ export const AssessmentListenerPage: React.FC = () => {
         hallId: data.hall._id,
         teamId: mode === 'conf' ? null : speaker?._id || null,
         targetType,
-        sessionId: getSessionId(),
+        sessionId,
         scores,
         reactions: Object.keys(reactions).filter((k) => reactions[k]),
         elapsedSeconds: elapsedSec,
@@ -154,19 +161,70 @@ export const AssessmentListenerPage: React.FC = () => {
     }, 450)
   }
 
+  useEffect(() => {
+    if (screen !== 'step') return
+    const onKey = (e: KeyboardEvent): void => {
+      const n = Number(e.key)
+      if (n >= 1 && n <= 5) selectOption(n)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, stepIdx, criteria.length, ratings])
+
   const stepBack = (): void => {
     if (stepIdx > 0) setStepIdx((s) => s - 1)
     else setScreen('start')
   }
 
-  const stepNext = (): void => {
-    if (!curRating) return
-    if (stepIdx < criteria.length - 1) setStepIdx((s) => s + 1)
-    else void finish(ratings)
+  const persistReactions = (next: Record<string, boolean>): void => {
+    if (!data) return
+    const targetType: ListenerTargetType =
+      mode === 'conf'
+        ? 'event'
+        : data.isWorkshop
+          ? 'workshop'
+          : data.isPanel
+            ? 'panel'
+            : 'speaker'
+    const list = Object.keys(next).filter((k) => next[k])
+    if (reactionSaveRef.current) clearTimeout(reactionSaveRef.current)
+    reactionSaveRef.current = setTimeout(() => {
+      void updateReactions({
+        eventId: data.event._id,
+        teamId: mode === 'conf' ? null : speaker?._id || null,
+        targetType,
+        sessionId,
+        reactions: list,
+      })
+    }, 500)
   }
 
   const toggleReaction = (label: string): void => {
-    setReactions((prev) => ({ ...prev, [label]: !prev[label] }))
+    setReactions((prev) => {
+      const next = { ...prev, [label]: !prev[label] }
+      if (screen === 'done') persistReactions(next)
+      return next
+    })
+  }
+
+  const startConf = (): void => {
+    if (reactionSaveRef.current) clearTimeout(reactionSaveRef.current)
+    setMode('conf')
+    setScreen('start')
+    setStepIdx(0)
+    setRatings([])
+    setReactions({})
+  }
+
+  const goHome = (): void => {
+    if (reactionSaveRef.current) clearTimeout(reactionSaveRef.current)
+    setMode('speaker')
+    setScreen('start')
+    setStepIdx(0)
+    setRatings([])
+    setReactions({})
+    void refetch()
   }
 
   if (isLoading) {
@@ -195,22 +253,113 @@ export const AssessmentListenerPage: React.FC = () => {
   const isConf = mode === 'conf'
   const displayName = isConf ? data.event.name : speaker?.name || t('listener.noSpeaker')
   const displayTalk = isConf
-    ? `${data.speakers.length} докладов`
+    ? t('listener.confTalkMeta')
     : speaker?.projectName || ''
   const displayMeta = isConf
-    ? data.event.location || new Date(data.event.eventDate).toLocaleDateString('ru-RU')
+    ? [data.event.location, data.event.eventDate ? new Date(data.event.eventDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : '']
+        .filter(Boolean)
+        .join(' · ')
     : [speaker?.org, speaker?.scheduledTime].filter(Boolean).join(' · ')
+  const displayInitials = isConf ? 'ТК' : undefined
+
+  type ErrorType = 'ended' | 'already' | 'closed'
+  const errorType: ErrorType | null = (() => {
+    if (screen !== 'start') return null
+    if (isConf) return data.alreadyRatedEvent ? 'already' : null
+    if (data.eventEnded) return 'ended'
+    if (data.alreadyRatedSpeaker) return 'already'
+    if (!isLive) return 'closed'
+    return null
+  })()
+
+  const prev = isConf ? data.previousEventRating : data.previousSpeakerRating
+  const sentAt = prev?.createdAt
+    ? new Date(prev.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+    : '—'
+  const nextTalkTime = data.nextSpeaker?.scheduledTime || data.speakers.find((s, i) => {
+    const curId = speaker?._id
+    const curIdx = data.speakers.findIndex((x) => x._id === curId)
+    return curIdx >= 0 && i === curIdx + 1
+  })?.scheduledTime
+
+  const errorConfig: Record<
+    ErrorType,
+    {
+      badge: string
+      icon: string
+      iconBg: string
+      iconShadow: string
+      iconColor: string
+      title: string
+      sub: string
+      foot: string
+      stats: boolean
+      primaryLabel: string
+      primaryAction: () => void
+      ghostLabel: string
+      ghostAction: () => void
+    }
+  > = {
+    closed: {
+      badge: `${t('listener.hallBadge')} ${data.hall.name}`,
+      icon: '‖',
+      iconBg: 'linear-gradient(180deg,#57C8F2,#2A8FC0)',
+      iconShadow: '0 9px 0 #17567A,0 0 50px rgba(0,174,239,.35),inset 0 3px 0 rgba(255,255,255,.4)',
+      iconColor: '#03293C',
+      title: t('listener.closedTitle'),
+      sub: t('listener.closedSub'),
+      foot: t('listener.closedFoot'),
+      stats: false,
+      primaryLabel: t('listener.checkAgain'),
+      primaryAction: () => void refetch(),
+      ghostLabel: t('listener.rateWholeConf'),
+      ghostAction: startConf,
+    },
+    ended: {
+      badge: t('listener.endedBadge'),
+      icon: '∎',
+      iconBg: 'linear-gradient(180deg,#57C8F2,#2A8FC0)',
+      iconShadow: '0 9px 0 #17567A,0 0 50px rgba(0,174,239,.35),inset 0 3px 0 rgba(255,255,255,.4)',
+      iconColor: '#03293C',
+      title: t('listener.endedTitle'),
+      sub: t('listener.endedSub'),
+      foot: t('listener.endedFoot'),
+      stats: false,
+      primaryLabel: t('listener.rateWholeConf'),
+      primaryAction: startConf,
+      ghostLabel: t('listener.whereRecordings'),
+      ghostAction: goHome,
+    },
+    already: {
+      badge: isConf ? t('listener.confBadge') : `${t('listener.hallBadge')} ${data.hall.name}`,
+      icon: '✓',
+      iconBg: 'linear-gradient(180deg,#4BE96A,#1FA53E)',
+      iconShadow: '0 9px 0 #0F6B26,0 0 50px rgba(61,220,80,.4),inset 0 3px 0 rgba(255,255,255,.4)',
+      iconColor: '#04220C',
+      title: isConf ? t('listener.alreadyConfTitle') : t('listener.alreadyTitle'),
+      sub: isConf ? t('listener.alreadyConfSub') : t('listener.alreadySub'),
+      foot: nextTalkTime
+        ? `${t('listener.nextTalk')} — ${nextTalkTime}`
+        : t('listener.alreadyFoot'),
+      stats: true,
+      primaryLabel: isConf ? t('listener.backHome') : t('listener.rateWholeConf'),
+      primaryAction: isConf ? goHome : startConf,
+      ghostLabel: isConf ? t('listener.refresh') : t('listener.waitNext'),
+      ghostAction: () => void refetch(),
+    },
+  }
+  const errDef = errorType ? errorConfig[errorType] : null
 
   const phone = (
     <Box
       w="390px"
       maxW="100%"
-      borderRadius="34px"
+      borderRadius="28px"
       overflow="hidden"
       border={`1px solid ${thColors.border}`}
       boxShadow="0 30px 80px rgba(0,0,0,0.6)"
     >
-      {screen === 'start' && (
+      {screen === 'start' && errDef && (
         <Flex
           direction="column"
           minH="780px"
@@ -224,52 +373,131 @@ export const AssessmentListenerPage: React.FC = () => {
           position="relative"
           overflow="hidden"
         >
-          <Box
-            position="absolute"
-            top="-180px"
-            right="-120px"
-            w="420px"
-            h="420px"
-            borderRadius="50%"
-            bg="radial-gradient(circle,#2FD37B 0%,#12A8A6 42%,transparent 70%)"
-            filter="blur(64px)"
-            opacity={0.55}
-            pointerEvents="none"
-          />
           <Flex position="relative" justify="space-between" align="center">
             <BrandMark />
-            <Pill variant="outline" dot>
+            <Pill variant="outline" fontSize="11.5px" fontWeight="500" border="1px solid rgba(255,255,255,0.7)" px="13px" py="5px">
+              {errDef.badge}
+            </Pill>
+          </Flex>
+          <Flex flex="1" direction="column" justify="center" textAlign="center">
+            <Flex
+              w="88px"
+              h="88px"
+              mx="auto"
+              borderRadius="22px"
+              bg={errDef.iconBg}
+              align="center"
+              justify="center"
+              transform="rotate(-6deg)"
+              boxShadow={errDef.iconShadow}
+            >
+              <Text fontFamily="heading" fontSize="32px" fontWeight="700" color={errDef.iconColor}>
+                {errDef.icon}
+              </Text>
+            </Flex>
+            <Text
+              fontFamily="heading"
+              fontSize="22px"
+              fontWeight="700"
+              letterSpacing="-0.6px"
+              lineHeight="1.2"
+              mt="22px"
+            >
+              {errDef.title}
+            </Text>
+            <Text fontSize="13.5px" color={thColors.textDim} mt="10px" lineHeight="1.55" px="8px">
+              {errDef.sub}
+            </Text>
+            {errDef.stats && (
+              <Flex gap="10px" mt="22px">
+                <Box
+                  flex="1"
+                  bg="rgba(255,255,255,0.07)"
+                  border="1px solid rgba(255,255,255,0.12)"
+                  borderRadius="12px"
+                  p="12px"
+                  textAlign="center"
+                >
+                  <Text fontSize="20px" fontWeight="800" color={thColors.greenLight}>
+                    {prev?.averageScore ? prev.averageScore.toFixed(1) : userAvg !== '—' ? userAvg : '—'}
+                  </Text>
+                  <Text fontSize="10.5px" color={thColors.textFaint} mt="2px">
+                    {t('listener.yourScore')}
+                  </Text>
+                </Box>
+                <Box
+                  flex="1"
+                  bg="rgba(255,255,255,0.07)"
+                  border="1px solid rgba(255,255,255,0.12)"
+                  borderRadius="12px"
+                  p="12px"
+                  textAlign="center"
+                >
+                  <Text fontSize="20px" fontWeight="800">
+                    {sentAt}
+                  </Text>
+                  <Text fontSize="10.5px" color={thColors.textFaint} mt="2px">
+                    {t('listener.sentAt')}
+                  </Text>
+                </Box>
+              </Flex>
+            )}
+          </Flex>
+          <Flex direction="column" gap="10px">
+            <GradientButton w="100%" h="52px" fontSize="14.5px" onClick={errDef.primaryAction}>
+              {errDef.primaryLabel}
+            </GradientButton>
+            <GradientButton w="100%" variant="ghost" h="48px" fontSize="13.5px" onClick={errDef.ghostAction}>
+              {errDef.ghostLabel}
+            </GradientButton>
+            <Text textAlign="center" fontSize="11px" color="rgba(255,255,255,0.4)">
+              {errDef.foot}
+            </Text>
+          </Flex>
+        </Flex>
+      )}
+
+      {screen === 'start' && !errDef && (
+        <Flex
+          direction="column"
+          minH="780px"
+          color="white"
+          px="22px"
+          pt="22px"
+          pb="26px"
+          bg={thColors.bg}
+          bgImage={thColors.gradientHero}
+          backgroundRepeat="no-repeat"
+          backgroundSize="cover"
+          boxSizing="border-box"
+          position="relative"
+          overflow="hidden"
+        >
+          <Flex position="relative" justify="space-between" align="center">
+            <BrandMark />
+            <Pill variant="outline" dot fontSize="11.5px" fontWeight="500" border="1px solid rgba(255,255,255,0.7)" bg="transparent">
               {isConf ? t('listener.confBadge') : `${t('listener.hallBadge')} ${data.hall.name}`}
             </Pill>
           </Flex>
 
-          {!isLive && !isConf ? (
-            <Flex position="relative" flex="1" direction="column" justify="center" gap={4}>
-              <Text fontFamily="heading" fontSize="24px" fontWeight="700">
-                {t('listener.votingStopped')}
-              </Text>
-              <GradientButton variant="ghost" onClick={() => refetch()}>
-                {t('listener.refresh')}
-              </GradientButton>
-            </Flex>
-          ) : (
+          {(
             <>
-              <Flex align="center" gap="6px" mt="26px">
+              <Flex align="center" gap="5px" mt="26px">
                 <Box
                   bg="white"
                   color="#0B1F24"
-                  borderRadius="30px"
-                  w="30px"
-                  h="30px"
+                  borderRadius="12px"
+                  w="38px"
+                  h="38px"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                   fontWeight="800"
-                  fontSize="14px"
+                  fontSize="19px"
                 >
                   #
                 </Box>
-                <Pill>
+                <Pill h="38px" px="18px" fontSize="14px" fontWeight="500" border="1.5px solid #fff">
                   {isConf
                     ? t('listener.confTag')
                     : data.isWorkshop
@@ -307,13 +535,13 @@ export const AssessmentListenerPage: React.FC = () => {
               <Box
                 bg="rgba(255,255,255,0.08)"
                 border="1px solid rgba(255,255,255,0.15)"
-                borderRadius="22px"
+                borderRadius="16px"
                 p="18px"
                 mt="24px"
                 backdropFilter="blur(8px)"
               >
                 <Flex gap="14px" align="center">
-                  <AvatarInitials name={displayName} size={56} />
+                  <AvatarInitials name={displayName} size={56} initials={displayInitials} />
                   <Box>
                     <Text fontSize="16px" fontWeight="800" lineHeight="1.25">
                       {displayName}
@@ -329,27 +557,20 @@ export const AssessmentListenerPage: React.FC = () => {
                     </Text>
                   </Box>
                 </Flex>
-                <Box
-                  display="grid"
-                  gridTemplateColumns="repeat(2, minmax(0, 1fr))"
-                  gap="7px"
-                  mt="16px"
-                >
+                <Flex flexWrap="wrap" gap="7px" mt="16px">
                   {chips.map((label) => (
                     <Pill
                       key={label}
-                      w="100%"
-                      justifyContent="center"
-                      textAlign="center"
                       fontSize="10.5px"
+                      fontWeight="600"
                       textTransform="uppercase"
-                      overflow="hidden"
-                      textOverflow="ellipsis"
+                      letterSpacing="0.4px"
+                      border="1px solid rgba(255,255,255,0.3)"
                     >
                       {label}
                     </Pill>
                   ))}
-                </Box>
+                </Flex>
               </Box>
 
               <Flex mt="auto" direction="column" gap="12px">
@@ -372,7 +593,7 @@ export const AssessmentListenerPage: React.FC = () => {
                     </Text>
                   </Box>
                 </Flex>
-                <GradientButton h="58px" fontSize="16.5px" onClick={startFlow} disabled={!criteria.length}>
+                <GradientButton w="100%" h="56px" fontSize="16px" onClick={startFlow} disabled={!criteria.length}>
                   {t('listener.startCta')}
                 </GradientButton>
                 <Text textAlign="center" fontSize="11.5px" color="rgba(255,255,255,0.4)">
@@ -420,7 +641,7 @@ export const AssessmentListenerPage: React.FC = () => {
             direction="column"
             gap="9px"
             bg={thColors.surface}
-            borderRadius="28px 28px 0 0"
+            borderRadius="22px 22px 0 0"
             mt="18px"
             px="18px"
             py="20px"
@@ -435,22 +656,13 @@ export const AssessmentListenerPage: React.FC = () => {
                 onClick={() => selectOption(i + 1)}
               />
             ))}
-            <Flex gap="10px" mt="auto" pt="10px">
-              <GradientButton variant="ghost" h="52px" onClick={stepBack}>
+            <Flex align="center" gap="12px" mt="auto" pt="10px">
+              <GradientButton variant="ghost" h="42px" px="24px" fontSize="13px" fontWeight="500" onClick={stepBack}>
                 {t('listener.back')}
               </GradientButton>
-              <GradientButton
-                flex="1"
-                h="52px"
-                disabled={!curRating}
-                onClick={stepNext}
-              >
-                {!curRating
-                  ? t('listener.pickKey')
-                  : stepIdx < criteria.length - 1
-                    ? `${t('listener.next')}: ${criteria[stepIdx + 1]?.tag || ''}`
-                    : t('listener.deployFeedback')}
-              </GradientButton>
+              <Text flex="1" textAlign="right" fontSize="11.5px" color="rgba(255,255,255,0.4)">
+                {t('listener.keyHint')}
+              </Text>
             </Flex>
           </Flex>
         </Flex>
@@ -480,10 +692,18 @@ export const AssessmentListenerPage: React.FC = () => {
             opacity={0.4}
           />
           <Flex position="relative" justify="space-between" align="center">
-            <Pill>
+            <Pill fontSize="11.5px" fontWeight="500" border="1px solid rgba(255,255,255,0.6)" px="12px" py="4px">
               {isConf ? t('listener.confBadge') : `${t('listener.hallBadge')} ${data.hall.name}`}
             </Pill>
-            <Pill variant="cyan" borderColor={thColors.green} color={thColors.greenLight}>
+            <Pill
+              fontSize="11.5px"
+              fontWeight="600"
+              border={`1px solid ${thColors.green}`}
+              color={thColors.greenLight}
+              bg="transparent"
+              px="12px"
+              py="4px"
+            >
               {criteria.length} / {criteria.length} ✓
             </Pill>
           </Flex>
@@ -500,9 +720,19 @@ export const AssessmentListenerPage: React.FC = () => {
               transform="rotate(-6deg)"
               animation="popIn 0.5s ease"
             >
-              <Text fontSize="40px" color="#04220C" fontWeight="800">
-                ✓
-              </Text>
+              <Box
+                as="svg"
+                w="46px"
+                h="46px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#04220C"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </Box>
             </Flex>
             <Text
               fontFamily="heading"
@@ -517,6 +747,8 @@ export const AssessmentListenerPage: React.FC = () => {
               {t('listener.doneTitleProd')}
             </Text>
             <Text fontSize="13.5px" color={thColors.textDim} mt="9px" lineHeight="1.5">
+              {t('listener.doneSubLead')}
+              <br />
               {isConf
                 ? t('listener.doneSubConf')
                 : data.isWorkshop
@@ -536,8 +768,8 @@ export const AssessmentListenerPage: React.FC = () => {
                 key={m.l}
                 flex="1"
                 bg={thColors.card}
-                border={`1px solid ${thColors.border}`}
-                borderRadius="18px"
+                border="1px solid rgba(255,255,255,0.08)"
+                borderRadius="12px"
                 p="13px"
                 textAlign="center"
               >
@@ -554,8 +786,8 @@ export const AssessmentListenerPage: React.FC = () => {
           <Box
             position="relative"
             bg={thColors.card}
-            border={`1px solid ${thColors.border}`}
-            borderRadius="20px"
+            border="1px solid rgba(255,255,255,0.08)"
+            borderRadius="14px"
             p="15px 16px"
             mt="14px"
           >
@@ -568,12 +800,30 @@ export const AssessmentListenerPage: React.FC = () => {
                   key={r}
                   variant={reactions[r] ? 'green' : 'outline'}
                   cursor="pointer"
+                  fontSize="12.5px"
+                  fontWeight="600"
+                  px="13px"
+                  py="8px"
+                  border={reactions[r] ? undefined : '1px solid rgba(255,255,255,0.25)'}
+                  color={reactions[r] ? undefined : 'rgba(255,255,255,0.8)'}
                   onClick={() => toggleReaction(r)}
                 >
                   {r}
                 </Pill>
               ))}
             </Flex>
+          </Box>
+
+          <Box position="relative" mt="auto" pt="14px">
+            <GradientButton
+              variant="ghost"
+              w="100%"
+              h="50px"
+              fontSize="14px"
+              onClick={isConf ? goHome : startConf}
+            >
+              {isConf ? t('listener.backHome') : t('listener.rateWholeConf')}
+            </GradientButton>
           </Box>
         </Flex>
       )}

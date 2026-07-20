@@ -41,9 +41,9 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
           <GradientButton
             h="32px"
             fontSize="12px"
+            fontWeight="600"
             variant={hallFilter === 'all' ? 'primary' : 'ghost'}
-            bg={hallFilter === 'all' ? 'white' : undefined}
-            color={hallFilter === 'all' ? thColors.surface : undefined}
+            boxShadow="none"
             onClick={() => setHallFilter('all')}
           >
             {t('admin.allHalls')}
@@ -53,22 +53,22 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
               key={h._id}
               h="32px"
               fontSize="12px"
+              fontWeight="600"
               variant={hallFilter === h._id ? 'primary' : 'ghost'}
-              bg={hallFilter === h._id ? 'white' : undefined}
-              color={hallFilter === h._id ? thColors.surface : undefined}
+              boxShadow="none"
               onClick={() => setHallFilter(h._id)}
             >
               {h.name}
             </GradientButton>
           ))}
-          <GradientButton h="32px" fontSize="12px" onClick={exportCsv}>
+          <GradientButton h="32px" fontSize="12px" variant="ghost" onClick={exportCsv}>
             {t('admin.exportCsv')}
           </GradientButton>
         </Flex>
       </Flex>
 
       <Box
-        display={{ base: 'none', lg: 'grid' }}
+        display={{ base: 'none', md: 'grid' }}
         gridTemplateColumns="44px 1.5fr repeat(4,1fr) 110px"
         gap="14px"
         px="18px"
@@ -97,10 +97,10 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
             <SurfaceCard
               key={l.teamId}
               highlighted={i === 0}
-              borderRadius="18px"
+              borderRadius="12px"
               p="13px 18px"
               display="grid"
-              gridTemplateColumns={{ base: '1fr', lg: '44px 1.5fr repeat(4,1fr) 110px' }}
+              gridTemplateColumns={{ base: '1fr', md: '44px 1.5fr repeat(4,1fr) 110px' }}
               gap="14px"
               alignItems="center"
             >
@@ -146,7 +146,7 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
                     </Box>
                   </Box>
                 ))}
-              <Box textAlign={{ base: 'left', lg: 'right' }}>
+              <Box textAlign={{ base: 'left', md: 'right' }}>
                 <Text
                   fontSize="19px"
                   fontWeight="800"
@@ -162,22 +162,36 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
           )
         })}
         {!data.leaderboard.length && (
-          <Text color={thColors.textFaint}>{t('statistics.noRatings')}</Text>
+          <Box
+            bg={thColors.card}
+            border="1px dashed rgba(255,255,255,0.15)"
+            borderRadius="12px"
+            p="28px"
+            textAlign="center"
+            color="rgba(255,255,255,0.45)"
+            fontSize="13px"
+          >
+            {t('admin.leaderboardEmpty')}
+          </Box>
         )}
       </Flex>
 
-      {!!data.topReactions.length && (
-        <Flex gap="8px" mt="18px" align="center" flexWrap="wrap">
-          <Text fontSize="12px" color={thColors.textFaint} fontWeight="600">
-            {t('admin.topReactions')}
-          </Text>
-          {data.topReactions.map((r, i) => (
+      <Flex gap="8px" mt="18px" align="center" flexWrap="wrap">
+        <Text fontSize="12px" color={thColors.textFaint} fontWeight="600">
+          {t('admin.topReactions')}
+        </Text>
+        {data.topReactions.length ? (
+          data.topReactions.map((r, i) => (
             <Pill key={r.label} variant={i === 0 ? 'green' : i === 3 ? 'cyan' : 'outline'}>
               {r.label} ×{r.count}
             </Pill>
-          ))}
-        </Flex>
-      )}
+          ))
+        ) : (
+          <Text fontSize="12px" color="rgba(255,255,255,0.35)">
+            —
+          </Text>
+        )}
+      </Flex>
     </Box>
   )
 }

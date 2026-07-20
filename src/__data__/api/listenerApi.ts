@@ -4,6 +4,7 @@ import type {
   ListenerHallPayload,
   ListenerRating,
   ListenerStatsResponse,
+  UpdateListenerReactionsRequest,
 } from '../../types'
 import { URLs } from '../urls'
 
@@ -12,8 +13,9 @@ export const listenerApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: URLs.apiBase }),
   tagTypes: ['ListenerHall', 'ListenerStats'],
   endpoints: (builder) => ({
-    getListenerHall: builder.query<ListenerHallPayload, string>({
-      query: (token) => `/listener/hall/${token}`,
+    getListenerHall: builder.query<ListenerHallPayload, { token: string; sessionId?: string }>({
+      query: ({ token, sessionId }) =>
+        `/listener/hall/${token}${sessionId ? `?sessionId=${encodeURIComponent(sessionId)}` : ''}`,
       providesTags: ['ListenerHall'],
     }),
     getListenerPlace: builder.query<{ place: number; count: number }, { token: string; teamId?: string }>({
@@ -25,7 +27,14 @@ export const listenerApi = createApi({
       CreateListenerRatingRequest
     >({
       query: (body) => ({ url: '/listener/ratings', method: 'POST', body }),
-      invalidatesTags: ['ListenerHall', 'ListenerStats'],
+      invalidatesTags: ['ListenerStats'],
+    }),
+    updateListenerReactions: builder.mutation<
+      { rating: ListenerRating },
+      UpdateListenerReactionsRequest
+    >({
+      query: (body) => ({ url: '/listener/ratings/reactions', method: 'POST', body }),
+      invalidatesTags: ['ListenerStats'],
     }),
     getListenerStats: builder.query<ListenerStatsResponse, { eventId: string; hallId?: string }>({
       query: ({ eventId, hallId }) =>
@@ -52,6 +61,7 @@ export const {
   useGetListenerPlaceQuery,
   useLazyGetListenerPlaceQuery,
   useCreateListenerRatingMutation,
+  useUpdateListenerReactionsMutation,
   useGetListenerStatsQuery,
   useResetSpeakerRatingsMutation,
   useResetHallRatingsMutation,

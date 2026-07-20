@@ -48,7 +48,6 @@ const criteriaSchema = new mongoose.Schema({
   },
   criteriaType: {
     type: String,
-    enum: ['team', 'participant', 'speaker', 'panel', 'workshop', 'event', 'all'],
     default: 'all',
     required: true
   },

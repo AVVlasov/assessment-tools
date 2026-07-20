@@ -50,6 +50,7 @@ export interface Team {
   isActive: boolean;
   votingStatus: 'not_evaluated' | 'evaluating' | 'evaluated';
   isActiveForVoting: boolean;
+  programDone?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -77,6 +78,7 @@ export interface UpdateTeamRequest {
   org?: string;
   format?: SpeakerFormat;
   order?: number;
+  programDone?: boolean;
 }
 
 // Hall types
@@ -92,6 +94,7 @@ export interface Hall {
   currentSpeakerIndex: number;
   qrNote?: string;
   order?: number;
+  color?: string;
   speakers?: Team[];
   currentSpeaker?: Team | null;
   ratingsCount?: number;
@@ -106,6 +109,7 @@ export interface CreateHallRequest {
   num?: number;
   qrNote?: string;
   order?: number;
+  color?: string;
 }
 
 export interface UpdateHallRequest {
@@ -115,6 +119,7 @@ export interface UpdateHallRequest {
   status?: HallStatus;
   order?: number;
   currentSpeakerIndex?: number;
+  color?: string;
 }
 
 // Expert types
@@ -138,7 +143,7 @@ export interface UpdateExpertRequest {
 }
 
 // Criteria types
-export type CriteriaType = 'team' | 'participant' | 'speaker' | 'panel' | 'workshop' | 'event' | 'all';
+export type CriteriaType = 'team' | 'participant' | 'speaker' | 'panel' | 'workshop' | 'event' | 'all' | string;
 
 export interface CriterionOption {
   title: string;
@@ -238,6 +243,14 @@ export interface CreateListenerRatingRequest {
   elapsedSeconds?: number;
 }
 
+export interface UpdateListenerReactionsRequest {
+  eventId: string;
+  teamId?: string | null;
+  targetType: ListenerTargetType;
+  sessionId: string;
+  reactions: string[];
+}
+
 export interface ListenerCriterion {
   name: string;
   tag: string;
@@ -246,14 +259,26 @@ export interface ListenerCriterion {
   options: CriterionOption[];
 }
 
+export interface ListenerPreviousRating {
+  averageScore: number;
+  elapsedSeconds: number;
+  reactions: string[];
+  createdAt?: string;
+}
+
 export interface ListenerHallPayload {
   hall: Hall;
   event: Event;
+  eventEnded: boolean;
   currentSpeaker: Team | null;
   nextSpeaker: Team | null;
   speakers: Team[];
   isPanel: boolean;
   isWorkshop: boolean;
+  alreadyRatedSpeaker: boolean;
+  alreadyRatedEvent: boolean;
+  previousSpeakerRating: ListenerPreviousRating | null;
+  previousEventRating: ListenerPreviousRating | null;
   criteria: {
     speaker: ListenerCriterion[];
     panel: ListenerCriterion[];
@@ -290,7 +315,9 @@ export interface ListenerStatsResponse {
     talk: string;
     hall: string;
     hallId?: string;
+    hallColor?: string;
     status: 'live' | 'done' | 'waiting';
+    programDone?: boolean;
     avg: number | null;
     n: number;
     format?: SpeakerFormat;

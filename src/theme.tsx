@@ -21,6 +21,10 @@ const system = createSystem(defaultConfig, {
       '0%': { transform: 'translateY(14px)', opacity: 0 },
       '100%': { transform: 'translateY(0)', opacity: 1 },
     },
+    '@keyframes livePulse': {
+      '0%, 100%': { opacity: 1 },
+      '50%': { opacity: 0.45 },
+    },
   },
   theme: {
     tokens: {
@@ -109,16 +113,11 @@ export const thColors = {
   textFaint: 'rgba(255,255,255,0.5)',
   border: 'rgba(255,255,255,0.12)',
   borderStrong: 'rgba(255,255,255,0.3)',
-  gradientGreen: 'linear-gradient(90deg,#21A038,#3DDC50,#8AE98F)',
-  gradientGreenShort: 'linear-gradient(90deg,#21A038,#3DDC50)',
-  gradientHero: [
-    'radial-gradient(80% 60% at 100% 0%,rgba(47,211,123,0.55) 0%,rgba(47,211,123,0) 70%)',
-    'radial-gradient(140% 100% at 100% 0%,#2FD37B 0%,#26C994 8%,#1CBA9F 16%,#12A8A6 26%,#0E8A90 36%,#0C5F6A 46%,#0B3540 58%,#081F28 74%,#050E14 100%)',
-  ].join(','),
-  gradientAdmin: [
-    'radial-gradient(70% 90% at 95% 0%,rgba(47,211,123,0.5) 0%,rgba(47,211,123,0) 65%)',
-    'radial-gradient(120% 200% at 95% 0%,#2FD37B 0%,#26C994 10%,#1CBA9F 18%,#12A8A6 28%,#0E8A90 40%,#0C5F6A 50%,#0B3540 62%,#0A1A22 80%,#0C1218 100%)',
-  ].join(','),
+  // CTA / active pills — как в прототипе v2: cyan → green, белый текст
+  gradientGreen: 'linear-gradient(90deg,#2AA0F0,#3ED968)',
+  gradientGreenShort: 'linear-gradient(90deg,#2AA0F0,#3ED968)',
+  gradientHero: 'radial-gradient(140% 100% at 100% 0%,#2FD37B 0%,#12A8A6 22%,#0B3540 50%,#050E14 100%)',
+  gradientAdmin: 'radial-gradient(120% 200% at 95% 0%,#2FD37B 0%,#12A8A6 24%,#0B3540 56%,#0C1218 100%)',
   keyUnsel: 'linear-gradient(180deg,#232E3A,#1A222C)',
   keySel: 'linear-gradient(180deg,#4BE96A,#1FA53E)',
 } as const
