@@ -32,6 +32,7 @@ export const checklistsApi = createApi({
             if (data.name !== undefined) row.name = data.name
             if (data.type !== undefined) row.type = data.type
             if (data.order !== undefined) row.order = data.order
+            if (data.widgets !== undefined) row.widgets = data.widgets
             if (data.items !== undefined) {
               row.items = data.items.map((it, i) => ({
                 _id: it._id || row.items[i]?._id || `tmp-${Date.now()}-${i}`,

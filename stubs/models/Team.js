@@ -66,6 +66,10 @@ const teamSchema = new mongoose.Schema({
       type: String,
       enum: ['pending', 'approved'],
       default: 'pending'
+    },
+    checklistDone: {
+      type: [String],
+      default: []
     }
   },
   order: {

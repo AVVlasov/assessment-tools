@@ -45,6 +45,8 @@ export interface SpeakerReadiness {
   calendarSet: boolean;
   deckStatus: 'none' | 'uploaded';
   approval: 'pending' | 'approved';
+  /** Completed checklist item ids from the type template */
+  checklistDone?: string[];
 }
 
 export interface Team {
@@ -141,7 +143,15 @@ export interface UpdateHallRequest {
 }
 
 // Readiness checklist types
-export type ReadinessChecklistType = SpeakerFormat;
+export type ReadinessChecklistType = 'talk' | 'workshop';
+export type ReadinessWidgetKey = 'rehearsal' | 'calendar' | 'deck' | 'approval';
+
+export const READINESS_WIDGETS: ReadinessWidgetKey[] = [
+  'rehearsal',
+  'calendar',
+  'deck',
+  'approval',
+];
 
 export interface ReadinessChecklistItem {
   _id: string;
@@ -154,6 +164,7 @@ export interface ReadinessChecklist {
   eventId: string;
   name: string;
   type: ReadinessChecklistType;
+  widgets?: ReadinessWidgetKey[];
   items: ReadinessChecklistItem[];
   order?: number;
   createdAt?: string;
@@ -164,12 +175,14 @@ export interface CreateReadinessChecklistRequest {
   eventId: string;
   name?: string;
   type?: ReadinessChecklistType;
+  widgets?: ReadinessWidgetKey[];
   items?: Array<{ text?: string; done?: boolean }>;
 }
 
 export interface UpdateReadinessChecklistRequest {
   name?: string;
   type?: ReadinessChecklistType;
+  widgets?: ReadinessWidgetKey[];
   items?: Array<{ _id?: string; text?: string; done?: boolean }>;
   order?: number;
 }

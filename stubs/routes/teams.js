@@ -15,6 +15,9 @@ const normalizeReadiness = (raw) => {
   const src = raw && typeof raw === 'object' ? raw : {};
   const reh = src.rehearsal && typeof src.rehearsal === 'object' ? src.rehearsal : {};
   const status = ['scheduled', 'passed'].includes(reh.status) ? reh.status : 'none';
+  const checklistDone = Array.isArray(src.checklistDone)
+    ? src.checklistDone.map((id) => String(id)).filter(Boolean)
+    : [];
   return {
     rehearsal: {
       date: sanitizeText(reh.date || ''),
@@ -24,7 +27,8 @@ const normalizeReadiness = (raw) => {
     },
     calendarSet: !!src.calendarSet,
     deckStatus: src.deckStatus === 'uploaded' ? 'uploaded' : 'none',
-    approval: src.approval === 'approved' ? 'approved' : 'pending'
+    approval: src.approval === 'approved' ? 'approved' : 'pending',
+    checklistDone
   };
 };
 

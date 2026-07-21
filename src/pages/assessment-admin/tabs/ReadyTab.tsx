@@ -2,13 +2,29 @@ import React, { useMemo, useState } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { AvatarInitials, GradientButton, Pill } from '../../../components/tehnohub'
 import { thColors } from '../../../theme'
-import { useGetHallsQuery, useGetTeamsQuery, useUpdateTeamMutation } from '../../../__data__/api'
-import type { SpeakerFormat, SpeakerReadiness, Team } from '../../../types'
+import { useGetChecklistsQuery, useGetHallsQuery, useGetTeamsQuery, useUpdateTeamMutation } from '../../../__data__/api'
+import type {
+  ReadinessChecklist,
+  ReadinessWidgetKey,
+  SpeakerFormat,
+  SpeakerReadiness,
+  Team,
+} from '../../../types'
+import { READINESS_WIDGETS } from '../../../types'
 import { t } from '../../../utils/locale'
 import { ReadyChecklistsPanel } from './ReadyChecklistsPanel'
 
 interface Props {
   eventId: string
+}
+
+const DEFAULT_WIDGETS: ReadinessWidgetKey[] = [...READINESS_WIDGETS]
+
+const widgetsOf = (ck?: ReadinessChecklist | null): ReadinessWidgetKey[] => {
+  if (!ck?.widgets?.length) return DEFAULT_WIDGETS
+  return ck.widgets.filter((w): w is ReadinessWidgetKey =>
+    (READINESS_WIDGETS as string[]).includes(w)
+  )
 }
 
 type ReadySub = 'board' | 'checklists'
@@ -28,6 +44,7 @@ const emptyReadiness = (): SpeakerReadiness => ({
   calendarSet: false,
   deckStatus: 'none',
   approval: 'pending',
+  checklistDone: [],
 })
 
 const MONTHS_SHORT = [
@@ -63,6 +80,9 @@ const formatColor = (fmt?: string): string => {
 const speakerNames = (sp: Team): string[] =>
   [sp.name, ...(Array.isArray(sp.coSpeakers) ? sp.coSpeakers : [])].filter(Boolean)
 
+const speakerFormat = (sp: Team): SpeakerFormat =>
+  sp.format === 'panel' || sp.format === 'workshop' ? sp.format : 'talk'
+
 const readinessOf = (sp: Team): SpeakerReadiness => {
   const r = sp.readiness
   if (!r) return emptyReadiness()
@@ -78,27 +98,52 @@ const readinessOf = (sp: Team): SpeakerReadiness => {
     calendarSet: !!r.calendarSet,
     deckStatus: r.deckStatus === 'uploaded' ? 'uploaded' : 'none',
     approval: r.approval === 'approved' ? 'approved' : 'pending',
+    checklistDone: Array.isArray(r.checklistDone) ? r.checklistDone.map(String) : [],
   }
 }
 
-const countReady = (sp: Team): { done: boolean; cnt: number; panel: boolean } => {
-  if (sp.format === 'panel') return { done: true, cnt: 4, panel: true }
-  const d = readinessOf(sp)
-  const cnt =
-    (d.rehearsal.status === 'passed' ? 1 : 0) +
-    (d.calendarSet ? 1 : 0) +
-    (d.deckStatus === 'uploaded' ? 1 : 0) +
-    (d.approval === 'approved' ? 1 : 0)
-  return { done: cnt === 4, cnt, panel: false }
+const widgetDone = (sp: Team, key: ReadinessWidgetKey): boolean => {
+  const r = readinessOf(sp)
+  if (key === 'rehearsal') return r.rehearsal.status === 'passed'
+  if (key === 'calendar') return !!r.calendarSet
+  if (key === 'deck') return r.deckStatus === 'uploaded'
+  return r.approval === 'approved'
+}
+
+const countReady = (
+  sp: Team,
+  ck?: ReadinessChecklist | null
+): { done: boolean; cnt: number; total: number; panel: boolean } => {
+  if (sp.format === 'panel') {
+    return { done: true, cnt: 0, total: 0, panel: true }
+  }
+  const widgets = widgetsOf(ck)
+  const cnt = widgets.filter((w) => widgetDone(sp, w)).length
+  return {
+    done: widgets.length === 0 || cnt === widgets.length,
+    cnt,
+    total: widgets.length,
+    panel: false,
+  }
 }
 
 export const ReadyTab: React.FC<Props> = ({ eventId }) => {
   const { data: halls = [], refetch: refetchHalls } = useGetHallsQuery(eventId)
   const { data: teams = [], refetch: refetchTeams } = useGetTeamsQuery({ eventId, type: 'speaker' })
+  const { data: checklists = [] } = useGetChecklistsQuery(eventId)
   const [updateTeam] = useUpdateTeamMutation()
   const [readySub, setReadySub] = useState<ReadySub>('board')
   const [rehModal, setRehModal] = useState<RehModalState | null>(null)
   const calDays = useMemo(() => buildCalDays(), [])
+
+  const checklistByType = useMemo(() => {
+    const map: Partial<Record<'talk' | 'workshop', ReadinessChecklist>> = {}
+    checklists.forEach((ck) => {
+      if (ck.type !== 'talk' && ck.type !== 'workshop') return
+      if (!map[ck.type]) map[ck.type] = ck
+    })
+    return map
+  }, [checklists])
 
   const refresh = (): void => {
     void refetchHalls()
@@ -141,10 +186,16 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
     let total = 0
     teams.forEach((sp) => {
       total += 1
-      if (countReady(sp).done) done += 1
+      if (sp.format === 'panel') {
+        if (countReady(sp, null).done) done += 1
+        return
+      }
+      const fmt = speakerFormat(sp)
+      const ck = fmt === 'workshop' ? checklistByType.workshop || null : checklistByType.talk || null
+      if (countReady(sp, ck).done) done += 1
     })
     return { readyDone: done, readyTotal: total }
-  }, [teams])
+  }, [teams, checklistByType])
 
   const readyPct = readyTotal ? Math.round((readyDone / readyTotal) * 100) : 0
 
@@ -271,12 +322,20 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                 {talks.map((sp) => {
                   const names = speakerNames(sp)
                   const d = readinessOf(sp)
-                  const { done, cnt, panel } = countReady(sp)
+                  const fmt = speakerFormat(sp)
+                  const ck =
+                    sp.format === 'panel'
+                      ? null
+                      : fmt === 'workshop'
+                        ? checklistByType.workshop || null
+                        : checklistByType.talk || null
+                  const { done, cnt, total, panel } = countReady(sp, ck)
+                  const enabled = widgetsOf(ck)
+                  const show = (key: ReadinessWidgetKey): boolean => enabled.includes(key)
                   const isWs = sp.format === 'workshop'
                   const rehPassed = d.rehearsal.status === 'passed'
                   const rehScheduled = d.rehearsal.status === 'scheduled'
                   const deckUp = d.deckStatus === 'uploaded'
-                  const fmt = sp.format || 'talk'
                   const fc = formatColor(fmt)
 
                   return (
@@ -350,7 +409,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                           }
                           color={panel ? '#B18CFF' : done ? '#04220C' : 'rgba(255,255,255,0.5)'}
                         >
-                          {panel ? t('admin.readyNotNeeded') : done ? '✓' : `${cnt}/4`}
+                          {panel ? t('admin.readyNotNeeded') : done ? '✓' : `${cnt}/${total}`}
                         </Flex>
                       </Flex>
 
@@ -369,6 +428,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                         </Text>
                       ) : (
                         <Flex gap="10px" flexWrap="wrap" mt="14px">
+                          {show('rehearsal') && (
                           <Box
                             flex="1"
                             minW="210px"
@@ -457,7 +517,9 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               </Text>
                             )}
                           </Box>
+                          )}
 
+                          {show('calendar') && (
                           <Box
                             flex="1"
                             minW="190px"
@@ -476,7 +538,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               {t('admin.readyCalendar')}
                             </Text>
                             <Flex align="center" gap="7px" flexWrap="wrap">
-                              {!d.rehearsal.date || d.rehearsal.status === 'none' ? (
+                              {show('rehearsal') && (!d.rehearsal.date || d.rehearsal.status === 'none') ? (
                                 <Text fontSize="11px" color="rgba(255,255,255,0.35)">
                                   {t('admin.readyCalLocked')}
                                 </Text>
@@ -522,7 +584,9 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               )}
                             </Flex>
                           </Box>
+                          )}
 
+                          {show('deck') && (
                           <Box
                             flex="1"
                             minW="170px"
@@ -590,7 +654,9 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               )}
                             </Flex>
                           </Box>
+                          )}
 
+                          {show('approval') && (
                           <Box
                             flex="1"
                             minW="190px"
@@ -609,7 +675,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               {t('admin.readyApproval')}
                             </Text>
                             <Flex align="center" gap="7px" flexWrap="wrap">
-                              {!deckUp ? (
+                              {show('deck') && !deckUp ? (
                                 <Text fontSize="11px" color="rgba(255,255,255,0.35)">
                                   {t('admin.readyApprLocked')}
                                 </Text>
@@ -655,6 +721,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                               )}
                             </Flex>
                           </Box>
+                          )}
                         </Flex>
                       )}
                     </Box>

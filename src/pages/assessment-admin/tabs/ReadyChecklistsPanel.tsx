@@ -1,86 +1,113 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Flex, Grid, Input, Text } from '@chakra-ui/react'
-import { LuPlus, LuX } from 'react-icons/lu'
-import { GradientButton, IconBtn } from '../../../components/tehnohub'
+import React, { useEffect, useMemo } from 'react'
+import { Box, Flex, Grid, Text } from '@chakra-ui/react'
 import { thColors } from '../../../theme'
 import {
   useCreateChecklistMutation,
-  useDeleteChecklistMutation,
   useGetChecklistsQuery,
+  useGetTeamsQuery,
   useUpdateChecklistMutation,
 } from '../../../__data__/api'
-import type { ReadinessChecklist, ReadinessChecklistType, SpeakerFormat } from '../../../types'
+import type {
+  ReadinessChecklist,
+  ReadinessChecklistType,
+  ReadinessWidgetKey,
+  SpeakerFormat,
+  Team,
+} from '../../../types'
+import { READINESS_WIDGETS } from '../../../types'
 import { t } from '../../../utils/locale'
 
 interface Props {
   eventId: string
 }
 
-const TYPE_OPTS: Array<{ value: ReadinessChecklistType; labelKey: string }> = [
-  { value: 'talk', labelKey: 'admin.formatTalk' },
-  { value: 'panel', labelKey: 'admin.formatPanel' },
-  { value: 'workshop', labelKey: 'admin.formatWorkshop' },
+const TYPE_CARDS: Array<{ type: ReadinessChecklistType; titleKey: string; hintKey: string }> = [
+  { type: 'talk', titleKey: 'admin.formatTalk', hintKey: 'admin.ckTalkHint' },
+  { type: 'workshop', titleKey: 'admin.formatWorkshop', hintKey: 'admin.ckWorkshopHint' },
 ]
 
-const itemsPayload = (ck: ReadinessChecklist) =>
-  ck.items.map((it) => ({ _id: it._id, text: it.text, done: it.done }))
+const WIDGET_LABELS: Record<ReadinessWidgetKey, { talk: string; workshop: string }> = {
+  rehearsal: { talk: 'admin.readyGenReh', workshop: 'admin.readyTechReh' },
+  calendar: { talk: 'admin.readyCalendar', workshop: 'admin.readyCalendar' },
+  deck: { talk: 'admin.readyDeck', workshop: 'admin.readyDeck' },
+  approval: { talk: 'admin.readyApproval', workshop: 'admin.readyApproval' },
+}
+
+const DEFAULT_WIDGETS: ReadinessWidgetKey[] = [...READINESS_WIDGETS]
+
+const speakerFormat = (sp: Team): SpeakerFormat =>
+  sp.format === 'panel' || sp.format === 'workshop' ? sp.format : 'talk'
+
+const widgetsOf = (ck?: ReadinessChecklist | null): ReadinessWidgetKey[] => {
+  if (!ck?.widgets?.length) return DEFAULT_WIDGETS
+  return ck.widgets.filter((w): w is ReadinessWidgetKey =>
+    (READINESS_WIDGETS as string[]).includes(w)
+  )
+}
+
+const widgetDone = (sp: Team, key: ReadinessWidgetKey): boolean => {
+  const r = sp.readiness
+  if (!r) return false
+  if (key === 'rehearsal') return r.rehearsal?.status === 'passed'
+  if (key === 'calendar') return !!r.calendarSet
+  if (key === 'deck') return r.deckStatus === 'uploaded'
+  return r.approval === 'approved'
+}
+
+const talkReady = (sp: Team, widgets: ReadinessWidgetKey[]): boolean => {
+  if (!widgets.length) return true
+  return widgets.every((w) => widgetDone(sp, w))
+}
 
 export const ReadyChecklistsPanel: React.FC<Props> = ({ eventId }) => {
   const { data: checklists = [], isLoading } = useGetChecklistsQuery(eventId)
+  const { data: teams = [] } = useGetTeamsQuery({ eventId, type: 'speaker' })
   const [createChecklist] = useCreateChecklistMutation()
   const [updateChecklist] = useUpdateChecklistMutation()
-  const [deleteChecklist] = useDeleteChecklistMutation()
-  const [confirmDelId, setConfirmDelId] = useState<string | null>(null)
-  const [nameDrafts, setNameDrafts] = useState<Record<string, string>>({})
-  const [itemDrafts, setItemDrafts] = useState<Record<string, string>>({})
 
-  useEffect(() => {
-    const names: Record<string, string> = {}
-    const items: Record<string, string> = {}
+  const byType = useMemo(() => {
+    const map: Partial<Record<ReadinessChecklistType, ReadinessChecklist>> = {}
     checklists.forEach((ck) => {
-      names[ck._id] = ck.name
-      ck.items.forEach((it) => {
-        items[`${ck._id}:${it._id}`] = it.text
-      })
+      if (ck.type === 'talk' || ck.type === 'workshop') {
+        if (!map[ck.type]) map[ck.type] = ck
+      }
     })
-    setNameDrafts(names)
-    setItemDrafts(items)
+    return map
   }, [checklists])
 
-  useEffect(() => {
-    if (!confirmDelId) return
-    const timer = window.setTimeout(() => setConfirmDelId(null), 3000)
-    return () => window.clearTimeout(timer)
-  }, [confirmDelId])
-
-  const patch = async (
-    ck: ReadinessChecklist,
-    data: {
-      name?: string
-      type?: SpeakerFormat
-      items?: Array<{ _id?: string; text?: string; done?: boolean }>
-    }
-  ): Promise<void> => {
-    await updateChecklist({ id: ck._id, eventId, data })
-  }
-
-  const handleCreate = async (): Promise<void> => {
-    await createChecklist({
-      eventId,
-      name: t('admin.ckNewName'),
-      type: 'talk',
-      items: [{ text: '', done: false }],
+  const talksByType = useMemo(() => {
+    const map: Record<ReadinessChecklistType, Team[]> = { talk: [], workshop: [] }
+    teams.forEach((sp) => {
+      const fmt = speakerFormat(sp)
+      if (fmt === 'talk' || fmt === 'workshop') map[fmt].push(sp)
     })
-    setConfirmDelId(null)
-  }
+    return map
+  }, [teams])
 
-  const handleDelete = async (id: string): Promise<void> => {
-    if (confirmDelId === id) {
-      await deleteChecklist({ id, eventId })
-      setConfirmDelId(null)
-      return
-    }
-    setConfirmDelId(id)
+  useEffect(() => {
+    TYPE_CARDS.forEach(({ type, titleKey }) => {
+      if (byType[type]) return
+      void createChecklist({
+        eventId,
+        type,
+        name: t(titleKey),
+        widgets: DEFAULT_WIDGETS,
+        items: [],
+      })
+    })
+  }, [byType, createChecklist, eventId])
+
+  const toggleWidget = async (
+    ck: ReadinessChecklist,
+    key: ReadinessWidgetKey
+  ): Promise<void> => {
+    const cur = widgetsOf(ck)
+    const next = cur.includes(key) ? cur.filter((w) => w !== key) : [...cur, key]
+    await updateChecklist({
+      id: ck._id,
+      eventId,
+      data: { widgets: next.length ? next : DEFAULT_WIDGETS },
+    })
   }
 
   if (isLoading) {
@@ -97,52 +124,26 @@ export const ReadyChecklistsPanel: React.FC<Props> = ({ eventId }) => {
       flexDirection="column"
       gap="14px"
     >
-      <Flex align="center" gap="12px" flexWrap="wrap">
-        <Box flex="1" minW="200px">
-          <Text fontFamily="heading" fontSize="15px" fontWeight="700" letterSpacing="-0.3px">
-            {t('admin.ckTitle')}
-          </Text>
-          <Text fontSize="11.5px" color={thColors.textFaint} mt="3px">
-            {t('admin.ckSub')}
-          </Text>
-        </Box>
-        <GradientButton
-          h="34px"
-          px="16px"
-          fontSize="12px"
-          fontWeight="700"
-          display="inline-flex"
-          alignItems="center"
-          gap="6px"
-          onClick={() => void handleCreate()}
-        >
-          <LuPlus size={14} strokeWidth={2.4} />
-          {t('admin.ckAdd')}
-        </GradientButton>
-      </Flex>
-
-      {!checklists.length && (
-        <Box
-          border="1px dashed rgba(255,255,255,0.15)"
-          borderRadius="12px"
-          p="26px"
-          textAlign="center"
-          color={thColors.textFaint}
-          fontSize="12.5px"
-        >
-          {t('admin.ckEmpty')}
-        </Box>
-      )}
+      <Box>
+        <Text fontFamily="heading" fontSize="15px" fontWeight="700" letterSpacing="-0.3px">
+          {t('admin.ckTitle')}
+        </Text>
+        <Text fontSize="11.5px" color={thColors.textFaint} mt="3px">
+          {t('admin.ckSub')}
+        </Text>
+      </Box>
 
       <Grid templateColumns="repeat(auto-fill, minmax(330px, 1fr))" gap="14px">
-        {checklists.map((ck) => {
-          const doneN = ck.items.filter((it) => it.done).length
-          const pct = ck.items.length ? Math.round((doneN / ck.items.length) * 100) : 0
-          const confirmDel = confirmDelId === ck._id
+        {TYPE_CARDS.map(({ type, titleKey, hintKey }) => {
+          const ck = byType[type]
+          const widgets = widgetsOf(ck)
+          const talks = talksByType[type]
+          const readyN = talks.filter((sp) => talkReady(sp, widgets)).length
+          const pct = talks.length ? Math.round((readyN / talks.length) * 100) : 0
 
           return (
             <Box
-              key={ck._id}
+              key={type}
               bg={thColors.card}
               border={`1px solid ${thColors.border}`}
               borderRadius="12px"
@@ -150,35 +151,18 @@ export const ReadyChecklistsPanel: React.FC<Props> = ({ eventId }) => {
               display="flex"
               flexDirection="column"
               gap="12px"
-              h="100%"
-              minH="100%"
             >
-              <Flex align="center" gap="10px">
-                <Input
-                  value={nameDrafts[ck._id] ?? ck.name}
-                  onChange={(e) =>
-                    setNameDrafts((prev) => ({ ...prev, [ck._id]: e.target.value }))
-                  }
-                  onBlur={() => {
-                    const next = (nameDrafts[ck._id] ?? ck.name).trim()
-                    if (next !== ck.name) void patch(ck, { name: next || t('admin.ckNewName') })
-                  }}
-                  placeholder={t('admin.ckNamePlaceholder')}
-                  flex="1"
-                  minW={0}
-                  bg="#0C1218"
-                  border="1px solid rgba(255,255,255,0.12)"
-                  borderRadius="10px"
-                  color="#fff"
-                  fontSize="13.5px"
-                  fontWeight="700"
-                  px="12px"
-                  py="9px"
-                  h="auto"
-                  _focus={{ borderColor: thColors.green, outline: 'none' }}
-                />
+              <Flex align="center" justify="space-between" gap="10px">
+                <Box minW={0}>
+                  <Text fontSize="14px" fontWeight="800">
+                    {t(titleKey)}
+                  </Text>
+                  <Text fontSize="11px" color={thColors.textFaint} mt="2px">
+                    {t(hintKey)}
+                  </Text>
+                </Box>
                 <Text fontSize="11.5px" fontWeight="800" color={thColors.greenLight} flexShrink={0}>
-                  {doneN} / {ck.items.length}
+                  {talks.length ? `${readyN} / ${talks.length}` : '—'}
                 </Text>
               </Flex>
 
@@ -186,162 +170,67 @@ export const ReadyChecklistsPanel: React.FC<Props> = ({ eventId }) => {
                 <Box w={`${pct}%`} h="100%" bg={thColors.gradientGreen} />
               </Box>
 
-              <Flex align="center" gap="8px" flexWrap="wrap">
-                <Text
-                  fontSize="10px"
-                  color="rgba(255,255,255,0.4)"
-                  fontWeight="700"
-                  textTransform="uppercase"
-                  letterSpacing="0.5px"
-                  flexShrink={0}
-                >
-                  {t('admin.ckType')}
-                </Text>
-                {TYPE_OPTS.map((opt) => (
-                  <GradientButton
-                    key={opt.value}
-                    h="30px"
-                    px="14px"
-                    fontSize="11.5px"
-                    fontWeight="600"
-                    variant={ck.type === opt.value ? 'primary' : 'ghost'}
-                    boxShadow="none"
-                    onClick={() => void patch(ck, { type: opt.value })}
-                  >
-                    {t(opt.labelKey)}
-                  </GradientButton>
-                ))}
-              </Flex>
+              <Text
+                fontSize="10px"
+                color="rgba(255,255,255,0.4)"
+                fontWeight="700"
+                textTransform="uppercase"
+                letterSpacing="0.5px"
+              >
+                {t('admin.ckWidgets')}
+              </Text>
 
-              <Flex direction="column" gap="7px">
-                {ck.items.map((it) => {
-                  const draftKey = `${ck._id}:${it._id}`
+              <Flex direction="column" gap="8px">
+                {READINESS_WIDGETS.map((key) => {
+                  const on = widgets.includes(key)
+                  const labelKey = WIDGET_LABELS[key][type]
                   return (
                     <Flex
-                      key={it._id}
+                      key={key}
+                      as="button"
+                      type="button"
                       align="center"
-                      gap="9px"
+                      gap="10px"
                       bg="#0C1218"
                       borderRadius="10px"
-                      px="10px"
-                      py="6px"
-                      pr="8px"
+                      px="12px"
+                      py="10px"
+                      cursor={ck ? 'pointer' : 'default'}
+                      border={on ? `1px solid ${thColors.green}` : '1px solid transparent'}
+                      opacity={ck ? 1 : 0.55}
+                      fontFamily="inherit"
+                      color="inherit"
+                      textAlign="left"
+                      onClick={() => {
+                        if (ck) void toggleWidget(ck, key)
+                      }}
                     >
                       <Box
-                        as="button"
-                        type="button"
-                        w="20px"
-                        h="20px"
-                        borderRadius="6px"
+                        w="18px"
+                        h="18px"
+                        borderRadius="5px"
                         border={
-                          it.done
+                          on
                             ? `1.5px solid ${thColors.green}`
                             : '1.5px solid rgba(255,255,255,0.25)'
                         }
-                        bg={it.done ? thColors.green : 'transparent'}
+                        bg={on ? thColors.green : 'transparent'}
                         color={thColors.cyanDeep}
-                        fontSize="12px"
+                        fontSize="11px"
                         fontWeight="900"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
                         flexShrink={0}
-                        cursor="pointer"
-                        onClick={() =>
-                          void patch(ck, {
-                            items: itemsPayload(ck).map((row) =>
-                              row._id === it._id ? { ...row, done: !it.done } : row
-                            ),
-                          })
-                        }
                       >
-                        {it.done ? '✓' : ''}
+                        {on ? '✓' : ''}
                       </Box>
-                      <Input
-                        value={itemDrafts[draftKey] ?? it.text}
-                        onChange={(e) =>
-                          setItemDrafts((prev) => ({ ...prev, [draftKey]: e.target.value }))
-                        }
-                        onBlur={() => {
-                          const next = itemDrafts[draftKey] ?? it.text
-                          if (next !== it.text) {
-                            void patch(ck, {
-                              items: itemsPayload(ck).map((row) =>
-                                row._id === it._id ? { ...row, text: next } : row
-                              ),
-                            })
-                          }
-                        }}
-                        placeholder={t('admin.ckItemPlaceholder')}
-                        flex="1"
-                        minW={0}
-                        bg="transparent"
-                        border="none"
-                        color="#fff"
-                        fontSize="12.5px"
-                        px={0}
-                        py="3px"
-                        h="auto"
-                        _focus={{ outline: 'none', boxShadow: 'none' }}
-                      />
-                      <IconBtn
-                        label={t('admin.ckDelItem')}
-                        size={26}
-                        danger
-                        onClick={() =>
-                          void patch(ck, {
-                            items: itemsPayload(ck).filter((row) => row._id !== it._id),
-                          })
-                        }
-                        border="none"
-                        color="rgba(255,255,255,0.35)"
-                        _hover={{ bg: 'rgba(255,120,120,0.15)', color: '#FF8B8B' }}
-                      >
-                        <LuX size={13} strokeWidth={2.2} />
-                      </IconBtn>
+                      <Text fontSize="13px" fontWeight="600" color={on ? '#fff' : 'rgba(255,255,255,0.55)'}>
+                        {t(labelKey)}
+                      </Text>
                     </Flex>
                   )
                 })}
-                <GradientButton
-                  alignSelf="flex-start"
-                  h="30px"
-                  px="13px"
-                  fontSize="11px"
-                  fontWeight="600"
-                  variant="ghost"
-                  border="1.5px dashed rgba(255,255,255,0.22)"
-                  color="rgba(255,255,255,0.6)"
-                  onClick={() =>
-                    void patch(ck, {
-                      items: [...itemsPayload(ck), { text: '', done: false }],
-                    })
-                  }
-                  _hover={{ borderColor: thColors.green, color: thColors.greenLight }}
-                >
-                  {t('admin.ckAddItem')}
-                </GradientButton>
-              </Flex>
-
-              <Flex
-                justify="flex-end"
-                align="center"
-                borderTop="1px solid rgba(255,255,255,0.06)"
-                pt="11px"
-                mt="auto"
-              >
-                <GradientButton
-                  h="30px"
-                  px="13px"
-                  fontSize="11px"
-                  fontWeight="600"
-                  variant="ghost"
-                  border="1px solid rgba(255,120,120,0.4)"
-                  bg={confirmDel ? 'rgba(255,120,120,0.18)' : 'transparent'}
-                  color={confirmDel ? '#FF8B8B' : 'rgba(255,140,140,0.85)'}
-                  onClick={() => void handleDelete(ck._id)}
-                >
-                  {confirmDel ? t('admin.ckDelConfirm') : t('admin.ckDel')}
-                </GradientButton>
               </Flex>
             </Box>
           )

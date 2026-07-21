@@ -17,6 +17,11 @@ const readinessChecklistSchema = new mongoose.Schema({
     ref: 'Event',
     required: true
   },
+  teamId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
+    default: null
+  },
   name: {
     type: String,
     default: 'Новый чеклист'
@@ -25,6 +30,13 @@ const readinessChecklistSchema = new mongoose.Schema({
     type: String,
     enum: ['talk', 'panel', 'workshop'],
     default: 'talk'
+  },
+  widgets: {
+    type: [{
+      type: String,
+      enum: ['rehearsal', 'calendar', 'deck', 'approval']
+    }],
+    default: ['rehearsal', 'calendar', 'deck', 'approval']
   },
   items: {
     type: [checklistItemSchema],
@@ -47,6 +59,7 @@ const readinessChecklistSchema = new mongoose.Schema({
 });
 
 readinessChecklistSchema.index({ eventId: 1, order: 1 });
+readinessChecklistSchema.index({ eventId: 1, type: 1 });
 
 if (mongoose.models.ReadinessChecklist) {
   delete mongoose.models.ReadinessChecklist;
