@@ -194,6 +194,7 @@
     "editInvalid": "Check the name and date",
     "createFailed": "Failed to create event",
     "openEvent": "Open",
+    "backToList": "To events",
     "hero": {
       "dotsLabel": "Header slides",
       "slideLabel": "Slide",

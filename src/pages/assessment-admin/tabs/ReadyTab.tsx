@@ -417,64 +417,85 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                       borderRadius="14px"
                       p="16px 18px"
                     >
-                      <Flex align="center" gap="13px" flexWrap="wrap">
-                        <Flex flexShrink={0} pl="8px">
-                          {names.map((nm, i) => (
-                            <AvatarInitials
-                              key={`${nm}-${i}`}
-                              name={nm}
-                              size={38}
-                              live={false}
-                              ml={i ? '-8px' : 0}
-                              border="2px solid #141C24"
-                            />
-                          ))}
+                      <Flex
+                        direction={{ base: 'column', md: 'row' }}
+                        align={{ base: 'stretch', md: 'center' }}
+                        gap={{ base: '10px', md: '13px' }}
+                      >
+                        <Flex align="flex-start" gap="12px" minW={0} flex="1">
+                          <Flex flexShrink={0} pl={{ base: 0, md: '8px' }}>
+                            {names.map((nm, i) => (
+                              <AvatarInitials
+                                key={`${nm}-${i}`}
+                                name={nm}
+                                size={38}
+                                live={false}
+                                ml={i ? '-8px' : 0}
+                                border="2px solid #141C24"
+                              />
+                            ))}
+                          </Flex>
+                          <Box minW={0} flex="1">
+                            <Text
+                              fontSize="14px"
+                              fontWeight="700"
+                              lineHeight="1.35"
+                              lineClamp={{ base: 3, md: 1 }}
+                            >
+                              {sp.projectName || '—'}
+                            </Text>
+                            <Text
+                              fontSize="11.5px"
+                              color={thColors.textFaint}
+                              mt="2px"
+                              lineHeight="1.4"
+                              whiteSpace="normal"
+                              wordBreak="normal"
+                              overflowWrap="anywhere"
+                            >
+                              {names.join(' + ')} · {sp.scheduledTime || '—'}
+                            </Text>
+                          </Box>
                         </Flex>
-                        <Box minW={0} flex="1">
-                          <Text fontSize="14px" fontWeight="700" truncate>
-                            {sp.projectName || '—'}
-                          </Text>
-                          <Text fontSize="11.5px" color={thColors.textFaint} mt="2px">
-                            {names.join(' + ')} · {sp.scheduledTime || '—'}
-                          </Text>
-                        </Box>
-                        <Pill
-                          fontSize="11px"
-                          fontWeight="600"
-                          border={`1px solid ${fc}`}
-                          color={fc}
-                          bg="transparent"
-                          flexShrink={0}
-                        >
-                          {formatLabel(fmt)}
-                        </Pill>
-                        <Flex
-                          minW="44px"
-                          h="28px"
-                          px="11px"
-                          borderRadius="30px"
-                          align="center"
-                          justify="center"
-                          fontSize="11.5px"
-                          fontWeight="800"
-                          flexShrink={0}
-                          bg={
-                            panel
-                              ? 'rgba(177,140,255,0.14)'
-                              : done
-                                ? 'linear-gradient(180deg,#4BE96A,#1FA53E)'
-                                : 'rgba(255,255,255,0.06)'
-                          }
-                          border={
-                            panel
-                              ? '1px solid rgba(177,140,255,0.4)'
-                              : done
-                                ? 'none'
-                                : '1px solid rgba(255,255,255,0.15)'
-                          }
-                          color={panel ? '#B18CFF' : done ? '#04220C' : 'rgba(255,255,255,0.5)'}
-                        >
-                          {panel ? t('admin.readyNotNeeded') : done ? '✓' : `${cnt}/${total}`}
+                        <Flex gap="8px" flexShrink={0} align="center" flexWrap="wrap">
+                          <Pill
+                            fontSize="11px"
+                            fontWeight="600"
+                            border={`1px solid ${fc}`}
+                            color={fc}
+                            bg="transparent"
+                            flexShrink={0}
+                          >
+                            {formatLabel(fmt)}
+                          </Pill>
+                          <Flex
+                            minW="44px"
+                            h="28px"
+                            px="11px"
+                            borderRadius="30px"
+                            align="center"
+                            justify="center"
+                            fontSize="11.5px"
+                            fontWeight="800"
+                            flexShrink={0}
+                            bg={
+                              panel
+                                ? 'rgba(177,140,255,0.14)'
+                                : done
+                                  ? 'linear-gradient(180deg,#4BE96A,#1FA53E)'
+                                  : 'rgba(255,255,255,0.06)'
+                            }
+                            border={
+                              panel
+                                ? '1px solid rgba(177,140,255,0.4)'
+                                : done
+                                  ? 'none'
+                                  : '1px solid rgba(255,255,255,0.15)'
+                            }
+                            color={panel ? '#B18CFF' : done ? '#04220C' : 'rgba(255,255,255,0.5)'}
+                          >
+                            {panel ? t('admin.readyNotNeeded') : done ? '✓' : `${cnt}/${total}`}
+                          </Flex>
                         </Flex>
                       </Flex>
 

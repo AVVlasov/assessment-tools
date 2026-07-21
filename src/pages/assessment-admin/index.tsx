@@ -1,10 +1,10 @@
 import React from 'react'
 import { Box, Flex, Text, Spinner } from '@chakra-ui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { GradientButton, Pill } from '../../components/tehnohub'
+import { FiHome } from 'react-icons/fi'
+import { GradientButton } from '../../components/tehnohub'
 import { thColors } from '../../theme'
 import { useGetEventQuery, useToggleVotingMutation } from '../../__data__/api'
-import { useGetListenerStatsQuery } from '../../__data__/api/listenerApi'
 import { getEventTypeConfig } from '../../utils/eventTypeConfig'
 import { t } from '../../utils/locale'
 import { TeamsTab } from './tabs/TeamsTab'
@@ -37,10 +37,6 @@ export const AssessmentAdminPage: React.FC = () => {
   const config = getEventTypeConfig(event?.eventType)
   const isConference = event?.eventType === 'conference'
   const [toggleVoting] = useToggleVotingMutation()
-  const { data: listenerStats } = useGetListenerStatsQuery(
-    { eventId },
-    { skip: !eventId || !isConference, pollingInterval: 15000 }
-  )
 
   if (!eventId) {
     return (
@@ -98,16 +94,17 @@ export const AssessmentAdminPage: React.FC = () => {
       >
         <Flex justify="space-between" align="center" flexWrap="wrap" gap="12px">
           <Flex align="center" gap="12px" flexWrap="wrap">
-            {!isConference && (
-              <GradientButton
-                variant="ghost"
-                h="34px"
-                fontSize="12px"
-                onClick={() => navigate('/assessment-tools')}
-              >
-                {t('common.back')}
-              </GradientButton>
-            )}
+            <GradientButton
+              variant="ghost"
+              h="34px"
+              w="34px"
+              px="0"
+              aria-label={t('events.backToList')}
+              title={t('events.backToList')}
+              onClick={() => navigate('/assessment-tools')}
+            >
+              <FiHome size={18} />
+            </GradientButton>
             <Text fontFamily="heading" fontSize="19px" fontWeight="700" letterSpacing="-0.5px">
               {isConference ? t('admin.consoleTitle') : event.name}
             </Text>
@@ -128,23 +125,17 @@ export const AssessmentAdminPage: React.FC = () => {
               ))}
             </Flex>
           </Flex>
-          <Flex gap="8px" align="center" flexWrap="wrap">
-            {isConference ? (
-              <Pill variant="outline" dot>
-                {listenerStats?.totalRatings ?? 0} {t('admin.ratingsToday')}
-              </Pill>
-            ) : (
-              <Flex align="center" gap="10px">
-                <Text fontSize="12px" color={thColors.textDim}>
-                  {t('header.voting')}
-                </Text>
-                <Switch
-                  checked={event.votingEnabled}
-                  onCheckedChange={() => toggleVoting(eventId)}
-                />
-              </Flex>
-            )}
-          </Flex>
+          {!isConference && (
+            <Flex align="center" gap="10px">
+              <Text fontSize="12px" color={thColors.textDim}>
+                {t('header.voting')}
+              </Text>
+              <Switch
+                checked={event.votingEnabled}
+                onCheckedChange={() => toggleVoting(eventId)}
+              />
+            </Flex>
+          )}
         </Flex>
 
         {!isConference && (

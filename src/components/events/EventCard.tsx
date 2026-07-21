@@ -6,6 +6,7 @@ import { Event, EventType } from '../../types'
 import { useUpdateEventMutation, useDeleteEventMutation } from '../../__data__/api/eventApi'
 import { GradientButton, Pill, SurfaceCard } from '../tehnohub'
 import { thColors } from '../../theme'
+import { EVENT_TYPES } from '../../utils/eventTypeConfig'
 import { t } from '../../utils/locale'
 import {
   formatEventDateRu,
@@ -36,6 +37,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [dateText, setDateText] = useState(toRuDateDots(toDateInputValue(new Date(event.eventDate))))
   const [form, setForm] = useState({
     name: event.name,
+    eventType: (event.eventType || 'hackathon') as EventType,
     description: event.description || '',
     eventDate: toDateInputValue(new Date(event.eventDate)),
     location: event.location || '',
@@ -45,6 +47,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     const dateIso = toDateInputValue(new Date(event.eventDate))
     setForm({
       name: event.name,
+      eventType: (event.eventType || 'hackathon') as EventType,
       description: event.description || '',
       eventDate: dateIso,
       location: event.location || '',
@@ -55,7 +58,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   const handleSave = async (): Promise<void> => {
     const parsedDate = parseDateInput(dateText) || parseDateInput(form.eventDate)
-    if (!form.name.trim() || !parsedDate) {
+    if (!form.name.trim() || !parsedDate || !form.eventType) {
       toaster.create({ title: t('events.editInvalid'), type: 'error' })
       return
     }
@@ -64,6 +67,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         id: event._id,
         data: {
           name: form.name.trim(),
+          eventType: form.eventType,
           description: form.description.trim(),
           eventDate: toEventDateIso(parsedDate),
           location: form.location.trim(),
@@ -242,6 +246,31 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                       autoFocus
                       {...inputStyles}
                     />
+                  </Box>
+                  <Box>
+                    <Text fontSize="12px" color={thColors.textFaint} mb="6px">
+                      {t('events.types.label')} *
+                    </Text>
+                    <Flex gap="8px" flexWrap="wrap">
+                      {EVENT_TYPES.map((type) => {
+                        const selected = form.eventType === type
+                        return (
+                          <GradientButton
+                            key={type}
+                            type="button"
+                            h="36px"
+                            px="14px"
+                            fontSize="12px"
+                            fontWeight="600"
+                            variant={selected ? 'primary' : 'ghost'}
+                            boxShadow="none"
+                            onClick={() => setForm((f) => ({ ...f, eventType: type }))}
+                          >
+                            {typeLabel(type)}
+                          </GradientButton>
+                        )
+                      })}
+                    </Flex>
                   </Box>
                   <Box>
                     <Text fontSize="12px" color={thColors.textFaint} mb="4px">

@@ -116,15 +116,24 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/events/:id - обновить мероприятие (eventType не меняется)
+// PUT /api/events/:id - обновить мероприятие
 router.put('/:id', async (req, res) => {
   try {
-    const { name, description, eventDate, location, status } = req.body;
+    const { name, description, eventDate, location, status, eventType } = req.body;
     
     const event = await Event.findById(req.params.id);
     
     if (!event) {
       return res.status(404).json({ error: 'Мероприятие не найдено' });
+    }
+
+    if (eventType !== undefined) {
+      if (!VALID_EVENT_TYPES.includes(eventType)) {
+        return res.status(400).json({
+          error: `eventType must be one of: ${VALID_EVENT_TYPES.join(', ')}`
+        });
+      }
+      event.eventType = eventType;
     }
     
     if (name !== undefined) event.name = name;

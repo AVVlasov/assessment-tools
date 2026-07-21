@@ -25,6 +25,7 @@ export interface CreateEventRequest {
 
 export interface UpdateEventRequest {
   name?: string;
+  eventType?: EventType;
   description?: string;
   eventDate?: string;
   location?: string;

@@ -238,10 +238,10 @@ export const EventCreate: React.FC = () => {
             {currentStep === 0 && (
               <Stack gap={4}>
                 <Text fontSize="lg" fontWeight="bold" color="white">
-                  Выберите тип мероприятия
+                  {t('events.wizard.step0')}
                 </Text>
                 <Text fontSize="sm" color="rgba(255,255,255,0.65)">
-                  Тип задаёт, что будут оценивать. После создания изменить его нельзя.
+                  {t('events.wizard.step0Desc')}
                 </Text>
                 <Stack gap={3}>
                   {EVENT_TYPES.map((type) => {
