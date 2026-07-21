@@ -342,6 +342,8 @@
     "confirmStop": "Really stop?",
     "startVoting": "Start voting",
     "resetHall": "Reset",
+    "moveHallLeft": "Move left",
+    "moveHallRight": "Move right",
     "confirmDelete": "Really delete?",
     "newHall": "New hall",
     "createHall": "Create hall",

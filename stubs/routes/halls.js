@@ -106,6 +106,44 @@ router.post('/pause-all', async (req, res) => {
   }
 });
 
+// POST /api/halls/:id/shift-order — ← / → порядок залов на странице
+router.post('/:id/shift-order', async (req, res) => {
+  try {
+    const hall = await Hall.findById(req.params.id);
+    if (!hall) {
+      return res.status(404).json({ error: 'Hall not found' });
+    }
+    const delta = Number(req.body?.delta);
+    if (delta !== 1 && delta !== -1) {
+      return res.status(400).json({ error: 'delta must be 1 or -1' });
+    }
+
+    const halls = await Hall.find({ eventId: hall.eventId }).sort({ order: 1, num: 1 });
+    const idx = halls.findIndex((h) => String(h._id) === String(hall._id));
+    if (idx < 0) {
+      return res.status(404).json({ error: 'Hall not found' });
+    }
+    const swapIdx = idx + delta;
+    if (swapIdx < 0 || swapIdx >= halls.length) {
+      return res.json(halls);
+    }
+
+    // Normalize sequential order, then swap neighbors
+    for (let i = 0; i < halls.length; i += 1) {
+      halls[i].order = i;
+    }
+    const tmp = halls[idx].order;
+    halls[idx].order = halls[swapIdx].order;
+    halls[swapIdx].order = tmp;
+
+    await Promise.all(halls.map((h) => h.save()));
+    const ordered = await Hall.find({ eventId: hall.eventId }).sort({ order: 1, num: 1 });
+    res.json(ordered);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // PUT /api/halls/:id
 router.put('/:id', async (req, res) => {
   try {

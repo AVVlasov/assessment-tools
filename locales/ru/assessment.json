@@ -342,6 +342,8 @@
     "confirmStop": "Точно остановить?",
     "startVoting": "Запустить голосование",
     "resetHall": "Сбросить",
+    "moveHallLeft": "Левее",
+    "moveHallRight": "Правее",
     "confirmDelete": "Точно удалить?",
     "newHall": "Новый зал",
     "createHall": "Создать зал",

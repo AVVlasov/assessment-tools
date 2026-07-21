@@ -83,6 +83,47 @@ export const hallsApi = createApi({
       },
       invalidatesTags: ['ListenerStats', 'ListenerHall'],
     }),
+    shiftHallOrder: builder.mutation<Hall[], { id: string; delta: 1 | -1; eventId: string }>({
+      query: ({ id, delta }) => ({
+        url: `/halls/${id}/shift-order`,
+        method: 'POST',
+        body: { delta },
+      }),
+      async onQueryStarted({ id, delta, eventId }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          hallsApi.util.updateQueryData('getHalls', eventId, (draft) => {
+            const idx = draft.findIndex((h) => h._id === id)
+            const swapIdx = idx + delta
+            if (idx < 0 || swapIdx < 0 || swapIdx >= draft.length) return
+            const tmp = draft[idx]
+            draft[idx] = draft[swapIdx]
+            draft[swapIdx] = tmp
+            draft.forEach((h, i) => {
+              h.order = i
+            })
+          })
+        )
+        try {
+          const { data } = await queryFulfilled
+          dispatch(
+            hallsApi.util.updateQueryData('getHalls', eventId, (draft) => {
+              // Keep enriched speaker fields from cache while applying new order
+              const byId = Object.fromEntries(draft.map((h) => [h._id, h]))
+              const next = data.map((h, i) => {
+                const prev = byId[h._id]
+                return prev
+                  ? { ...prev, order: h.order ?? i, name: h.name, color: h.color, num: h.num }
+                  : { ...h, order: h.order ?? i }
+              })
+              draft.splice(0, draft.length, ...next)
+            })
+          )
+        } catch {
+          patch.undo()
+        }
+      },
+      invalidatesTags: ['ListenerStats'],
+    }),
     setHallSpeaker: builder.mutation<Hall, { id: string; speakerId: string }>({
       query: ({ id, speakerId }) => ({
         url: `/halls/${id}/set-speaker`,
@@ -110,6 +151,7 @@ export const {
   usePauseAllHallsMutation,
   useRestartHallMutation,
   useShiftHallSpeakerMutation,
+  useShiftHallOrderMutation,
   useSetHallSpeakerMutation,
   useGetHallQrQuery,
   useLazyGetHallQrQuery,

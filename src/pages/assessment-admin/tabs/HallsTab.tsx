@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Box, Flex, Input, Text, Grid } from '@chakra-ui/react'
 import { QRCodeSVG } from 'qrcode.react'
-import { LuPencil, LuRotateCcw, LuTrash2 } from 'react-icons/lu'
+import { LuChevronLeft, LuChevronRight, LuPencil, LuRotateCcw, LuTrash2 } from 'react-icons/lu'
 import {
   AvatarInitials,
   GradientButton,
@@ -19,6 +19,7 @@ import {
   usePauseAllHallsMutation,
   usePauseHallMutation,
   useRestartHallMutation,
+  useShiftHallOrderMutation,
   useShiftHallSpeakerMutation,
   useUpdateHallMutation,
 } from '../../../__data__/api'
@@ -51,6 +52,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   const [restartHall] = useRestartHallMutation()
   const [updateHall] = useUpdateHallMutation()
   const [shiftSpeakerMut] = useShiftHallSpeakerMutation()
+  const [shiftHallOrder] = useShiftHallOrderMutation()
   const [qrHallId, setQrHallId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [nameDraft, setNameDraft] = useState('')
@@ -111,7 +113,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   return (
     <Box>
       <Grid templateColumns="repeat(auto-fit, minmax(320px, 1fr))" gap="15px">
-        {halls.map((h) => {
+        {halls.map((h, hallIdx) => {
           const live = h.status === 'live'
           const cur = h.currentSpeaker
           const speakers = h.speakers || []
@@ -420,33 +422,53 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 </GradientButton>
               </Flex>
 
-              <Flex justify="flex-start" align="center" gap="8px" mt="2px">
-                <IconBtn
-                  label={t('admin.resetHall')}
-                  size={34}
-                  onClick={() => void restartHall({ id: h._id, clearRatings: false })}
-                >
-                  <LuRotateCcw size={15} />
-                </IconBtn>
-                <IconBtn
-                  label={t('admin.editHall')}
-                  size={34}
-                  onClick={() => {
-                    setEditingId(h._id)
-                    setNameDraft(h.name)
-                  }}
-                >
-                  <LuPencil size={15} />
-                </IconBtn>
-                <IconBtn
-                  label={delConfirm ? t('admin.confirmDelete') : t('admin.deleteHall')}
-                  danger
-                  active={delConfirm}
-                  size={34}
-                  onClick={() => void handleDelete(h._id)}
-                >
-                  <LuTrash2 size={15} />
-                </IconBtn>
+              <Flex justify="space-between" align="center" gap="8px" mt="2px">
+                <Flex align="center" gap="8px">
+                  <IconBtn
+                    label={t('admin.resetHall')}
+                    size={34}
+                    onClick={() => void restartHall({ id: h._id, clearRatings: false })}
+                  >
+                    <LuRotateCcw size={15} />
+                  </IconBtn>
+                  <IconBtn
+                    label={t('admin.editHall')}
+                    size={34}
+                    onClick={() => {
+                      setEditingId(h._id)
+                      setNameDraft(h.name)
+                    }}
+                  >
+                    <LuPencil size={15} />
+                  </IconBtn>
+                  <IconBtn
+                    label={delConfirm ? t('admin.confirmDelete') : t('admin.deleteHall')}
+                    danger
+                    active={delConfirm}
+                    size={34}
+                    onClick={() => void handleDelete(h._id)}
+                  >
+                    <LuTrash2 size={15} />
+                  </IconBtn>
+                </Flex>
+                <Flex align="center" gap="8px">
+                  <IconBtn
+                    label={t('admin.moveHallLeft')}
+                    size={34}
+                    disabled={hallIdx === 0}
+                    onClick={() => void shiftHallOrder({ id: h._id, delta: -1, eventId })}
+                  >
+                    <LuChevronLeft size={16} />
+                  </IconBtn>
+                  <IconBtn
+                    label={t('admin.moveHallRight')}
+                    size={34}
+                    disabled={hallIdx >= halls.length - 1}
+                    onClick={() => void shiftHallOrder({ id: h._id, delta: 1, eventId })}
+                  >
+                    <LuChevronRight size={16} />
+                  </IconBtn>
+                </Flex>
               </Flex>
             </SurfaceCard>
           )
