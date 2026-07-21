@@ -1,9 +1,22 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
-import { AvatarInitials, GradientButton, Pill, SurfaceCard } from '../../../components/tehnohub'
+import { QRCodeSVG } from 'qrcode.react'
+import { LuRotateCcw } from 'react-icons/lu'
+import {
+  AvatarInitials,
+  GradientButton,
+  IconBtn,
+  Pill,
+  QrModal,
+  SurfaceCard,
+} from '../../../components/tehnohub'
 import { thColors } from '../../../theme'
-import { useGetListenerStatsQuery } from '../../../__data__/api/listenerApi'
-import { URLs } from '../../../__data__/urls'
+import {
+  useGetListenerStatsQuery,
+  useResetEventRatingsMutation,
+} from '../../../__data__/api/listenerApi'
+import { useGetEventQuery } from '../../../__data__/api/eventApi'
+import { getConfRateUrl, URLs } from '../../../__data__/urls'
 import { t } from '../../../utils/locale'
 import type { ListenerStatsBar } from '../../../types'
 
@@ -84,13 +97,30 @@ const DistBars: React.FC<{ bar: ListenerStatsBar; highlight?: boolean }> = ({ ba
 export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
   const [hallFilter, setHallFilter] = useState('all')
   const [statView, setStatView] = useState<StatView>('speakers')
+  const [qrOpen, setQrOpen] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
   const { data, isLoading, isError } = useGetListenerStatsQuery({
     eventId,
     ...(hallFilter !== 'all' ? { hallId: hallFilter } : {}),
   })
+  const { data: event } = useGetEventQuery(eventId)
+  const [resetEventRatings] = useResetEventRatingsMutation()
+
+  const confHall = useMemo(() => data?.halls?.[0] || null, [data?.halls])
+  const confUrl = confHall?.token ? getConfRateUrl(confHall.token) : ''
 
   const exportCsv = (): void => {
     window.open(`${URLs.apiBase}/listener/stats/csv?eventId=${eventId}`, '_blank')
+  }
+
+  const handleResetConf = async (): Promise<void> => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      setTimeout(() => setConfirmReset(false), 3000)
+      return
+    }
+    setConfirmReset(false)
+    await resetEventRatings(eventId).unwrap()
   }
 
   if (isLoading && !data) {
@@ -136,10 +166,71 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
             <Text fontFamily="heading" fontSize="17px" fontWeight="700" letterSpacing="-0.4px">
               {t('admin.eventStatsTitle')}
             </Text>
-            <Pill variant="outline" dot>
-              {eventStats?.n ?? 0} {t('admin.confVotes')}
-            </Pill>
+            <Flex align="center" gap="10px" flexWrap="wrap">
+              <Pill variant="outline" dot>
+                {eventStats?.n ?? 0} {t('admin.confVotes')}
+              </Pill>
+              <IconBtn
+                label={confirmReset ? t('admin.confirmResetConfRatings') : t('admin.resetConfRatings')}
+                size={34}
+                active={confirmReset}
+                danger
+                onClick={() => void handleResetConf()}
+              >
+                <LuRotateCcw size={15} />
+              </IconBtn>
+            </Flex>
           </Flex>
+
+          {confHall ? (
+            <Flex
+              gap="10px"
+              align="center"
+              bg={thColors.surface}
+              borderRadius="12px"
+              p="11px 12px"
+              mb="18px"
+              cursor="pointer"
+              border="1px solid transparent"
+              _hover={{ borderColor: 'rgba(79,201,240,0.5)' }}
+              onClick={() => setQrOpen(true)}
+              maxW="420px"
+            >
+              <Box
+                w="54px"
+                h="54px"
+                borderRadius="9px"
+                bg="white"
+                p="4px"
+                flexShrink={0}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <QRCodeSVG id="qr-conf-stats" value={confUrl} size={46} />
+              </Box>
+              <Box flex="1" minW={0}>
+                <Text fontSize="11.5px" fontWeight="700" color="white">
+                  {t('admin.qrConfLabel')}
+                </Text>
+                <Text fontSize="10.5px" color={thColors.textFaint} lineHeight="1.35">
+                  {t('admin.qrConfClickHint')}
+                </Text>
+              </Box>
+            </Flex>
+          ) : (
+            <Box
+              bg={thColors.card}
+              border="1px dashed rgba(255,255,255,0.15)"
+              borderRadius="12px"
+              p="16px"
+              mb="18px"
+              color="rgba(255,255,255,0.45)"
+              fontSize="13px"
+            >
+              {t('admin.qrConfNeedHall')}
+            </Box>
+          )}
 
           {!eventStats || eventStats.n === 0 ? (
             <Box
@@ -243,6 +334,20 @@ export const ListenerStatsTab: React.FC<Props> = ({ eventId }) => {
               </Flex>
             </>
           )}
+
+          <QrModal
+            open={qrOpen && !!confUrl}
+            title={t('qr.confTitle')}
+            subtitle={event?.name || ''}
+            url={confUrl}
+            downloadName="qr-conference.png"
+            onClose={() => setQrOpen(false)}
+            copyLabel={t('qr.copy')}
+            copiedLabel={t('qr.copied')}
+            downloadLabel={t('qr.download')}
+            closeLabel={t('qr.close')}
+            hint={t('qr.confHint')}
+          />
         </Box>
       )}
 

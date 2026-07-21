@@ -374,6 +374,11 @@
     "confOverallHint": "out of 5 · average across day criteria",
     "confNps": "will come again",
     "confConv": "rated from halls",
+    "resetConfRatings": "Reset ratings",
+    "confirmResetConfRatings": "Clear all conference ratings?",
+    "qrConfLabel": "Conference rating QR · permanent",
+    "qrConfClickHint": "tap — PNG for the closing slide of the day",
+    "qrConfNeedHall": "Create at least one hall to get a conference rating QR",
     "readySubBoard": "Readiness board",
     "readySubChecklists": "Widgets",
     "readyTitle": "Talk readiness for stage",
@@ -524,7 +529,9 @@
     "copied": "Copied",
     "download": "Download PNG for slides",
     "hint": "White-background image — put it on the last slide of every speaker in this hall. The code is permanent.",
-    "hallTitle": "Hall QR"
+    "hallTitle": "Hall QR",
+    "confTitle": "Conference rating QR",
+    "confHint": "White-background image — put it on the closing slide of the day. Opens overall conference rating."
   },
   "brand": {
     "name": "Techno Hub Conf"

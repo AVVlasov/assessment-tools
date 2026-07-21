@@ -538,11 +538,14 @@ router.delete('/ratings/hall/:hallId', async (req, res) => {
   }
 });
 
-// DELETE /api/listener/ratings/event/:eventId — сброс всех оценок мероприятия
+// DELETE /api/listener/ratings/event/:eventId — сброс оценок конференции (targetType: event)
 router.delete('/ratings/event/:eventId', async (req, res) => {
   try {
-    const result = await ListenerRating.deleteMany({ eventId: req.params.eventId });
-    res.json({ message: 'Event ratings cleared', deletedCount: result.deletedCount || 0 });
+    const result = await ListenerRating.deleteMany({
+      eventId: req.params.eventId,
+      targetType: 'event'
+    });
+    res.json({ message: 'Conference ratings cleared', deletedCount: result.deletedCount || 0 });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

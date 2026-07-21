@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { Box, Flex, Text, Spinner } from '@chakra-ui/react'
 import {
   AvatarInitials,
@@ -43,6 +43,7 @@ const defaultOptions = (max = 5) =>
 
 export const AssessmentListenerPage: React.FC = () => {
   const { token = '' } = useParams<{ token: string }>()
+  const [searchParams] = useSearchParams()
   const sessionId = useMemo(() => getSessionId(), [])
   const { data, isLoading, error, refetch } = useGetListenerHallQuery(
     { token, sessionId },
@@ -55,7 +56,7 @@ export const AssessmentListenerPage: React.FC = () => {
   const [updateReactions] = useUpdateListenerReactionsMutation()
   const reactionSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const [mode, setMode] = useState<Mode>('speaker')
+  const [mode, setMode] = useState<Mode>(() => (searchParams.get('mode') === 'conf' ? 'conf' : 'speaker'))
   const [screen, setScreen] = useState<Screen>('start')
   const [stepIdx, setStepIdx] = useState(0)
   const [ratings, setRatings] = useState<number[]>([])

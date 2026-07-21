@@ -27,6 +27,12 @@ export const getHallRateUrl = (token: string): string => {
   return `${URLs.rateHall}/${token}`
 }
 
+export const getConfRateUrl = (token: string): string => {
+  const base = getHallRateUrl(token)
+  const sep = base.includes('?') ? '&' : '?'
+  return `${base}${sep}mode=conf`
+}
+
 export const getExpertUrl = (token: string): string => {
   if (typeof window !== 'undefined') {
     return `${window.location.origin}${URLs.expert}/${token}`
