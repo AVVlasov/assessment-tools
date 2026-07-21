@@ -18,11 +18,14 @@ import {
   useNextHallSpeakerMutation,
   usePauseAllHallsMutation,
   usePauseHallMutation,
-  useRestartHallMutation,
+  useResetSpeakerRatingsMutation,
   useShiftHallOrderMutation,
   useShiftHallSpeakerMutation,
   useUpdateHallMutation,
+  hallsApi,
 } from '../../../__data__/api'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '../../../__data__/store'
 import { getHallRateUrl } from '../../../__data__/urls'
 import type { Team } from '../../../types'
 import { t } from '../../../utils/locale'
@@ -42,13 +45,14 @@ interface HallsTabProps {
 
 export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   // Single poll for live ratings/status; stats come from parent header query cache
+  const dispatch = useDispatch<AppDispatch>()
   const { data: halls = [], isLoading } = useGetHallsQuery(eventId, { pollingInterval: 15000 })
   const [createHall] = useCreateHallMutation()
   const [deleteHall] = useDeleteHallMutation()
   const [nextSpeaker] = useNextHallSpeakerMutation()
   const [pauseHall] = usePauseHallMutation()
   const [pauseAllHalls] = usePauseAllHallsMutation()
-  const [restartHall] = useRestartHallMutation()
+  const [resetSpeakerRatings] = useResetSpeakerRatingsMutation()
   const [updateHall] = useUpdateHallMutation()
   const [shiftSpeakerMut] = useShiftHallSpeakerMutation()
   const [shiftHallOrder] = useShiftHallOrderMutation()
@@ -57,6 +61,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
   const [nameDraft, setNameDraft] = useState('')
   const [confirmStop, setConfirmStop] = useState<string | null>(null)
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
+  const [confirmReset, setConfirmReset] = useState<string | null>(null)
 
   const qrHall = useMemo(() => halls.find((h) => h._id === qrHallId) || null, [halls, qrHallId])
 
@@ -105,6 +110,28 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
     setTimeout(() => setConfirmDel((c) => (c === hallId ? null : c)), 3000)
   }
 
+  const handleResetCurrentRatings = async (hallId: string): Promise<void> => {
+    const hall = halls.find((h) => h._id === hallId)
+    const speakerId = hall?.currentSpeaker?._id
+    if (!speakerId) return
+    if (confirmReset !== hallId) {
+      setConfirmReset(hallId)
+      setTimeout(() => setConfirmReset((c) => (c === hallId ? null : c)), 3000)
+      return
+    }
+    setConfirmReset(null)
+    await resetSpeakerRatings(speakerId).unwrap()
+    dispatch(
+      hallsApi.util.updateQueryData('getHalls', eventId, (draft) => {
+        const target = draft.find((h) => h._id === hallId)
+        if (!target) return
+        target.ratingsCount = 0
+        target.averageScore = 0
+      })
+    )
+    dispatch(hallsApi.util.invalidateTags(['Hall', 'ListenerStats']))
+  }
+
   if (isLoading) {
     return <Text color={thColors.textFaint}>{t('common.loading')}</Text>
   }
@@ -123,6 +150,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
           const doneCount = speakers.filter((sp, idx) => isSpeakerDone(sp, idx, curIdx, live)).length
           const stopConfirm = confirmStop === h._id
           const delConfirm = confirmDel === h._id
+          const resetConfirm = confirmReset === h._id
           const hallRatings = h.ratingsCount || 0
           const maxHallRatings = Math.max(1, ...halls.map((hh) => hh.ratingsCount || 0))
           const conversion =
@@ -415,9 +443,11 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
               <Flex justify="space-between" align="center" gap="8px" mt="2px">
                 <Flex align="center" gap="8px">
                   <IconBtn
-                    label={t('admin.resetHall')}
+                    label={resetConfirm ? t('admin.confirmResetSpeaker') : t('admin.resetCurrentRatings')}
                     size={34}
-                    onClick={() => void restartHall({ id: h._id, clearRatings: false })}
+                    active={resetConfirm}
+                    disabled={!cur?._id}
+                    onClick={() => void handleResetCurrentRatings(h._id)}
                   >
                     <LuRotateCcw size={15} />
                   </IconBtn>
