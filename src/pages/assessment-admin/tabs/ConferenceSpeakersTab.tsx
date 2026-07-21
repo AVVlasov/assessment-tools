@@ -62,7 +62,7 @@ const statusLabel = (status: string): string => {
 export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
   const { data: halls = [], refetch: refetchHalls } = useGetHallsQuery(eventId)
   const { data: teams = [], refetch: refetchTeams } = useGetTeamsQuery({ eventId, type: 'speaker' })
-  const { data: stats, refetch: refetchStats } = useGetListenerStatsQuery({ eventId }, { pollingInterval: 8000 })
+  const { data: stats, refetch: refetchStats } = useGetListenerStatsQuery({ eventId })
   const [createTeam] = useCreateTeamMutation()
   const [updateTeam] = useUpdateTeamMutation()
   const [deleteTeam] = useDeleteTeamMutation()

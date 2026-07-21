@@ -36,7 +36,7 @@ export const AssessmentAdminPage: React.FC = () => {
   const [toggleVoting] = useToggleVotingMutation()
   const { data: listenerStats } = useGetListenerStatsQuery(
     { eventId },
-    { skip: !eventId || !isConference, pollingInterval: 8000 }
+    { skip: !eventId || !isConference, pollingInterval: 15000 }
   )
 
   React.useEffect(() => {

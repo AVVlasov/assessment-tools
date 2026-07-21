@@ -20,10 +20,6 @@ router.get('/', async (req, res) => {
     const speakers = await Team.find({ eventId, type: 'speaker' }).sort({ order: 1, scheduledTime: 1 });
 
     const enriched = await Promise.all(halls.map(async (hall, i) => {
-      if (!hall.color) {
-        hall.color = HALL_PALETTE[i % HALL_PALETTE.length];
-        await hall.save();
-      }
       const hallSpeakers = speakers.filter((s) => String(s.hallId) === String(hall._id));
       const cur = hallSpeakers[hall.currentSpeakerIndex] || hallSpeakers[0] || null;
       let n = 0;
@@ -33,8 +29,10 @@ router.get('/', async (req, res) => {
         n = ratings.length;
         avg = n ? ratings.reduce((a, r) => a + r.averageScore, 0) / n : 0;
       }
+      const obj = hall.toObject();
       return {
-        ...hall.toObject(),
+        ...obj,
+        color: obj.color || HALL_PALETTE[i % HALL_PALETTE.length],
         speakers: hallSpeakers,
         currentSpeaker: cur,
         ratingsCount: n,

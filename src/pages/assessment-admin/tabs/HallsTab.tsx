@@ -23,7 +23,6 @@ import {
   useShiftHallSpeakerMutation,
   useUpdateHallMutation,
 } from '../../../__data__/api'
-import { useGetListenerStatsQuery } from '../../../__data__/api/listenerApi'
 import { getHallRateUrl } from '../../../__data__/urls'
 import type { Team } from '../../../types'
 import { t } from '../../../utils/locale'
@@ -42,8 +41,8 @@ interface HallsTabProps {
 }
 
 export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
-  const { data: halls = [], isLoading } = useGetHallsQuery(eventId, { pollingInterval: 8000 })
-  const { data: stats } = useGetListenerStatsQuery({ eventId }, { pollingInterval: 8000 })
+  // Single poll for live ratings/status; stats come from parent header query cache
+  const { data: halls = [], isLoading } = useGetHallsQuery(eventId, { pollingInterval: 15000 })
   const [createHall] = useCreateHallMutation()
   const [deleteHall] = useDeleteHallMutation()
   const [nextSpeaker] = useNextHallSpeakerMutation()
@@ -124,17 +123,8 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
           const doneCount = speakers.filter((sp, idx) => isSpeakerDone(sp, idx, curIdx, live)).length
           const stopConfirm = confirmStop === h._id
           const delConfirm = confirmDel === h._id
-          const hallRatings = (stats?.speakerRows || [])
-            .filter((r) => r.hallId === h._id)
-            .reduce((a, r) => a + (r.n || 0), 0)
-          const maxHallRatings = Math.max(
-            1,
-            ...(stats?.halls || []).map((hh) =>
-              (stats?.speakerRows || [])
-                .filter((r) => r.hallId === hh._id)
-                .reduce((a, r) => a + (r.n || 0), 0)
-            )
-          )
+          const hallRatings = h.ratingsCount || 0
+          const maxHallRatings = Math.max(1, ...halls.map((hh) => hh.ratingsCount || 0))
           const conversion =
             live && hallRatings > 0
               ? `${Math.min(99, Math.round((hallRatings / maxHallRatings) * 100))}%`
