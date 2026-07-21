@@ -4,6 +4,7 @@ import { toaster } from '../../../components/ui/toaster'
 import {
   AvatarInitials,
   GradientButton,
+  IconBtn,
   Pill,
 } from '../../../components/tehnohub'
 import { thColors } from '../../../theme'
@@ -17,6 +18,7 @@ import {
 import { useGetListenerStatsQuery } from '../../../__data__/api/listenerApi'
 import type { SpeakerFormat, Team } from '../../../types'
 import { t } from '../../../utils/locale'
+import { LuPencil, LuPlus, LuTrash2, LuX } from 'react-icons/lu'
 
 interface Props {
   eventId: string
@@ -24,19 +26,26 @@ interface Props {
 
 interface SpDraft {
   name: string
+  co: string[]
   talk: string
   time: string
   hallId: string
   format: SpeakerFormat
+  org: string
 }
 
 const emptyDraft = (hallId = ''): SpDraft => ({
   name: '',
+  co: [],
   talk: '',
   time: '12:00',
   hallId,
   format: 'talk',
+  org: '',
 })
+
+const namesLine = (name: string, co?: string[]): string =>
+  [name, ...(co || [])].filter(Boolean).join(' + ')
 
 const formatLabel = (fmt?: string): string => {
   if (fmt === 'panel') return t('admin.formatPanel')
@@ -101,10 +110,12 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
     setEditingId(teamId)
     setDraft({
       name: tm.name,
+      co: Array.isArray(tm.coSpeakers) ? tm.coSpeakers.slice() : [],
       talk: tm.projectName || '',
       time: tm.scheduledTime || '12:00',
       hallId: tm.hallId || halls[0]?._id || '',
       format: tm.format === 'panel' || tm.format === 'workshop' ? tm.format : 'talk',
+      org: tm.org || '',
     })
     setModalOpen(true)
   }
@@ -125,26 +136,25 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
       return
     }
     try {
+      const payload = {
+        name: draft.name.trim(),
+        projectName: draft.talk.trim(),
+        hallId: draft.hallId,
+        scheduledTime: draft.time.trim(),
+        format: draft.format,
+        org: draft.org.trim(),
+        coSpeakers: draft.co.map((c) => c.trim()).filter(Boolean),
+      }
       if (editingId) {
         await updateTeam({
           id: editingId,
-          data: {
-            name: draft.name.trim(),
-            projectName: draft.talk.trim(),
-            hallId: draft.hallId,
-            scheduledTime: draft.time.trim(),
-            format: draft.format,
-          },
+          data: payload,
         }).unwrap()
       } else {
         await createTeam({
           eventId,
           type: 'speaker',
-          name: draft.name.trim(),
-          projectName: draft.talk.trim(),
-          hallId: draft.hallId,
-          scheduledTime: draft.time.trim(),
-          format: draft.format,
+          ...payload,
         }).unwrap()
         toaster.create({ title: t('admin.speakerAdded'), type: 'success' })
       }
@@ -291,7 +301,7 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
                 <AvatarInitials name={sp.name} size={36} live={isLive} />
                 <Box minW={0}>
                   <Text fontSize="13.5px" fontWeight="700">
-                    {sp.name}
+                    {namesLine(sp.name, sp.coSpeakers)}
                   </Text>
                   <Text
                     fontSize="11px"
@@ -377,31 +387,22 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
                 </Text>
               </Box>
               <Flex gap="6px" justify={{ base: 'flex-start', md: 'flex-end' }}>
-                <GradientButton
-                  h="30px"
-                  px="12px"
-                  fontSize="11px"
-                  fontWeight="600"
-                  variant="ghost"
-                  color="rgba(255,255,255,0.7)"
-                  borderColor="rgba(255,255,255,0.25)"
+                <IconBtn
+                  label={t('admin.editSpeaker')}
+                  size={30}
                   onClick={() => openEdit(sp._id)}
                 >
-                  {t('admin.editShort')}
-                </GradientButton>
-                <GradientButton
-                  h="30px"
-                  px="12px"
-                  fontSize="11px"
-                  fontWeight="600"
-                  variant="ghost"
-                  color={delConfirm ? '#fff' : '#FF8A8A'}
-                  borderColor="rgba(255,120,120,0.4)"
-                  bg={delConfirm ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent'}
+                  <LuPencil size={14} />
+                </IconBtn>
+                <IconBtn
+                  label={delConfirm ? t('admin.confirmDeleteShort') : t('admin.deleteSpeaker')}
+                  danger
+                  active={delConfirm}
+                  size={30}
                   onClick={() => void handleDelete(sp._id)}
                 >
-                  {delConfirm ? t('admin.confirmDeleteShort') : t('admin.deleteShort')}
-                </GradientButton>
+                  <LuTrash2 size={14} />
+                </IconBtn>
               </Flex>
             </Box>
           )
@@ -440,11 +441,77 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
             </Text>
             <Box mb="14px">
               <Text fontSize="10.5px" color={thColors.textFaint} fontWeight="600" textTransform="uppercase" letterSpacing="0.5px" mb="6px">
-                {t('admin.speakerNameLabel')}
+                {t('admin.speakersOfTalk')}
               </Text>
               <Input
                 value={draft.name}
                 onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+                placeholder={t('admin.mainSpeaker')}
+                bg={thColors.surface}
+                borderColor={thColors.border}
+                color="white"
+                borderRadius="10px"
+                h="42px"
+                fontSize="13px"
+                mb="7px"
+                _focus={{ borderColor: thColors.green }}
+              />
+              {draft.co.map((coName, ci) => (
+                <Flex key={ci} gap="7px" align="center" mb="7px">
+                  <Input
+                    value={coName}
+                    onChange={(e) =>
+                      setDraft((d) => {
+                        const co = d.co.slice()
+                        co[ci] = e.target.value
+                        return { ...d, co }
+                      })
+                    }
+                    placeholder={t('admin.coSpeaker')}
+                    bg={thColors.surface}
+                    borderColor={thColors.border}
+                    color="white"
+                    borderRadius="10px"
+                    h="42px"
+                    fontSize="13px"
+                    flex="1"
+                    _focus={{ borderColor: thColors.green }}
+                  />
+                  <IconBtn
+                    label={t('admin.removeCoSpeaker')}
+                    danger
+                    size={34}
+                    onClick={() =>
+                      setDraft((d) => ({ ...d, co: d.co.filter((_, i) => i !== ci) }))
+                    }
+                  >
+                    <LuX size={13} strokeWidth={2.2} />
+                  </IconBtn>
+                </Flex>
+              ))}
+              <GradientButton
+                h="30px"
+                px="13px"
+                fontSize="11.5px"
+                fontWeight="600"
+                variant="ghost"
+                border="1.5px dashed rgba(255,255,255,0.25)"
+                color="rgba(255,255,255,0.6)"
+                alignSelf="flex-start"
+                gap="6px"
+                onClick={() => setDraft((d) => ({ ...d, co: [...d.co, ''] }))}
+              >
+                <LuPlus size={13} />
+                {t('admin.addCoSpeaker')}
+              </GradientButton>
+            </Box>
+            <Box mb="14px">
+              <Text fontSize="10.5px" color={thColors.textFaint} fontWeight="600" textTransform="uppercase" letterSpacing="0.5px" mb="6px">
+                {t('admin.talkTitle')}
+              </Text>
+              <Input
+                value={draft.talk}
+                onChange={(e) => setDraft((d) => ({ ...d, talk: e.target.value }))}
                 bg={thColors.surface}
                 borderColor={thColors.border}
                 color="white"
@@ -456,11 +523,11 @@ export const ConferenceSpeakersTab: React.FC<Props> = ({ eventId }) => {
             </Box>
             <Box mb="14px">
               <Text fontSize="10.5px" color={thColors.textFaint} fontWeight="600" textTransform="uppercase" letterSpacing="0.5px" mb="6px">
-                {t('admin.talkTitle')}
+                {t('admin.org')}
               </Text>
               <Input
-                value={draft.talk}
-                onChange={(e) => setDraft((d) => ({ ...d, talk: e.target.value }))}
+                value={draft.org}
+                onChange={(e) => setDraft((d) => ({ ...d, org: e.target.value }))}
                 bg={thColors.surface}
                 borderColor={thColors.border}
                 color="white"

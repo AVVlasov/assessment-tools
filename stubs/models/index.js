@@ -5,6 +5,7 @@ const Criteria = require('./Criteria');
 const Rating = require('./Rating');
 const Hall = require('./Hall');
 const ListenerRating = require('./ListenerRating');
+const ReadinessChecklist = require('./ReadinessChecklist');
 
 module.exports = {
   Event,
@@ -13,5 +14,6 @@ module.exports = {
   Criteria,
   Rating,
   Hall,
-  ListenerRating
+  ListenerRating,
+  ReadinessChecklist
 };

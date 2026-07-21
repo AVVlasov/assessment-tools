@@ -39,6 +39,10 @@ export const listenerApi = createApi({
     getListenerStats: builder.query<ListenerStatsResponse, { eventId: string; hallId?: string }>({
       query: ({ eventId, hallId }) =>
         `/listener/stats?eventId=${eventId}${hallId && hallId !== 'all' ? `&hallId=${hallId}` : ''}`,
+      serializeQueryArgs: ({ queryArgs }) => {
+        const { eventId, hallId } = queryArgs
+        return hallId && hallId !== 'all' ? { eventId, hallId } : { eventId }
+      },
       providesTags: ['ListenerStats'],
     }),
     resetSpeakerRatings: builder.mutation<{ deletedCount: number }, string>({

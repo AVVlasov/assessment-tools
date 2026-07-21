@@ -138,6 +138,17 @@ export const AssessmentExpertPage: React.FC = () => {
     }, 450)
   }
 
+  useEffect(() => {
+    if (screen !== 'step') return
+    const onKey = (e: KeyboardEvent): void => {
+      const n = Number(e.key)
+      if (n >= 1 && n <= 5) selectOption(n)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, stepIdx, allCriteria.length, scores])
+
   if (expertLoading || (teamLoading && !activeTeam) || (criteriaLoading && activeTeam)) {
     return (
       <Flex minH="100vh" bg={thColors.bg} align="center" justify="center">

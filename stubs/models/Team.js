@@ -41,6 +41,33 @@ const teamSchema = new mongoose.Schema({
     enum: ['talk', 'panel', 'workshop'],
     default: 'talk'
   },
+  coSpeakers: {
+    type: [String],
+    default: []
+  },
+  readiness: {
+    rehearsal: {
+      date: { type: String, default: '' },
+      time: { type: String, default: '' },
+      place: { type: String, default: '' },
+      status: {
+        type: String,
+        enum: ['none', 'scheduled', 'passed'],
+        default: 'none'
+      }
+    },
+    calendarSet: { type: Boolean, default: false },
+    deckStatus: {
+      type: String,
+      enum: ['none', 'uploaded'],
+      default: 'none'
+    },
+    approval: {
+      type: String,
+      enum: ['pending', 'approved'],
+      default: 'pending'
+    }
+  },
   order: {
     type: Number,
     default: 0

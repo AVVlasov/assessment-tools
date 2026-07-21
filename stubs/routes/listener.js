@@ -304,20 +304,15 @@ router.get('/stats', async (req, res) => {
     const leaderboard = [];
     const reactionCounts = {};
 
-    for (const sp of speakers) {
-      const ratings = await ListenerRating.find({
-        teamId: sp._id,
-        targetType: { $in: SESSION_TARGET_TYPES }
-      });
-      if (!ratings.length) continue;
-
+    const buildBars = (ratings, fallbackNames) => {
       const criterionAgg = {};
+      const localReactions = {};
       ratings.forEach((r) => {
-        const fallbackNames = criteriaByType[r.targetType] || criteriaByType.speaker;
+        const names = criteriaByType[r.targetType] || fallbackNames;
         (r.scores || []).forEach((s, idx) => {
           const name = isUsableText(s.criterionName)
             ? s.criterionName
-            : (fallbackNames[idx] || null);
+            : (names[idx] || null);
           if (!name || hasBrokenEncoding(name)) return;
           const label = tagByName[name] || name;
           if (!criterionAgg[label]) criterionAgg[label] = [];
@@ -325,16 +320,30 @@ router.get('/stats', async (req, res) => {
         });
         (r.reactions || []).forEach((rx) => {
           if (!isUsableText(rx)) return;
+          localReactions[rx] = (localReactions[rx] || 0) + 1;
           reactionCounts[rx] = (reactionCounts[rx] || 0) + 1;
         });
       });
-
       const bars = Object.entries(criterionAgg).map(([name, vals]) => ({
         name,
         val: Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)),
         w: Math.round((vals.reduce((a, b) => a + b, 0) / vals.length / 5) * 100)
       }));
+      const topLocal = Object.entries(localReactions).sort((a, b) => b[1] - a[1])[0];
+      return {
+        bars,
+        topReaction: topLocal ? `«${topLocal[0]}»` : ''
+      };
+    };
 
+    for (const sp of speakers) {
+      const ratings = await ListenerRating.find({
+        teamId: sp._id,
+        targetType: { $in: SESSION_TARGET_TYPES }
+      });
+      if (!ratings.length) continue;
+
+      const { bars, topReaction } = buildBars(ratings, criteriaByType.speaker);
       const avg = ratings.reduce((a, r) => a + r.averageScore, 0) / ratings.length;
       const hall = hallMap[String(sp.hallId)];
 
@@ -348,9 +357,7 @@ router.get('/stats', async (req, res) => {
         scores: bars.map((b) => b.val),
         bars,
         total: Number(avg.toFixed(1)),
-        topReaction: Object.entries(reactionCounts).sort((a, b) => b[1] - a[1])[0]
-          ? `«${Object.entries(reactionCounts).sort((a, b) => b[1] - a[1])[0][0]}»`
-          : ''
+        topReaction
       });
     }
 
@@ -366,6 +373,86 @@ router.get('/stats', async (req, res) => {
       .slice(0, 6)
       .map(([label, count]) => ({ label, count }));
 
+    // Оценка конференции целиком (targetType: event)
+    const eventRatings = await ListenerRating.find({ eventId, targetType: 'event' });
+    const eventReactionCounts = {};
+    let eventStats = null;
+    if (eventRatings.length) {
+      const eventCriterionAgg = {};
+      eventRatings.forEach((r) => {
+        const fallbackNames = criteriaByType.event;
+        (r.scores || []).forEach((s, idx) => {
+          const name = isUsableText(s.criterionName)
+            ? s.criterionName
+            : (fallbackNames[idx] || null);
+          if (!name || hasBrokenEncoding(name)) return;
+          const label = tagByName[name] || name;
+          if (!eventCriterionAgg[label]) eventCriterionAgg[label] = [];
+          eventCriterionAgg[label].push(s.score);
+        });
+        (r.reactions || []).forEach((rx) => {
+          if (!isUsableText(rx)) return;
+          eventReactionCounts[rx] = (eventReactionCounts[rx] || 0) + 1;
+        });
+      });
+      const bars = Object.entries(eventCriterionAgg).map(([name, vals]) => {
+        const distMap = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        vals.forEach((v) => {
+          const star = Math.min(5, Math.max(1, Math.round(Number(v) || 0)));
+          distMap[star] += 1;
+        });
+        const dist = [5, 4, 3, 2, 1].map((star) => ({
+          star,
+          n: distMap[star],
+          w: 0
+        }));
+        const mx = Math.max(...dist.map((d) => d.n), 1);
+        dist.forEach((d) => {
+          d.w = Math.round((d.n / mx) * 100);
+        });
+        return {
+          name,
+          val: Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1)),
+          w: Math.round((vals.reduce((a, b) => a + b, 0) / vals.length / 5) * 100),
+          dist
+        };
+      });
+      const avg = eventRatings.reduce((a, r) => a + r.averageScore, 0) / eventRatings.length;
+      const comeAgainKeys = ['приду ещё', 'приду еще', 'will come again', 'come again'];
+      const comeAgain = comeAgainKeys.reduce((sum, k) => sum + (eventReactionCounts[k] || 0), 0);
+      const npsPct = Math.round((comeAgain / eventRatings.length) * 100);
+      const sessionCount = await ListenerRating.countDocuments({
+        eventId,
+        targetType: { $in: SESSION_TARGET_TYPES }
+      });
+      const convBase = Math.max(sessionCount, eventRatings.length, 1);
+      const convPct = Math.round((eventRatings.length / convBase) * 100);
+      eventStats = {
+        n: eventRatings.length,
+        total: Number(avg.toFixed(1)),
+        bars,
+        topReactions: Object.entries(eventReactionCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 6)
+          .map(([label, count]) => ({ label, count })),
+        nps: `${npsPct}%`,
+        conversion: `${convPct}%`
+      };
+    } else {
+      eventStats = {
+        n: 0,
+        total: null,
+        bars: (criteriaByType.event || []).slice(0, 4).map((name) => ({
+          name: tagByName[name] || name,
+          val: 0,
+          w: 0,
+          dist: [5, 4, 3, 2, 1].map((star) => ({ star, n: 0, w: 0 }))
+        })),
+        topReactions: [],
+        nps: '—',
+        conversion: '—'
+      };
+    }
     // Speakers table rows
     const allSpeakers = await Team.find({ eventId, type: 'speaker' }).sort({ scheduledTime: 1, order: 1 });
     const speakersByHall = {};
@@ -407,7 +494,8 @@ router.get('/stats', async (req, res) => {
         avg: ratings.length ? Number(avg.toFixed(1)) : null,
         n: ratings.length,
         format: sp.format,
-        org: sp.org
+        org: sp.org,
+        coSpeakers: Array.isArray(sp.coSpeakers) ? sp.coSpeakers.filter(Boolean) : []
       };
     }));
 
@@ -415,6 +503,7 @@ router.get('/stats', async (req, res) => {
       totalRatings,
       leaderboard,
       topReactions,
+      eventStats,
       speakerRows,
       halls
     });

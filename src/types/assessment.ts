@@ -35,6 +35,18 @@ export interface UpdateEventRequest {
 export type TeamType = 'team' | 'participant' | 'speaker' | 'event';
 export type SpeakerFormat = 'talk' | 'panel' | 'workshop';
 
+export interface SpeakerReadiness {
+  rehearsal: {
+    date: string;
+    time: string;
+    place: string;
+    status: 'none' | 'scheduled' | 'passed';
+  };
+  calendarSet: boolean;
+  deckStatus: 'none' | 'uploaded';
+  approval: 'pending' | 'approved';
+}
+
 export interface Team {
   _id: string;
   eventId: string;
@@ -46,6 +58,8 @@ export interface Team {
   scheduledTime?: string;
   org?: string;
   format?: SpeakerFormat;
+  coSpeakers?: string[];
+  readiness?: SpeakerReadiness;
   order?: number;
   isActive: boolean;
   votingStatus: 'not_evaluated' | 'evaluating' | 'evaluated';
@@ -65,6 +79,8 @@ export interface CreateTeamRequest {
   scheduledTime?: string;
   org?: string;
   format?: SpeakerFormat;
+  coSpeakers?: string[];
+  readiness?: SpeakerReadiness;
   order?: number;
 }
 
@@ -77,6 +93,8 @@ export interface UpdateTeamRequest {
   scheduledTime?: string;
   org?: string;
   format?: SpeakerFormat;
+  coSpeakers?: string[];
+  readiness?: SpeakerReadiness;
   order?: number;
   programDone?: boolean;
 }
@@ -120,6 +138,40 @@ export interface UpdateHallRequest {
   order?: number;
   currentSpeakerIndex?: number;
   color?: string;
+}
+
+// Readiness checklist types
+export type ReadinessChecklistType = SpeakerFormat;
+
+export interface ReadinessChecklistItem {
+  _id: string;
+  text: string;
+  done: boolean;
+}
+
+export interface ReadinessChecklist {
+  _id: string;
+  eventId: string;
+  name: string;
+  type: ReadinessChecklistType;
+  items: ReadinessChecklistItem[];
+  order?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateReadinessChecklistRequest {
+  eventId: string;
+  name?: string;
+  type?: ReadinessChecklistType;
+  items?: Array<{ text?: string; done?: boolean }>;
+}
+
+export interface UpdateReadinessChecklistRequest {
+  name?: string;
+  type?: ReadinessChecklistType;
+  items?: Array<{ _id?: string; text?: string; done?: boolean }>;
+  order?: number;
 }
 
 // Expert types
@@ -293,6 +345,22 @@ export interface ListenerHallPayload {
   };
 }
 
+export interface ListenerStatsBar {
+  name: string;
+  val: number;
+  w: number;
+  dist?: Array<{ star: number; n: number; w: number }>;
+}
+
+export interface ListenerEventStats {
+  n: number;
+  total: number | null;
+  bars: ListenerStatsBar[];
+  topReactions: Array<{ label: string; count: number }>;
+  nps?: string;
+  conversion?: string;
+}
+
 export interface ListenerStatsResponse {
   totalRatings: number;
   leaderboard: Array<{
@@ -303,11 +371,12 @@ export interface ListenerStatsResponse {
     hallId?: string;
     n: number;
     scores: number[];
-    bars: Array<{ name: string; val: number; w: number }>;
+    bars: ListenerStatsBar[];
     total: number;
     topReaction: string;
   }>;
   topReactions: Array<{ label: string; count: number }>;
+  eventStats?: ListenerEventStats;
   speakerRows: Array<{
     _id: string;
     time: string;
@@ -322,6 +391,7 @@ export interface ListenerStatsResponse {
     n: number;
     format?: SpeakerFormat;
     org?: string;
+    coSpeakers?: string[];
   }>;
   halls: Hall[];
 }

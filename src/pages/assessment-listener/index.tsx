@@ -251,7 +251,10 @@ export const AssessmentListenerPage: React.FC = () => {
         : data.reactions.speaker
   const chips = criteria.map((c) => c.tag || c.name)
   const isConf = mode === 'conf'
-  const displayName = isConf ? data.event.name : speaker?.name || t('listener.noSpeaker')
+  const displayName = isConf
+    ? data.event.name
+    : [speaker?.name, ...(speaker?.coSpeakers || [])].filter(Boolean).join(' + ') ||
+      t('listener.noSpeaker')
   const displayTalk = isConf
     ? t('listener.confTalkMeta')
     : speaker?.projectName || ''
@@ -259,7 +262,15 @@ export const AssessmentListenerPage: React.FC = () => {
     ? [data.event.location, data.event.eventDate ? new Date(data.event.eventDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : '']
         .filter(Boolean)
         .join(' · ')
-    : [speaker?.org, speaker?.scheduledTime].filter(Boolean).join(' · ')
+    : [
+        speaker?.org ||
+          (data.isPanel && speaker?.coSpeakers?.length
+            ? `${(speaker.coSpeakers?.length || 0) + 1} ${t('listener.panelSpeakers')}`
+            : ''),
+        speaker?.scheduledTime,
+      ]
+        .filter(Boolean)
+        .join(' · ')
   const displayInitials = isConf ? 'ТК' : undefined
 
   type ErrorType = 'ended' | 'already' | 'closed'

@@ -5,6 +5,7 @@ import { LuPencil, LuRotateCcw, LuTrash2 } from 'react-icons/lu'
 import {
   AvatarInitials,
   GradientButton,
+  IconBtn,
   QrModal,
   StatusBadge,
   SurfaceCard,
@@ -34,53 +35,6 @@ const isSpeakerDone = (sp: Team, idx: number, currentIdx: number, live: boolean)
   if (sp.programDone === false) return false
   return idx < currentIdx
 }
-
-const IconBtn = ({
-  label,
-  danger,
-  active,
-  onClick,
-  children,
-}: {
-  label: string
-  danger?: boolean
-  active?: boolean
-  onClick: () => void
-  children: React.ReactNode
-}): React.ReactElement => (
-  <Box
-    as="button"
-    type="button"
-    aria-label={label}
-    title={label}
-    w="36px"
-    h="36px"
-    display="inline-flex"
-    alignItems="center"
-    justifyContent="center"
-    borderRadius="10px"
-    border={
-      danger
-        ? active
-          ? 'none'
-          : '1px solid rgba(255,120,120,0.45)'
-        : '1px solid rgba(255,255,255,0.2)'
-    }
-    bg={active ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent'}
-    color={danger ? (active ? '#fff' : '#FF8A8A') : 'rgba(255,255,255,0.7)'}
-    cursor="pointer"
-    fontFamily="inherit"
-    transition="all 0.15s"
-    _hover={{
-      borderColor: danger ? '#FF4444' : thColors.green,
-      color: danger ? '#FF4444' : thColors.greenLight,
-      bg: active ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'rgba(255,255,255,0.04)',
-    }}
-    onClick={onClick}
-  >
-    {children}
-  </Box>
-)
 
 interface HallsTabProps {
   eventId: string
@@ -185,8 +139,16 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
               : '—'
 
           return (
-            <SurfaceCard key={h._id} highlighted={live} opacity={live ? 1 : 0.88} borderRadius="16px">
-              <Flex justify="space-between" align="center" gap="8px" mb="14px">
+            <SurfaceCard
+              key={h._id}
+              highlighted={live}
+              opacity={live ? 1 : 0.88}
+              borderRadius="16px"
+              display="flex"
+              flexDirection="column"
+              gap="14px"
+            >
+              <Flex justify="space-between" align="center" gap="8px">
                 {editingId === h._id ? (
                   <>
                     <Input
@@ -237,7 +199,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
               </Flex>
 
               {editingId === h._id && (
-                <Flex gap="8px" align="center" flexWrap="wrap" mb="14px">
+                <Flex gap="8px" align="center" flexWrap="wrap">
                   <Text
                     fontSize="10.5px"
                     color="rgba(255,255,255,0.45)"
@@ -264,7 +226,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 </Flex>
               )}
 
-              <Flex gap="12px" align="center" mb="14px">
+              <Flex gap="12px" align="center">
                 <AvatarInitials name={cur?.name || '—'} size={48} live={live} />
                 <Box minW={0}>
                   <Text fontSize="14px" fontWeight="700">
@@ -278,7 +240,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 </Box>
               </Flex>
 
-              <Box mb="14px">
+              <Box>
                 <Flex justify="space-between" fontSize="10.5px" color="rgba(255,255,255,0.45)" mb="6px">
                   <Text textTransform="uppercase" letterSpacing="0.5px" fontWeight="600">
                     {t('admin.hallProgram')}
@@ -311,7 +273,7 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 </Flex>
               </Box>
 
-              <Flex gap="8px" mb="14px">
+              <Flex gap="8px">
                 {[
                   {
                     v: h.ratingsCount != null && h.ratingsCount > 0 ? h.ratingsCount : '—',
@@ -353,7 +315,6 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                   border="1px solid rgba(255,176,32,0.45)"
                   borderRadius="10px"
                   p="9px 12px"
-                  mb="14px"
                 >
                   <Text fontSize="11px" color="#FFC24B" fontWeight="600" lineHeight="1.4">
                     {t('admin.warnNoRatings')}
@@ -367,7 +328,6 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 bg={thColors.surface}
                 borderRadius="12px"
                 p="11px 12px"
-                mb="14px"
                 cursor="pointer"
                 border="1px solid transparent"
                 _hover={{ borderColor: 'rgba(79,201,240,0.5)' }}
@@ -460,44 +420,33 @@ export const HallsTab: React.FC<HallsTabProps> = ({ eventId }) => {
                 </GradientButton>
               </Flex>
 
-              <Flex justify="flex-end" align="center" gap="6px" mt="10px">
-                {delConfirm ? (
-                  <GradientButton
-                    h="36px"
-                    px="14px"
-                    fontSize="12px"
-                    fontWeight="600"
-                    variant="ghost"
-                    color="#fff"
-                    border="none"
-                    bg="linear-gradient(90deg,#E5484D,#C63A66)"
-                    boxShadow="none"
-                    onClick={() => void handleDelete(h._id)}
-                  >
-                    {t('admin.confirmDelete')}
-                  </GradientButton>
-                ) : (
-                  <>
-                    <IconBtn
-                      label={t('admin.resetHall')}
-                      onClick={() => void restartHall({ id: h._id, clearRatings: false })}
-                    >
-                      <LuRotateCcw size={16} />
-                    </IconBtn>
-                    <IconBtn
-                      label={t('admin.editHall')}
-                      onClick={() => {
-                        setEditingId(h._id)
-                        setNameDraft(h.name)
-                      }}
-                    >
-                      <LuPencil size={16} />
-                    </IconBtn>
-                    <IconBtn label={t('admin.deleteHall')} danger onClick={() => void handleDelete(h._id)}>
-                      <LuTrash2 size={16} />
-                    </IconBtn>
-                  </>
-                )}
+              <Flex justify="flex-start" align="center" gap="8px" mt="2px">
+                <IconBtn
+                  label={t('admin.resetHall')}
+                  size={34}
+                  onClick={() => void restartHall({ id: h._id, clearRatings: false })}
+                >
+                  <LuRotateCcw size={15} />
+                </IconBtn>
+                <IconBtn
+                  label={t('admin.editHall')}
+                  size={34}
+                  onClick={() => {
+                    setEditingId(h._id)
+                    setNameDraft(h.name)
+                  }}
+                >
+                  <LuPencil size={15} />
+                </IconBtn>
+                <IconBtn
+                  label={delConfirm ? t('admin.confirmDelete') : t('admin.deleteHall')}
+                  danger
+                  active={delConfirm}
+                  size={34}
+                  onClick={() => void handleDelete(h._id)}
+                >
+                  <LuTrash2 size={15} />
+                </IconBtn>
               </Flex>
             </SurfaceCard>
           )

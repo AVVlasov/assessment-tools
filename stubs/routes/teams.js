@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Team, Event } = require('../models');
-const { hasBrokenEncoding, sanitizeText } = require('../utils/textEncoding');
+const { hasBrokenEncoding, sanitizeText, sanitizeStringArray } = require('../utils/textEncoding');
 
 const ALLOWED_TYPES_BY_EVENT = {
   hackathon: ['team'],
@@ -10,6 +10,23 @@ const ALLOWED_TYPES_BY_EVENT = {
 
 const getAllowedTypes = (eventType) =>
   ALLOWED_TYPES_BY_EVENT[eventType] || ALLOWED_TYPES_BY_EVENT.hackathon;
+
+const normalizeReadiness = (raw) => {
+  const src = raw && typeof raw === 'object' ? raw : {};
+  const reh = src.rehearsal && typeof src.rehearsal === 'object' ? src.rehearsal : {};
+  const status = ['scheduled', 'passed'].includes(reh.status) ? reh.status : 'none';
+  return {
+    rehearsal: {
+      date: sanitizeText(reh.date || ''),
+      time: sanitizeText(reh.time || ''),
+      place: sanitizeText(reh.place || ''),
+      status
+    },
+    calendarSet: !!src.calendarSet,
+    deckStatus: src.deckStatus === 'uploaded' ? 'uploaded' : 'none',
+    approval: src.approval === 'approved' ? 'approved' : 'pending'
+  };
+};
 
 // GET /api/teams - список всех команд
 router.get('/', async (req, res) => {
@@ -81,7 +98,7 @@ router.post('/', async (req, res) => {
   try {
     const {
       eventId, type, name, projectName, caseDescription,
-      hallId, scheduledTime, org, format, order
+      hallId, scheduledTime, org, format, order, coSpeakers, readiness
     } = req.body;
     
     if (!eventId || !type || !name) {
@@ -128,6 +145,8 @@ router.post('/', async (req, res) => {
       scheduledTime: sanitizeText(scheduledTime || ''),
       org: sanitizeText(org || ''),
       format: ['panel', 'workshop'].includes(format) ? format : 'talk',
+      coSpeakers: sanitizeStringArray(Array.isArray(coSpeakers) ? coSpeakers : []),
+      readiness: normalizeReadiness(readiness),
       order: order ?? count,
       isActive: true
     });
@@ -143,7 +162,7 @@ router.put('/:id', async (req, res) => {
   try {
     const {
       type, name, projectName, caseDescription,
-      hallId, scheduledTime, org, format, order, programDone
+      hallId, scheduledTime, org, format, order, programDone, coSpeakers, readiness
     } = req.body;
     
     const team = await Team.findById(req.params.id);
@@ -189,6 +208,12 @@ router.put('/:id', async (req, res) => {
     }
     if (order !== undefined) team.order = order;
     if (programDone !== undefined) team.programDone = !!programDone;
+    if (coSpeakers !== undefined) {
+      team.coSpeakers = sanitizeStringArray(Array.isArray(coSpeakers) ? coSpeakers : []);
+    }
+    if (readiness !== undefined) {
+      team.readiness = normalizeReadiness(readiness);
+    }
     
     await team.save();
     res.json(team);

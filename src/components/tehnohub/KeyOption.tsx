@@ -18,6 +18,8 @@ export const KeyOption = ({
   onClick,
 }: KeyOptionProps): React.ReactElement => (
   <Flex
+    role="button"
+    tabIndex={0}
     align="center"
     gap="14px"
     px="15px"
@@ -30,6 +32,13 @@ export const KeyOption = ({
     transition="all 0.15s"
     _hover={{ transform: 'translateX(3px)' }}
     onClick={onClick}
+    onKeyDown={(e) => {
+      if (!onClick) return
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onClick()
+      }
+    }}
   >
     <Box
       w="44px"

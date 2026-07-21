@@ -16,6 +16,7 @@ import { HallsTab } from './tabs/HallsTab'
 import { ConferenceSpeakersTab } from './tabs/ConferenceSpeakersTab'
 import { ConferenceCriteriaTab } from './tabs/ConferenceCriteriaTab'
 import { ListenerStatsTab } from './tabs/ListenerStatsTab'
+import { ReadyTab } from './tabs/ReadyTab'
 import { Switch } from '../../components/ui/switch'
 
 const TAB_LABELS: Record<string, string> = {
@@ -64,13 +65,14 @@ export const AssessmentAdminPage: React.FC = () => {
     { id: 'speakers', label: t('tabs.speakersSchedule') },
     { id: 'criteria', label: t('tabs.criteriaShort') },
     { id: 'stats', label: t('tabs.listenerStats') },
+    { id: 'ready', label: t('tabs.ready') },
   ]
 
   const classicTabs = [
     { id: 'teams', label: TAB_LABELS[config.contestantsTabKey] || 'Команды' },
     { id: 'experts', label: t('tabs.experts') },
-    { id: 'criteria', label: 'Критерии' },
-    { id: 'statistics', label: 'Статистика' },
+    { id: 'criteria', label: t('tabs.criteriaShort') },
+    { id: 'statistics', label: t('tabs.listenerStats') },
     { id: 'top3', label: t('tabs.top3') },
   ]
 
@@ -96,7 +98,7 @@ export const AssessmentAdminPage: React.FC = () => {
                 fontSize="12px"
                 onClick={() => navigate('/assessment-tools')}
               >
-                Назад
+                {t('common.back')}
               </GradientButton>
             )}
             <Text fontFamily="heading" fontSize="19px" fontWeight="700" letterSpacing="-0.5px">
@@ -150,6 +152,7 @@ export const AssessmentAdminPage: React.FC = () => {
         {isConference && tab === 'speakers' && <ConferenceSpeakersTab eventId={eventId} />}
         {isConference && tab === 'stats' && <ListenerStatsTab eventId={eventId} />}
         {isConference && tab === 'criteria' && <ConferenceCriteriaTab eventId={eventId} />}
+        {isConference && tab === 'ready' && <ReadyTab eventId={eventId} />}
 
         {!isConference && tab === 'teams' && (
           <TeamsTab eventId={eventId} eventType={event.eventType || 'hackathon'} />

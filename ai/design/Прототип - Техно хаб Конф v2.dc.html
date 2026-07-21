@@ -238,10 +238,10 @@ input{outline:none}
                 <button onClick="{{ h.onToggle }}" style="flex:1;height:44px;border-radius:30px;border:{{ h.tglBorder }};background:{{ h.tglBg }};color:{{ h.tglColor }};font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">{{ h.tglLabel }}</button>
                 <button onClick="{{ h.onNextSp }}" style="width:44px;height:44px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0">→</button>
               </div>
-              <div style="display:flex;gap:8px">
-                <button onClick="{{ h.onReset }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Сбросить</button>
-                <button onClick="{{ h.onEdit }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Редактировать</button>
-                <button onClick="{{ h.onDel }}" style="flex:1;height:32px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ h.delBg }};color:{{ h.delColor }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ h.delLabel }}</button>
+              <div style="display:flex;gap:8px;justify-content:flex-start;margin-top:2px">
+                <button onClick="{{ h.onReset }}" title="Сбросить зал" style="width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.55);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,255,255,.45);color:#fff"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></button>
+                <button onClick="{{ h.onEdit }}" title="Редактировать зал" style="width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.55);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,255,255,.45);color:#fff"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                <button onClick="{{ h.onDel }}" title="{{ h.delTitle }}" style="width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,120,120,.4);background:{{ h.delBg }};color:{{ h.delColor }};cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,120,120,.7)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
               </div>
             </div>
           </sc-for>
@@ -272,11 +272,154 @@ input{outline:none}
               <span onClick="{{ sp.onStatus }}" title="{{ sp.stTitle }}" style="border:{{ sp.stBorder }};background:{{ sp.stBg }};color:{{ sp.stColor }};border-radius:30px;padding:5px 13px;font-size:11px;font-weight:600;width:fit-content;cursor:{{ sp.stCursor }};user-select:none" style-hover="border-color:rgba(61,220,80,.7)">{{ sp.status }}</span>
               <div style="text-align:right"><span style="font-size:16px;font-weight:800;color:{{ sp.avgColor }}">{{ sp.avg }}</span><span style="font-size:11px;color:rgba(255,255,255,.4)"> · {{ sp.n }}</span></div>
               <div style="display:flex;gap:6px;justify-content:flex-end">
-                <button onClick="{{ sp.onEdit }}" style="height:30px;padding:0 12px;border-radius:30px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Ред.</button>
-                <button onClick="{{ sp.onDel }}" style="height:30px;padding:0 12px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ sp.delBg }};color:{{ sp.delColor }};font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{ sp.delLabel }}</button>
+                <button onClick="{{ sp.onEdit }}" title="Редактировать" style="width:30px;height:30px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.65);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,255,255,.5);color:#fff"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                <button onClick="{{ sp.onDel }}" title="{{ sp.delTitle }}" style="width:30px;height:30px;border-radius:9px;border:1px solid rgba(255,120,120,.4);background:{{ sp.delBg }};color:{{ sp.delColor }};cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,120,120,.7)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
               </div>
             </div>
           </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabReady }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px 30px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <sc-for list="{{ readySubTabs }}" as="rs" hint-placeholder-count="2">
+              <button onClick="{{ rs.onClick }}" style="height:36px;padding:0 18px;border-radius:30px;border:{{ rs.border }};background:{{ rs.bg }};color:{{ rs.color }};font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">{{ rs.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ readySubChecklists }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#0F161D;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <div style="flex:1;min-width:200px"><div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;letter-spacing:-0.3px">Чеклисты готовности</div><div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-top:3px">Соберите набор пунктов и привяжите к докладу — организатор отмечает готовность по своему списку</div></div>
+              <button onClick="{{ ckAdd }}" style="height:34px;padding:0 16px;border-radius:30px;border:none;background:linear-gradient(90deg,#2AA0F0,#3ED968);color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Новый чеклист</button>
+            </div>
+            <sc-if value="{{ ckEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed rgba(255,255,255,.15);border-radius:12px;padding:26px;text-align:center;color:rgba(255,255,255,.45);font-size:12.5px">Пока нет ни одного чеклиста — создайте первый, выберите доклад и добавьте пункты</div>
+            </sc-if>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px">
+              <sc-for list="{{ checklistCards }}" as="ck" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:12px;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 16px 15px">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <input value="{{ ck.name }}" onChange="{{ ck.onName }}" placeholder="Название чеклиста" style="flex:1;min-width:0;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 12px" style-focus="border-color:#3ED968">
+                    <span style="font-size:11.5px;font-weight:800;color:#7CF29A;flex-shrink:0">{{ ck.progress }}</span>
+                  </div>
+                  <div style="height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:{{ ck.pct }};height:100%;background:linear-gradient(90deg,#2AA0F0,#3ED968)"></div></div>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0">Тип</span>
+                    <sc-for list="{{ ck.typePills }}" as="tp" hint-placeholder-count="3">
+                      <button onClick="{{ tp.onClick }}" style="height:30px;padding:0 14px;border-radius:30px;border:{{ tp.border }};background:{{ tp.bg }};color:{{ tp.color }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ tp.label }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:7px">
+                    <sc-for list="{{ ck.items }}" as="it" hint-placeholder-count="3">
+                      <div style="display:flex;align-items:center;gap:9px;background:#0C1218;border-radius:10px;padding:6px 8px 6px 10px">
+                        <span onClick="{{ it.onToggle }}" style="width:20px;height:20px;border-radius:6px;border:{{ it.checkBorder }};background:{{ it.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#04222E;font-size:12px;font-weight:900">{{ it.checkMk }}</span>
+                        <input value="{{ it.text }}" onChange="{{ it.onText }}" placeholder="Пункт чеклиста" style="flex:1;min-width:0;background:transparent;border:none;color:#fff;font-family:inherit;font-size:12.5px;padding:3px 0" style-focus="outline:none">
+                        <button onClick="{{ it.onDel }}" title="Удалить пункт" style="width:26px;height:26px;border-radius:8px;border:none;background:transparent;color:rgba(255,255,255,.35);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0" style-hover="background:rgba(255,120,120,.15);color:#FF8B8B"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                      </div>
+                    </sc-for>
+                    <button onClick="{{ ck.onAddItem }}" style="align-self:flex-start;height:30px;padding:0 13px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.22);background:transparent;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">+ Пункт</button>
+                  </div>
+                  <div style="display:flex;justify-content:flex-end;border-top:1px solid rgba(255,255,255,.06);padding-top:11px">
+                    <button onClick="{{ ck.onDel }}" style="height:30px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ ck.delBg }};color:{{ ck.delColor }};font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">{{ ck.delLabel }}</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ readySubBoard }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:16px;background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 18px">
+            <div style="flex:1"><div style="font-size:13px;font-weight:700">Готовность докладов к сцене</div><div style="font-size:11.5px;color:rgba(255,255,255,.45);margin-top:2px">{{ readySummary }}</div></div>
+            <div style="width:220px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:{{ readyPct }};height:100%;background:linear-gradient(90deg,#2AA0F0,#3ED968)"></div></div>
+            <span style="font-size:15px;font-weight:800;color:#7CF29A">{{ readyCount }}</span>
+          </div>
+          <sc-for list="{{ readyHalls }}" as="h" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:9px;padding:0 2px"><span style="width:10px;height:10px;border-radius:50%;background:{{ h.color }}"></span><span style="font-size:14px;font-weight:800">{{ h.name }}</span></div>
+              <sc-for list="{{ h.talks }}" as="r" hint-placeholder-count="3">
+                <div style="background:#141C24;border:{{ r.border }};border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+                  <div style="display:flex;align-items:center;gap:13px">
+                    <div style="display:flex;flex-shrink:0;padding-left:8px">
+                      <sc-for list="{{ r.avatars }}" as="av" hint-placeholder-count="1">
+                        <span style="width:38px;height:38px;border-radius:11px;background:#2B3947;color:#8FA6B8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-left:-8px;border:2px solid #141C24;box-sizing:border-box">{{ av.initials }}</span>
+                      </sc-for>
+                    </div>
+                    <div style="min-width:0;flex:1">
+                      <div style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.talk }}</div>
+                      <div style="font-size:11.5px;color:rgba(255,255,255,.5);margin-top:2px">{{ r.names }} · {{ r.time }}</div>
+                    </div>
+                    <span style="border:1px solid {{ r.fmtColor }};color:{{ r.fmtColor }};border-radius:30px;padding:4px 12px;font-size:11px;font-weight:600;flex-shrink:0">{{ r.fmtLabel }}</span>
+                    <span style="min-width:44px;height:28px;padding:0 11px;border-radius:30px;background:{{ r.readyBg }};border:{{ r.readyBorder }};color:{{ r.readyColor }};display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;box-sizing:border-box;flex-shrink:0">{{ r.readyMk }}</span>
+                  </div>
+                  <sc-if value="{{ r.panel }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:11.5px;color:rgba(255,255,255,.4);background:#0C1218;border-radius:10px;padding:11px 13px;line-height:1.45">Панель идёт вживую — прогон и презентация не требуются.</div>
+                  </sc-if>
+                  <sc-if value="{{ r.notPanel }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                      <div style="flex:1;min-width:210px;background:#0C1218;border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:8px">
+                        <div style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px">{{ r.rehLabel }}</div>
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+                          <sc-if value="{{ r.rehNone }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ r.onSchedule }}" style="height:30px;padding:0 13px;border-radius:30px;border:1.5px dashed rgba(0,174,239,.5);background:transparent;color:#4FC9F0;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-style:solid">Выбрать слот в календаре</button>
+                          </sc-if>
+                          <sc-if value="{{ r.rehScheduled }}" hint-placeholder-val="{{ false }}">
+                            <span onClick="{{ r.onReschedule }}" title="изменить слот" style="border:1px solid rgba(0,174,239,.6);color:#4FC9F0;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer">{{ r.rehText }}</span>
+                            <button onClick="{{ r.onPassed }}" style="height:28px;padding:0 11px;border-radius:30px;border:1px solid rgba(61,220,80,.5);background:transparent;color:#7CF29A;font-size:10.5px;font-weight:600;cursor:pointer;font-family:inherit">Проведён</button>
+                          </sc-if>
+                          <sc-if value="{{ r.rehPassed }}" hint-placeholder-val="{{ false }}">
+                            <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(61,220,80,.5);background:rgba(61,220,80,.1);color:#7CF29A;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>Проведён · {{ r.rehText }}</span>
+                          </sc-if>
+                        </div>
+                        <sc-if value="{{ r.wsNote }}" hint-placeholder-val="{{ false }}">
+                          <div style="font-size:10px;color:rgba(255,176,32,.85);line-height:1.4">техника, доступы и работа презентации от ноутбука</div>
+                        </sc-if>
+                      </div>
+                      <div style="flex:1;min-width:190px;background:#0C1218;border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:8px">
+                        <div style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Встреча в календаре</div>
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+                          <sc-if value="{{ r.calLocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:rgba(255,255,255,.35)">сначала выберите слот</span></sc-if>
+                          <sc-if value="{{ r.calCanSet }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ r.onCalToggle }}" style="height:30px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3DDC50;color:#7CF29A">Встреча выставлена</button>
+                          </sc-if>
+                          <sc-if value="{{ r.calSet }}" hint-placeholder-val="{{ false }}">
+                            <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(61,220,80,.5);background:rgba(61,220,80,.1);color:#7CF29A;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>В календаре</span>
+                            <button onClick="{{ r.onCalToggle }}" style="height:26px;padding:0 8px;border-radius:30px;border:none;background:transparent;color:rgba(255,255,255,.4);font-size:10.5px;font-weight:600;cursor:pointer;font-family:inherit">убрать</button>
+                          </sc-if>
+                        </div>
+                      </div>
+                      <div style="flex:1;min-width:170px;background:#0C1218;border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:8px">
+                        <div style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Презентация</div>
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+                          <sc-if value="{{ r.deckNone }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ r.onDeckToggle }}" style="height:30px;padding:0 13px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.28);background:transparent;color:rgba(255,255,255,.6);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">Ждём файл</button>
+                          </sc-if>
+                          <sc-if value="{{ r.deckUp }}" hint-placeholder-val="{{ false }}">
+                            <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(61,220,80,.5);background:rgba(61,220,80,.1);color:#7CF29A;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>Загружена</span>
+                            <button onClick="{{ r.onDeckToggle }}" style="height:26px;padding:0 8px;border-radius:30px;border:none;background:transparent;color:rgba(255,255,255,.4);font-size:10.5px;font-weight:600;cursor:pointer;font-family:inherit">убрать</button>
+                          </sc-if>
+                        </div>
+                      </div>
+                      <div style="flex:1;min-width:190px;background:#0C1218;border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:8px">
+                        <div style="font-size:10px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Согласование презы</div>
+                        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+                          <sc-if value="{{ r.apprLocked }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;color:rgba(255,255,255,.35)">нужна презентация</span></sc-if>
+                          <sc-if value="{{ r.apprPending }}" hint-placeholder-val="{{ true }}">
+                            <button onClick="{{ r.onApprove }}" style="height:30px;padding:0 14px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:rgba(255,255,255,.75);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3DDC50;color:#7CF29A">Отметить согласованной</button>
+                          </sc-if>
+                          <sc-if value="{{ r.apprApproved }}" hint-placeholder-val="{{ false }}">
+                            <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(61,220,80,.5);background:rgba(61,220,80,.1);color:#7CF29A;border-radius:30px;padding:5px 11px;font-size:11px;font-weight:600"><span style="width:6px;height:6px;border-radius:50%;background:#3DDC50"></span>Согласована</span>
+                            <button onClick="{{ r.onRevoke }}" style="height:26px;padding:0 8px;border-radius:30px;border:none;background:transparent;color:rgba(255,255,255,.4);font-size:10.5px;font-weight:600;cursor:pointer;font-family:inherit">отозвать</button>
+                          </sc-if>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -287,7 +430,7 @@ input{outline:none}
               <sc-for list="{{ critSetTabs }}" as="cs" hint-placeholder-count="4">
                 <button onClick="{{ cs.onClick }}" style="height:34px;padding:0 18px;border-radius:30px;border:{{ cs.border }};background:{{ cs.bg }};color:{{ cs.color }};font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ cs.label }}</button>
               </sc-for>
-              <button onClick="{{ addType }}" style="height:34px;padding:0 15px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.6);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="border-color:#3ED968;color:#7CF29A">+ Тип</button>
+              <button onClick="{{ addType }}" title="Добавить тип" style="width:34px;height:34px;border-radius:10px;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:#3ED968;color:#7CF29A"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
             </div>
             <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap">
               <sc-if value="{{ typeEditing }}" hint-placeholder-val="{{ false }}">
@@ -296,8 +439,8 @@ input{outline:none}
                 <button onClick="{{ cancelType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Отмена</button>
               </sc-if>
               <sc-if value="{{ typeNotEditing }}" hint-placeholder-val="{{ true }}">
-                <button onClick="{{ editType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">Редактировать тип</button>
-                <button onClick="{{ delType }}" style="height:32px;padding:0 13px;border-radius:30px;border:1px solid rgba(255,120,120,.4);background:{{ delTypeBg }};color:{{ delTypeColor }};font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ delTypeLabel }}</button>
+                <button onClick="{{ editType }}" title="Редактировать тип" style="width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,255,255,.45);color:#fff"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button>
+                <button onClick="{{ delType }}" title="{{ delTypeTitle }}" style="width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,120,120,.4);background:{{ delTypeBg }};color:{{ delTypeColor }};cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,120,120,.7)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>
               </sc-if>
             </div>
             <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
@@ -368,6 +511,12 @@ input{outline:none}
 
       <sc-if value="{{ tabStats }}" hint-placeholder-val="{{ false }}">
         <div style="padding:22px 30px">
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <sc-for list="{{ statViewTabs }}" as="sv" hint-placeholder-count="2">
+              <button onClick="{{ sv.onClick }}" style="height:36px;padding:0 18px;border-radius:30px;border:{{ sv.border }};background:{{ sv.bg }};color:{{ sv.color }};font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">{{ sv.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ statSpeakers }}" hint-placeholder-val="{{ true }}">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
             <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.4px">Лидерборд спикеров</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -401,6 +550,45 @@ input{outline:none}
             <span style="border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:6px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,.8)">хочу слайды ×64</span>
             <span style="border:1px solid rgba(0,174,239,.6);color:#4FC9F0;border-radius:30px;padding:6px 13px;font-size:12px;font-weight:500">это был дипфейк? ×23</span>
           </div>
+          </sc-if>
+
+          <sc-if value="{{ statConf }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+              <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.4px">Оценка конференции</div>
+              <span style="border:1px solid rgba(255,255,255,.7);border-radius:30px;padding:6px 15px;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:#3DDC50"></span>{{ confVotes }} голосов о дне</span>
+            </div>
+            <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:stretch">
+              <div style="background:radial-gradient(130% 130% at 100% 0%,#2FD37B 0%,#12A8A6 26%,#0B3540 60%,#0C1218 100%);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:26px;display:flex;flex-direction:column;justify-content:center">
+                <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:.6px">Общая оценка</div>
+                <div style="font-family:'Unbounded',sans-serif;font-size:64px;font-weight:700;line-height:1;margin-top:10px;background:linear-gradient(90deg,#4BE96A,#7CF29A,#4FC9F0);-webkit-background-clip:text;background-clip:text;color:transparent">{{ confOverall }}</div>
+                <div style="font-size:13px;color:rgba(255,255,255,.65);margin-top:8px">из 5 · среднее по четырём критериям дня</div>
+                <div style="display:flex;gap:16px;margin-top:22px">
+                  <div><div style="font-size:22px;font-weight:800;color:#7CF29A">{{ confNps }}</div><div style="font-size:10.5px;color:rgba(255,255,255,.5)">придут ещё</div></div>
+                  <div style="width:1px;background:rgba(255,255,255,.2)"></div>
+                  <div><div style="font-size:22px;font-weight:800">{{ confConv }}</div><div style="font-size:10.5px;color:rgba(255,255,255,.5)">оценили из зала</div></div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <sc-for list="{{ confCriteria }}" as="c" hint-placeholder-count="4">
+                  <div style="background:#141C24;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700">{{ c.label }}</span><span style="font-size:20px;font-weight:800;color:{{ c.color }}">{{ c.avg }}</span></div>
+                    <div style="height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-top:10px"><div style="width:{{ c.w }};height:100%;background:linear-gradient(90deg,#2AA0F0,#3ED968)"></div></div>
+                    <div style="display:flex;flex-direction:column;gap:5px;margin-top:12px">
+                      <sc-for list="{{ c.dist }}" as="d" hint-placeholder-count="5">
+                        <div style="display:flex;align-items:center;gap:8px"><span style="width:10px;font-size:10.5px;color:rgba(255,255,255,.45);text-align:right">{{ d.star }}</span><div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden"><div style="width:{{ d.w }};height:100%;background:{{ d.bg }}"></div></div><span style="width:30px;font-size:10.5px;color:rgba(255,255,255,.45)">{{ d.n }}</span></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:18px;align-items:center;flex-wrap:wrap">
+              <span style="font-size:12px;color:rgba(255,255,255,.45);font-weight:600">Что говорят про день:</span>
+              <sc-for list="{{ confReactions }}" as="cr" hint-placeholder-count="5">
+                <span style="border:{{ cr.border }};background:{{ cr.bg }};color:{{ cr.color }};border-radius:30px;padding:6px 13px;font-size:12px;font-weight:{{ cr.weight }}">{{ cr.label }}</span>
+              </sc-for>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
     </div>
@@ -410,7 +598,17 @@ input{outline:none}
     <div onClick="{{ spCancel }}" style="position:fixed;inset:0;background:rgba(2,6,10,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)">
       <div onClick="{{ stopClick }}" style="width:460px;max-width:100%;background:#141C24;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px;box-sizing:border-box;box-shadow:0 40px 100px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:14px">
         <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.3px">{{ spModalTitle }}</div>
-        <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Имя спикера</div><input value="{{ spName }}" onChange="{{ onSpName }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Спикеры доклада</div>
+          <input value="{{ spName }}" onChange="{{ onSpName }}" placeholder="Основной спикер" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968">
+          <sc-for list="{{ spCoRows }}" as="c" hint-placeholder-count="0">
+            <div style="display:flex;gap:7px;align-items:center">
+              <input value="{{ c.val }}" onChange="{{ c.onChange }}" placeholder="Со-спикер" style="flex:1;min-width:0;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968">
+              <button onClick="{{ c.onRemove }}" title="Убрать спикера" style="width:34px;height:34px;flex-shrink:0;border-radius:9px;border:1px solid rgba(255,120,120,.4);background:transparent;color:#FF8A8A;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0" style-hover="border-color:rgba(255,120,120,.7)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+          </sc-for>
+          <button onClick="{{ addSpCo }}" style="align-self:flex-start;height:30px;padding:0 13px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.6);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px" style-hover="border-color:#3ED968;color:#7CF29A"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Добавить спикера</button>
+        </div>
         <div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Тема выступления</div><input value="{{ spTalk }}" onChange="{{ onSpTalk }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
         <div style="display:flex;gap:10px">
           <div style="width:110px"><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Время</div><input value="{{ spTime }}" onChange="{{ onSpTime }}" style="width:100%;box-sizing:border-box;background:#0C1218;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:inherit;font-size:13px;padding:10px 12px" style-focus="border-color:#3ED968"></div>
@@ -454,6 +652,42 @@ input{outline:none}
       </div>
     </div>
   </sc-if>
+
+  <sc-if value="{{ rehModalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ rehCancel }}" style="position:fixed;inset:0;background:rgba(2,6,10,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)">
+      <div onClick="{{ stopClick }}" style="width:560px;max-width:100%;background:#141C24;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px;box-sizing:border-box;box-shadow:0 40px 100px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <div style="min-width:0">
+            <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;letter-spacing:-0.3px">{{ rehTitle }}</div>
+            <div style="font-size:12.5px;color:rgba(255,255,255,.55);margin-top:4px">{{ rehModalTalk }} · {{ rehModalName }}</div>
+          </div>
+          <span style="display:flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.25);border-radius:30px;padding:5px 12px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.8);flex-shrink:0;white-space:nowrap">зал по программе · {{ rehModalHall }}</span>
+        </div>
+        <sc-if value="{{ rehIsWs }}" hint-placeholder-val="{{ false }}">
+          <div style="background:rgba(255,176,32,.1);border:1px solid rgba(255,176,32,.4);border-radius:10px;padding:10px 13px;font-size:11.5px;color:#FFC24B;font-weight:600;line-height:1.45">Технический прогон: проверьте технику, доступы и работу презентации от ноутбука спикера.</div>
+        </sc-if>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <sc-for list="{{ rehDayTabs }}" as="dt" hint-placeholder-count="3"><button onClick="{{ dt.onClick }}" style="height:34px;padding:0 16px;border-radius:30px;border:{{ dt.border }};background:{{ dt.bg }};color:{{ dt.color }};font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">{{ dt.label }}</button></sc-for>
+        </div>
+        <div>
+          <div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Слоты в зале · занятые недоступны</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <sc-for list="{{ calSlots }}" as="sl" hint-placeholder-count="9">
+              <div onClick="{{ sl.onClick }}" style="background:{{ sl.bg }};border:{{ sl.border }};color:{{ sl.color }};border-radius:10px;padding:9px 8px;text-align:center;cursor:{{ sl.cursor }}">
+                <div style="font-size:13px;font-weight:700">{{ sl.time }}</div>
+                <div style="font-size:9.5px;margin-top:2px;color:{{ sl.tagColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sl.tag }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;font-size:12px;color:rgba(255,255,255,.6)">Выбрано: <span style="color:#7CF29A;font-weight:700">{{ rehPickedText }}</span></div>
+          <button onClick="{{ rehCancel }}" style="height:44px;padding:0 20px;border-radius:30px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Отмена</button>
+          <button onClick="{{ rehSave }}" style="height:44px;padding:0 22px;border-radius:30px;border:none;background:{{ rehSaveBg }};color:{{ rehSaveColor }};font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Назначить прогон</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
@@ -465,6 +699,32 @@ class Component extends DCLogic {
     scenario: 'happy', confirmStop: null,
     hallEdit: null, hallDraft: '', confirmDelHall: null,
     spModal: null, spDraft: null, confirmDelSp: null,
+    statView: 'speakers', rehModal: null, rehDraft: null,
+    readiness: {
+      '0-0': { reh: { date: '9 июл', time: '18:00', place: 'Гигатрансформация', status: 'passed' }, cal: true, deck: 'uploaded', appr: 'approved' },
+      '0-1': { reh: { date: '10 июл', time: '11:00', place: 'Гигатрансформация', status: 'passed' }, cal: true, deck: 'uploaded', appr: 'pending' },
+      '0-2': { reh: { date: '10 июл', time: '12:00', place: 'Гигатрансформация', status: 'scheduled' }, cal: false, deck: 'uploaded', appr: 'approved' },
+      '0-3': { deck: 'none', appr: 'pending' },
+      '1-0': { reh: { date: '9 июл', time: '17:00', place: 'AI-инженер', status: 'passed' }, cal: true, deck: 'uploaded', appr: 'approved' },
+      '1-1': { deck: 'uploaded', appr: 'pending' },
+      '1-2': { reh: { date: '10 июл', time: '14:00', place: 'AI-инженер', status: 'scheduled' }, cal: false, deck: 'none', appr: 'pending' },
+      '2-0': { reh: { date: '9 июл', time: '16:00', place: 'Дизайн', status: 'passed' }, cal: true, deck: 'uploaded', appr: 'approved' }
+    },
+    checklists: [
+      { id: 'ck1', name: 'Доклад — стандарт', type: 'talk', items: [
+        { id: 'c1a', text: 'Генеральный прогон проведён', done: true },
+        { id: 'c1b', text: 'Встреча в календаре выставлена', done: true },
+        { id: 'c1c', text: 'Презентация загружена', done: true },
+        { id: 'c1d', text: 'Презентация согласована с оргом', done: true }
+      ] },
+      { id: 'ck2', name: 'Воркшоп — техпрогон', type: 'workshop', items: [
+        { id: 'c2a', text: 'Техника и доступы проверены', done: false },
+        { id: 'c2b', text: 'Презентация работает от ноутбука', done: true },
+        { id: 'c2c', text: 'Раздаточные материалы готовы', done: false }
+      ] }
+    ],
+    confirmDelCk: null,
+    readySub: 'board',
     typeEdit: false, typeDraft: '', confirmDelType: null, confirmDelPage: null, savedFlash: false,
     critSet: 'speaker', critIdx: 0,
     critTypes: [ { id: 'speaker', label: 'Доклад' }, { id: 'panel', label: 'Панель' }, { id: 'workshop', label: 'Воркшоп' }, { id: 'conf', label: 'Конференция' } ],
@@ -595,7 +855,7 @@ class Component extends DCLogic {
         speakers: [
           { name: 'Михаил Сукач', talk: '«Когда ИИ не отвечает»', time: '12:40', n: 71, scores: [4.4,4.5,4.1,4.2], org: 'Сбер' },
           { name: 'Петр Белкин', talk: '«AI в PDLC: как мы перестали готовиться и начали жить»', time: '13:20', n: 68, scores: [4.6,4.2,3.9,4.4], org: 'Сбер' },
-          { name: 'Денис Артюшин', talk: '«От IDE-плагина к агентному сервису»', time: '14:40', n: 148, scores: [4.8,4.7,4.3,4.6], org: 'Т-Банк' },
+          { name: 'Денис Артюшин', talk: '«От IDE-плагина к агентному сервису»', time: '14:40', n: 148, scores: [4.8,4.7,4.3,4.6], org: 'Т-Банк', co: 'Ольга Веретенникова' },
           { name: 'Мария Лаврентьева', talk: '«Цифровой иммунитет»', time: '15:20', n: 0, scores: [0,0,0,0], org: 'Сбер' },
           { name: 'Панельная дискуссия', talk: '«Почему рынок труда перестал работать?»', time: '16:40', n: 0, scores: [0,0,0,0], format: 'panel' }
         ] },
@@ -603,13 +863,19 @@ class Component extends DCLogic {
         speakers: [
           { name: 'Роман Троицкий', talk: '«Welcome to the new WEB — MCP UI»', time: '13:20', n: 54, scores: [4.5,3.8,4.0,4.2] },
           { name: 'Игорь Кензин', talk: '«Agentic Search на стероидах»', time: '14:40', n: 92, scores: [4.5,4.0,4.4,4.5] },
-          { name: 'Дмитрий Галкин', talk: '«Строим свою DARK FACTORY»', time: '15:20', n: 0, scores: [0,0,0,0] }
+          { name: 'Дмитрий Галкин', talk: '«Строим свою DARK FACTORY»', time: '15:20', n: 0, scores: [0,0,0,0], format: 'workshop' }
         ] },
       { id: 'h3', num: 3, name: 'Дизайн', color: '#FFB020', status: 'break', cur: 2, conv: '—',
         speakers: [
           { name: 'Денис Бугров', talk: '«Фрилансер с пайплайном»', time: '12:40', n: 63, scores: [4.6,4.2,3.9,4.4] },
           { name: 'Юлия Елина', talk: '«Как общаться с нейросетями»', time: '13:20', n: 47, scores: [4.0,3.9,4.1,3.8] },
-          { name: 'Максим Кукушкин', talk: '«AI 3D: нейросети в 3D-продакшне»', time: '16:40', n: 0, scores: [0,0,0,0] }
+          { name: 'Максим Кукушкин', talk: '«AI 3D: нейросети в 3D-продакшне»', time: '16:40', n: 0, scores: [0,0,0,0], format: 'workshop', co: 'Артём Носов' }
+        ] },
+      { id: 'h4', num: 4, name: 'Мастерская (воркшопы)', color: '#3ED968', status: 'break', cur: 0, conv: '—',
+        speakers: [
+          { name: 'Егор Пахомов', talk: '«Воркшоп: RAG за час»', time: '12:00', n: 58, scores: [4.3,4.5,4.2,4.6], format: 'workshop' },
+          { name: 'Софья Демина', talk: '«Воркшоп: агенты на LangGraph»', time: '14:00', n: 44, scores: [4.1,4.0,4.3,4.2], format: 'workshop', co: 'Ким Ли' },
+          { name: 'Артур Валеев', talk: '«Воркшоп: fine-tuning на своих данных»', time: '16:00', n: 0, scores: [0,0,0,0], format: 'workshop' }
         ] }
     ]
   };
@@ -710,7 +976,7 @@ class Component extends DCLogic {
     };
     const errDef = errScreens[scen];
     // admin
-    const adminTabs = [ ['halls','Залы'], ['program','Программа'], ['criteria','Критерии'], ['stats','Статистика'] ].map(([v,label]) => ({
+    const adminTabs = [ ['halls','Залы'], ['program','Программа'], ['criteria','Критерии'], ['stats','Статистика'], ['ready','Готовность'] ].map(([v,label]) => ({
       label, onClick: () => this.setState({ adminTab: v }), ...pill(S.adminTab === v)
     }));
     const spDone = (h, idx) => { const sp = h.speakers[idx]; return sp && sp.done !== undefined ? sp.done : idx < h.cur; };
@@ -738,6 +1004,7 @@ class Component extends DCLogic {
         }),
         onEdit: () => this.setState({ hallEdit: i, hallDraft: h.name }),
         delLabel: S.confirmDelHall === i ? 'Точно удалить?' : 'Удалить',
+        delTitle: S.confirmDelHall === i ? 'Нажмите ещё раз — зал удалится' : 'Удалить зал',
         delBg: S.confirmDelHall === i ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
         delColor: S.confirmDelHall === i ? '#fff' : '#FF8A8A',
         onDel: () => {
@@ -816,8 +1083,9 @@ class Component extends DCLogic {
     allSpeakers.sort((a, b) => a.time.localeCompare(b.time));
     const speakerRows = allSpeakers.map(sp => {
       const st = sp.isLive ? 'в эфире' : (sp.isDone ? 'выступил' : 'ожидает');
+      const coArr = Array.isArray(sp.co) ? sp.co : (sp.co ? [sp.co] : []);
       return {
-        time: sp.time, name: sp.name, talk: sp.talk, hall: sp.hall, hallColor: sp.hallColor,
+        time: sp.time, name: [sp.name].concat(coArr).join(' + '), talk: sp.talk, hall: sp.hall, hallColor: sp.hallColor,
         stCursor: sp.isLive ? 'default' : 'pointer',
         stTitle: sp.isLive ? 'спикер сейчас в эфире' : (sp.isDone ? 'нажмите — вернуть в «ожидает»' : 'нажмите — отметить «выступил»'),
         onStatus: sp.isLive ? null : () => this.setState(s => ({ halls: s.halls.map((x, k) => k !== sp.hi ? x : { ...x, speakers: x.speakers.map((y, j) => j !== sp.si ? y : { ...y, done: !(y.done !== undefined ? y.done : j < x.cur) }) }) })),
@@ -837,8 +1105,9 @@ class Component extends DCLogic {
         avg: sp.n ? this.avgOf(sp).toFixed(1) : '—', avgColor: sp.n ? '#7CF29A' : 'rgba(255,255,255,.35)',
         n: sp.n ? sp.n + ' оц.' : '—',
         fmt: sp.format === 'panel' ? 'панель' : (sp.format === 'workshop' ? 'воркшоп' : 'доклад'),
-        onEdit: () => this.setState({ spModal: { hall: sp.hi, idx: sp.si }, spDraft: { name: sp.name, talk: sp.talk, time: sp.time, hall: sp.hi, format: sp.format || 'talk' } }),
+        onEdit: () => this.setState({ spModal: { hall: sp.hi, idx: sp.si }, spDraft: { name: sp.name, co: Array.isArray(sp.co) ? sp.co.slice() : (sp.co ? [sp.co] : []), talk: sp.talk, time: sp.time, hall: sp.hi, format: sp.format || 'talk' } }),
         delLabel: S.confirmDelSp === sp.hi + '-' + sp.si ? 'Точно?' : 'Удал.',
+        delTitle: S.confirmDelSp === sp.hi + '-' + sp.si ? 'Нажмите ещё раз — спикер удалится' : 'Удалить',
         delBg: S.confirmDelSp === sp.hi + '-' + sp.si ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
         delColor: S.confirmDelSp === sp.hi + '-' + sp.si ? '#fff' : '#FF8A8A',
         onDel: () => {
@@ -858,6 +1127,147 @@ class Component extends DCLogic {
         }
       };
     });
+    // readiness / rehearsals — сгруппировано по залам, карточка на доклад
+    const rdDefault = { reh: null, cal: false, deck: 'none', appr: 'pending' };
+    const rdOf = (hi, si) => Object.assign({}, rdDefault, S.readiness[hi + '-' + si] || {});
+    const setRd = (key, patch) => this.setState(s => ({ readiness: { ...s.readiness, [key]: Object.assign({}, rdDefault, s.readiness[key] || {}, patch) } }));
+    let readyDoneN = 0, readyTotalN = 0;
+    const readyHalls = S.halls.map((h, hi) => {
+      const hallColor = h.color || this.hallPalette[hi % this.hallPalette.length];
+      const talks = h.speakers.map((sp, si) => {
+        const key = hi + '-' + si;
+        const d = rdOf(hi, si);
+        const fmt = sp.format || 'talk';
+        const co = Array.isArray(sp.co) ? sp.co : (sp.co ? [sp.co] : []);
+        const names = [sp.name].concat(co);
+        const avatars = names.map(nm => ({ initials: this.initials(nm) }));
+        readyTotalN++;
+        const base = {
+          key, time: sp.time, talk: sp.talk, avatars, names: names.join(' + '),
+          fmtLabel: fmt === 'panel' ? 'панель' : (fmt === 'workshop' ? 'воркшоп' : 'доклад'),
+          fmtColor: fmt === 'panel' ? '#B18CFF' : (fmt === 'workshop' ? '#FFB020' : '#4FC9F0')
+        };
+        if (fmt === 'panel') {
+          readyDoneN++;
+          return Object.assign(base, { panel: true, notPanel: false, readyMk: 'не нужен', readyBg: 'rgba(177,140,255,.14)', readyColor: '#B18CFF', readyBorder: '1px solid rgba(177,140,255,.4)', border: '1px solid rgba(177,140,255,.3)' });
+        }
+        const isWs = fmt === 'workshop';
+        const rehPassed = !!(d.reh && d.reh.status === 'passed');
+        const rehScheduled = !!(d.reh && d.reh.status === 'scheduled');
+        const deckUp = d.deck === 'uploaded';
+        const cnt = (rehPassed ? 1 : 0) + (d.cal ? 1 : 0) + (deckUp ? 1 : 0) + (d.appr === 'approved' ? 1 : 0);
+        const done = cnt === 4;
+        if (done) readyDoneN++;
+        return Object.assign(base, {
+          panel: false, notPanel: true, isWs, wsNote: isWs,
+          rehLabel: isWs ? 'Технический прогон' : 'Генеральный прогон',
+          rehNone: !d.reh, rehScheduled, rehPassed,
+          rehText: d.reh ? (d.reh.date + ' · ' + d.reh.time) : '',
+          onSchedule: () => this.setState({ rehModal: { key, name: names.join(' + '), talk: sp.talk, hall: h.name, format: fmt }, rehDraft: { date: '10 июл', time: null } }),
+          onReschedule: () => this.setState({ rehModal: { key, name: names.join(' + '), talk: sp.talk, hall: h.name, format: fmt }, rehDraft: { date: d.reh.date, time: d.reh.time } }),
+          onPassed: () => setRd(key, { reh: Object.assign({}, d.reh, { status: 'passed' }) }),
+          calLocked: !d.reh, calSet: d.cal, calCanSet: !!d.reh && !d.cal,
+          onCalToggle: () => setRd(key, { cal: !d.cal }),
+          deckNone: !deckUp, deckUp,
+          onDeckToggle: () => setRd(key, deckUp ? { deck: 'none', appr: 'pending' } : { deck: 'uploaded' }),
+          apprLocked: !deckUp, apprPending: deckUp && d.appr !== 'approved', apprApproved: deckUp && d.appr === 'approved',
+          onApprove: () => setRd(key, { appr: 'approved' }), onRevoke: () => setRd(key, { appr: 'pending' }),
+          readyMk: done ? '✓' : cnt + '/4',
+          readyBg: done ? 'linear-gradient(180deg,#4BE96A,#1FA53E)' : 'rgba(255,255,255,.06)',
+          readyColor: done ? '#04220C' : 'rgba(255,255,255,.5)',
+          readyBorder: done ? 'none' : '1px solid rgba(255,255,255,.15)',
+          border: done ? '1px solid rgba(61,220,80,.4)' : '1px solid rgba(255,255,255,.08)'
+        });
+      });
+      return { name: h.name, color: hallColor, talks };
+    });
+    // библиотека чеклистов готовности
+    const ckTypeOpts = [ ['talk', 'Доклад'], ['panel', 'Панель'], ['workshop', 'Воркшоп'] ];
+    const ckTypeLabel = (t) => (ckTypeOpts.find(o => o[0] === t) || [null, 'без типа'])[1];
+    const patchCk = (id, fn) => this.setState(s => ({ checklists: s.checklists.map(c => c.id === id ? fn(c) : c) }));
+    const checklistCards = S.checklists.map(ck => {
+      const doneN = ck.items.filter(it => it.done).length;
+      const confirmDel = S.confirmDelCk === ck.id;
+      return {
+        name: ck.name,
+        onName: (e) => { const v = e.target.value; patchCk(ck.id, c => ({ ...c, name: v })); },
+        typePills: ckTypeOpts.map(([v, label]) => ({ label, onClick: () => patchCk(ck.id, c => ({ ...c, type: v })), ...pill(ck.type === v) })),
+        progress: doneN + ' / ' + ck.items.length,
+        pct: ck.items.length ? Math.round(doneN / ck.items.length * 100) + '%' : '0%',
+        items: ck.items.map(it => ({
+          text: it.text,
+          onText: (e) => { const v = e.target.value; patchCk(ck.id, c => ({ ...c, items: c.items.map(x => x.id === it.id ? { ...x, text: v } : x) })); },
+          onToggle: () => patchCk(ck.id, c => ({ ...c, items: c.items.map(x => x.id === it.id ? { ...x, done: !x.done } : x) })),
+          onDel: () => patchCk(ck.id, c => ({ ...c, items: c.items.filter(x => x.id !== it.id) })),
+          checkMk: it.done ? '✓' : '',
+          checkBg: it.done ? '#3DDC50' : 'transparent',
+          checkBorder: it.done ? '1.5px solid #3DDC50' : '1.5px solid rgba(255,255,255,.25)'
+        })),
+        onAddItem: () => patchCk(ck.id, c => ({ ...c, items: c.items.concat([{ id: 'it' + Date.now(), text: '', done: false }]) })),
+        onDel: () => { if (S.confirmDelCk === ck.id) this.setState(s => ({ checklists: s.checklists.filter(c => c.id !== ck.id), confirmDelCk: null })); else this.setState({ confirmDelCk: ck.id }); },
+        delLabel: confirmDel ? 'Точно удалить?' : 'Удалить чеклист',
+        delBg: confirmDel ? 'rgba(255,120,120,.18)' : 'transparent',
+        delColor: confirmDel ? '#FF8B8B' : 'rgba(255,140,140,.85)'
+      };
+    });
+    const ckAdd = () => this.setState(s => ({ checklists: s.checklists.concat([{ id: 'ck' + Date.now(), name: 'Новый чеклист', type: 'talk', items: [{ id: 'it' + Date.now(), text: '', done: false }] }]), confirmDelCk: null }));
+    const readySubTabs = [ ['board', 'Сводка готовности'], ['checklists', 'Чеклисты'] ].map(([v, label]) => ({
+      label, onClick: () => this.setState({ readySub: v }), ...pill(S.readySub === v)
+    }));
+    // календарь слотов для модалки прогона
+    const calDays = ['8 июл', '9 июл', '10 июл'];
+    const calTimes = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+    const rm = S.rehModal;
+    let rehDayTabs = [], calSlots = [];
+    if (rm) {
+      const occ = {};
+      S.halls.forEach((h, hi) => { if (h.name !== rm.hall) return; h.speakers.forEach((sp, si) => { if (hi + '-' + si === rm.key) return; const dd = rdOf(hi, si); if (dd.reh && dd.reh.date && dd.reh.time) occ[dd.reh.date + '|' + dd.reh.time] = sp.name; }); });
+      const selDay = (S.rehDraft && S.rehDraft.date) || calDays[2];
+      rehDayTabs = calDays.map(dd => ({ label: dd, onClick: () => this.setState({ rehDraft: { date: dd, time: null } }), ...pill(selDay === dd) }));
+      calSlots = calTimes.map(t => {
+        const takenBy = occ[selDay + '|' + t];
+        const selected = !!(S.rehDraft && S.rehDraft.date === selDay && S.rehDraft.time === t);
+        return {
+          time: t, tag: takenBy ? ('занято · ' + takenBy.split(' ')[0]) : (selected ? 'выбрано' : 'свободно'),
+          cursor: takenBy ? 'not-allowed' : 'pointer',
+          bg: takenBy ? 'rgba(255,255,255,.03)' : (selected ? 'linear-gradient(90deg,#2AA0F0,#3ED968)' : '#0C1218'),
+          border: takenBy ? '1px solid rgba(255,255,255,.06)' : (selected ? '1px solid transparent' : '1px solid rgba(255,255,255,.14)'),
+          color: takenBy ? 'rgba(255,255,255,.3)' : (selected ? '#fff' : 'rgba(255,255,255,.85)'),
+          tagColor: takenBy ? 'rgba(255,255,255,.28)' : (selected ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.4)'),
+          onClick: takenBy ? null : () => this.setState({ rehDraft: { date: selDay, time: t } })
+        };
+      });
+    }
+    // оценка конференции целиком
+    const confRaw = {
+      votes: 342, conv: '54%', nps: '92%',
+      crit: [
+        { label: 'Программа', avg: 4.7, dist: [189,120,22,8,3] },
+        { label: 'Организация', avg: 4.5, dist: [161,130,34,12,5] },
+        { label: 'Площадка', avg: 4.4, dist: [153,128,40,15,6] },
+        { label: 'Стендовая зона', avg: 4.3, dist: [140,124,48,20,10] },
+        { label: 'Нетворкинг', avg: 4.2, dist: [132,120,58,22,10] }
+      ]
+    };
+    const confOverall = (confRaw.crit.reduce((a, c) => a + c.avg, 0) / confRaw.crit.length).toFixed(1);
+    const confCriteria = confRaw.crit.map((c, i) => {
+      const mx = Math.max(...c.dist);
+      return {
+        label: c.label, avg: c.avg.toFixed(1), w: Math.round(c.avg / 5 * 100) + '%',
+        color: i === 0 ? '#7CF29A' : '#fff',
+        dist: c.dist.map((n, j) => ({ star: 5 - j, n, w: Math.round(n / mx * 100) + '%',
+          bg: (5 - j) >= 4 ? 'linear-gradient(90deg,#2AA0F0,#3ED968)' : ((5 - j) === 3 ? '#4FC9F0' : 'rgba(255,255,255,.25)') }))
+      };
+    });
+    const confReactions = [ ['кофе топ ×88', true], ['приду ещё ×76', false], ['мерч огонь ×54', false], ['wifi выдержал ×41', false], ['где записи? ×33', false] ].map(([label, hot]) => ({
+      label, weight: hot ? '600' : '500',
+      bg: hot ? grad : 'transparent',
+      color: hot ? '#fff' : 'rgba(255,255,255,.8)',
+      border: hot ? '1px solid transparent' : '1px solid rgba(255,255,255,.25)'
+    }));
+    const statViewTabs = [ ['speakers','Лидерборд спикеров'], ['conf','Оценка конференции'] ].map(([v,label]) => ({
+      label, onClick: () => this.setState({ statView: v }), ...pill(S.statView === v)
+    }));
     const doneTotal = allSpeakers.filter(sp => sp.isDone).length;
     const liveTotal = allSpeakers.filter(sp => sp.isLive).length;
     // criteria editor
@@ -963,7 +1373,13 @@ class Component extends DCLogic {
       halls, speakerRows, statFilters, leaderboard,
       lbEmpty: leaderboard.length === 0,
       addHall: () => this.setState(s => ({ halls: s.halls.concat([{ id: 'h' + Date.now(), num: s.halls.length + 1, name: 'Новый зал ' + (s.halls.length + 1), color: this.hallPalette[s.halls.length % this.hallPalette.length], status: 'break', cur: 0, conv: '—', speakers: [] }]) })),
-      addSpeaker: () => this.setState({ spModal: { hall: 0, idx: null }, spDraft: { name: '', talk: '', time: '12:00', hall: 0, format: 'talk' } }),
+      addSpeaker: () => this.setState({ spModal: { hall: 0, idx: null }, spDraft: { name: '', co: [], talk: '', time: '12:00', hall: 0, format: 'talk' } }),
+      spCoRows: (S.spDraft && S.spDraft.co ? S.spDraft.co : []).map((v, i) => ({
+        val: v,
+        onChange: (e) => this.setState(s => { const co = (s.spDraft.co || []).slice(); co[i] = e.target.value; return { spDraft: { ...s.spDraft, co } }; }),
+        onRemove: () => this.setState(s => { const co = (s.spDraft.co || []).slice(); co.splice(i, 1); return { spDraft: { ...s.spDraft, co } }; })
+      })),
+      addSpCo: () => this.setState(s => ({ spDraft: { ...s.spDraft, co: (s.spDraft.co || []).concat(['']) } })),
       spModalOpen: !!S.spModal,
       spModalTitle: S.spModal && S.spModal.idx != null ? 'Редактировать спикера' : 'Новый спикер',
       spName: S.spDraft ? S.spDraft.name : '', onSpName: (e) => this.setState(s => ({ spDraft: { ...s.spDraft, name: e.target.value } })),
@@ -977,6 +1393,7 @@ class Component extends DCLogic {
         const d = s.spDraft;
         const rec = { name: d.name, talk: d.talk, time: d.time, n: 0, scores: [0,0,0,0] };
         if (d.format !== 'talk') rec.format = d.format;
+        const co = (d.co || []).map(x => (x || '').trim()).filter(Boolean); if (co.length) rec.co = co;
         if (s.spModal.idx != null) {
           const old = hs[s.spModal.hall].speakers[s.spModal.idx];
           rec.n = old.n; rec.scores = old.scores; if (old.done !== undefined) rec.done = old.done;
@@ -1011,6 +1428,7 @@ class Component extends DCLogic {
       saveType: () => this.setState(s => ({ critTypes: s.critTypes.map(t => t.id === curType.id ? { ...t, label: s.typeDraft.trim() || t.label } : t), typeEdit: false })),
       cancelType: () => this.setState({ typeEdit: false }),
       delTypeLabel: S.confirmDelType ? 'Точно удалить тип?' : 'Удалить тип',
+      delTypeTitle: S.confirmDelType ? 'Нажмите ещё раз — тип удалится' : 'Удалить тип',
       delTypeBg: S.confirmDelType ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent',
       delTypeColor: S.confirmDelType ? '#fff' : '#FF8A8A',
       delType: () => {
@@ -1085,6 +1503,33 @@ class Component extends DCLogic {
         a.download = 'qr-hall-' + qrH.num + '.png';
         a.click();
       },
+      tabReady: S.adminTab === 'ready',
+      readyHalls,
+      checklistCards, ckAdd, ckEmpty: S.checklists.length === 0,
+      readySubTabs, readySubBoard: S.readySub === 'board', readySubChecklists: S.readySub === 'checklists',
+      readySummary: readyDoneN + ' из ' + readyTotalN + ' докладов готовы к сцене — прогон, встреча в календаре, презентация и согласование',
+      readyPct: Math.round(readyDoneN / (readyTotalN || 1) * 100) + '%',
+      readyCount: readyDoneN + ' / ' + readyTotalN,
+      rehModalOpen: !!S.rehModal,
+      rehTitle: S.rehModal ? (S.rehModal.format === 'workshop' ? 'Технический прогон' : 'Генеральный прогон') : '',
+      rehIsWs: !!(S.rehModal && S.rehModal.format === 'workshop'),
+      rehModalTalk: S.rehModal ? S.rehModal.talk : '',
+      rehModalName: S.rehModal ? S.rehModal.name : '',
+      rehModalHall: S.rehModal ? S.rehModal.hall : '',
+      rehDayTabs, calSlots,
+      rehPickedText: (S.rehDraft && S.rehDraft.date && S.rehDraft.time) ? (S.rehDraft.date + ' · ' + S.rehDraft.time) : 'слот не выбран',
+      rehSaveBg: (S.rehDraft && S.rehDraft.date && S.rehDraft.time) ? 'linear-gradient(90deg,#2AA0F0,#3ED968)' : 'rgba(255,255,255,.08)',
+      rehSaveColor: (S.rehDraft && S.rehDraft.date && S.rehDraft.time) ? '#fff' : 'rgba(255,255,255,.35)',
+      rehSave: () => this.setState(s => {
+        if (!s.rehModal || !s.rehDraft || !s.rehDraft.time) return {};
+        const key = s.rehModal.key;
+        const base = Object.assign({}, rdDefault, s.readiness[key] || {});
+        return { readiness: { ...s.readiness, [key]: Object.assign(base, { reh: { date: s.rehDraft.date, time: s.rehDraft.time, place: s.rehModal.hall, status: 'scheduled' } }) }, rehModal: null, rehDraft: null };
+      }),
+      rehCancel: () => this.setState({ rehModal: null, rehDraft: null }),
+      statViewTabs, statSpeakers: S.statView === 'speakers', statConf: S.statView === 'conf',
+      confOverall, confVotes: confRaw.votes, confConv: confRaw.conv, confNps: confRaw.nps,
+      confCriteria, confReactions,
       stopClick: (e) => e.stopPropagation(),
       closeQr: () => this.setState({ qrHall: null })
     };

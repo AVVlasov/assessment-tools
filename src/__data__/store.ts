@@ -6,6 +6,7 @@ import { criteriaApi } from './api/criteriaApi';
 import { ratingsApi } from './api/ratingsApi';
 import { hallsApi } from './api/hallsApi';
 import { listenerApi } from './api/listenerApi';
+import { checklistsApi } from './api/checklistsApi';
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     [criteriaApi.reducerPath]: criteriaApi.reducer,
     [ratingsApi.reducerPath]: ratingsApi.reducer,
     [hallsApi.reducerPath]: hallsApi.reducer,
-    [listenerApi.reducerPath]: listenerApi.reducer
+    [listenerApi.reducerPath]: listenerApi.reducer,
+    [checklistsApi.reducerPath]: checklistsApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -25,7 +27,8 @@ export const store = configureStore({
       criteriaApi.middleware,
       ratingsApi.middleware,
       hallsApi.middleware,
-      listenerApi.middleware
+      listenerApi.middleware,
+      checklistsApi.middleware
     )
 });
 

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Flex, Grid, Input, Text } from '@chakra-ui/react'
 import {
   GradientButton,
+  IconBtn,
   KeyOption,
   Pill,
   StepProgress,
@@ -17,6 +18,7 @@ import {
 } from '../../../__data__/api'
 import type { CriteriaType, CriterionItem, CriterionOption } from '../../../types'
 import { t } from '../../../utils/locale'
+import { LuPencil, LuPlus, LuTrash2 } from 'react-icons/lu'
 
 interface ConferenceCriteriaTabProps {
   eventId: string
@@ -269,18 +271,14 @@ export const ConferenceCriteriaTab: React.FC<ConferenceCriteriaTabProps> = ({ ev
               {b.blockName || TYPE_LABELS[b.criteriaType] || b.criteriaType}
             </GradientButton>
           ))}
-          <GradientButton
-            h="34px"
-            px="15px"
-            fontSize="12.5px"
-            fontWeight="600"
-            variant="ghost"
-            color="rgba(255,255,255,0.6)"
-            border="1.5px dashed rgba(255,255,255,0.25)"
+          <IconBtn
+            label={t('criteriaEditor.addType')}
+            dashed
+            size={34}
             onClick={() => void addType()}
           >
-            {t('criteriaEditor.addType')}
-          </GradientButton>
+            <LuPlus size={15} />
+          </IconBtn>
         </Flex>
 
         <Flex gap="8px" mb="12px" align="center" flexWrap="wrap">
@@ -306,33 +304,26 @@ export const ConferenceCriteriaTab: React.FC<ConferenceCriteriaTabProps> = ({ ev
             </>
           ) : (
             <>
-              <GradientButton
-                h="32px"
-                px="13px"
-                fontSize="11.5px"
-                variant="ghost"
-                color="rgba(255,255,255,0.6)"
-                borderColor="rgba(255,255,255,0.2)"
+              <IconBtn
+                label={t('criteriaEditor.editType')}
+                size={32}
                 onClick={() => {
                   setTypeEdit(true)
                   setTypeDraft(activeBlock?.blockName || '')
                 }}
               >
-                {t('criteriaEditor.editType')}
-              </GradientButton>
-              <GradientButton
-                h="32px"
-                px="13px"
-                fontSize="11.5px"
-                variant="ghost"
-                color={confirmDelType ? '#fff' : '#FF8A8A'}
-                borderColor="rgba(255,120,120,0.4)"
-                bg={confirmDelType ? 'linear-gradient(90deg,#E5484D,#C63A66)' : 'transparent'}
+                <LuPencil size={14} />
+              </IconBtn>
+              <IconBtn
+                label={confirmDelType ? t('criteriaEditor.confirmDelType') : t('criteriaEditor.deleteType')}
+                danger
+                active={confirmDelType}
+                size={32}
                 disabled={sortedBlocks.length <= 1}
                 onClick={() => void deleteType()}
               >
-                {confirmDelType ? t('criteriaEditor.confirmDelType') : t('criteriaEditor.deleteType')}
-              </GradientButton>
+                <LuTrash2 size={14} />
+              </IconBtn>
             </>
           )}
         </Flex>
@@ -345,8 +336,9 @@ export const ConferenceCriteriaTab: React.FC<ConferenceCriteriaTabProps> = ({ ev
               h="32px"
               px="15px"
               fontSize="12px"
+              fontWeight="600"
               variant={i === pageIdx ? 'primary' : 'ghost'}
-              bg={i === pageIdx ? undefined : 'transparent'}
+              boxShadow="none"
               onClick={() => setPageIdx(i)}
             >
               {c.tag?.trim() || '·'}
