@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Flex, Text, Spinner } from '@chakra-ui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { GradientButton, Pill } from '../../components/tehnohub'
@@ -25,24 +25,22 @@ const TAB_LABELS: Record<string, string> = {
   'tabs.speakers': 'Спикеры',
 }
 
+const CONFERENCE_TAB_IDS = ['halls', 'speakers', 'criteria', 'stats', 'ready']
+const CLASSIC_TAB_IDS = ['teams', 'experts', 'criteria', 'statistics', 'top3']
+
 export const AssessmentAdminPage: React.FC = () => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const eventId = searchParams.get('eventId') || ''
+  const tabFromUrl = searchParams.get('tab') || ''
   const { data: event, isLoading } = useGetEventQuery(eventId, { skip: !eventId })
   const config = getEventTypeConfig(event?.eventType)
   const isConference = event?.eventType === 'conference'
-  const [tab, setTab] = useState(isConference ? 'halls' : 'teams')
   const [toggleVoting] = useToggleVotingMutation()
   const { data: listenerStats } = useGetListenerStatsQuery(
     { eventId },
     { skip: !eventId || !isConference, pollingInterval: 15000 }
   )
-
-  React.useEffect(() => {
-    if (!event) return
-    setTab(event.eventType === 'conference' ? 'halls' : 'teams')
-  }, [eventId, event?.eventType])
 
   if (!eventId) {
     return (
@@ -77,6 +75,15 @@ export const AssessmentAdminPage: React.FC = () => {
   ]
 
   const tabs = isConference ? conferenceTabs : classicTabs
+  const validTabIds = isConference ? CONFERENCE_TAB_IDS : CLASSIC_TAB_IDS
+  const defaultTab = isConference ? 'halls' : 'teams'
+  const tab = validTabIds.includes(tabFromUrl) ? tabFromUrl : defaultTab
+
+  const selectTab = (id: string): void => {
+    const next = new URLSearchParams(searchParams)
+    next.set('tab', id)
+    setSearchParams(next, { replace: true })
+  }
 
   return (
     <Box minH="100vh" bg={thColors.bg} color="white">
@@ -114,7 +121,7 @@ export const AssessmentAdminPage: React.FC = () => {
                   fontWeight="600"
                   variant={tab === tb.id ? 'primary' : 'ghost'}
                   boxShadow={tab === tb.id ? 'none' : undefined}
-                  onClick={() => setTab(tb.id)}
+                  onClick={() => selectTab(tb.id)}
                 >
                   {tb.label}
                 </GradientButton>
