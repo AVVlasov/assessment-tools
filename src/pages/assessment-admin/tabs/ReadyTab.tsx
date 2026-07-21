@@ -59,6 +59,8 @@ const MONTHS_SHORT = [
 ]
 
 const CAL_TIMES = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
+/** On conference day rehearsals open from 09:00. */
+const CONF_DAY_TIMES = ['09:00', ...CAL_TIMES]
 
 const formatDayLabel = (d: Date): string => `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`
 
@@ -72,18 +74,28 @@ const toLocalEventDay = (eventDate: string): Date | null => {
   return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate())
 }
 
-/** Week before conference day (7 days, conference day excluded). */
+const isConferenceDay = (dayLabel: string, eventDate?: string): boolean => {
+  if (!eventDate) return false
+  const confDay = toLocalEventDay(eventDate)
+  return !!confDay && dayLabel === formatDayLabel(confDay)
+}
+
+const slotTimesForDay = (dayLabel: string, eventDate?: string): string[] =>
+  isConferenceDay(dayLabel, eventDate) ? CONF_DAY_TIMES : CAL_TIMES
+
+/** Week before conference + conference day itself. */
 const buildCalDays = (eventDate?: string): string[] => {
   const confLocal = eventDate ? toLocalEventDay(eventDate) : null
   const base = confLocal ?? new Date()
   if (!confLocal) {
-    return Array.from({ length: 7 }, (_, i) => {
+    return Array.from({ length: 8 }, (_, i) => {
       const d = new Date(base)
       d.setDate(base.getDate() + i)
       return formatDayLabel(d)
     })
   }
-  return Array.from({ length: 7 }, (_, i) => {
+  // 7 days before … conference day (inclusive)
+  return Array.from({ length: 8 }, (_, i) => {
     const d = new Date(confLocal)
     d.setDate(confLocal.getDate() - (7 - i))
     return formatDayLabel(d)
@@ -94,6 +106,26 @@ const pickDefaultCalDay = (days: string[]): string => {
   const today = formatDayLabel(new Date())
   if (days.includes(today)) return today
   return days[0] || ''
+}
+
+const timeToMinutes = (time: string): number => {
+  const [h, m] = time.split(':').map(Number)
+  return (h || 0) * 60 + (m || 0)
+}
+
+/** On conference day slots must start at least 1 hour before event start. */
+const isRehearsalSlotAllowed = (
+  dayLabel: string,
+  time: string,
+  eventDate?: string
+): boolean => {
+  if (!eventDate) return true
+  const confDay = toLocalEventDay(eventDate)
+  const start = new Date(eventDate)
+  if (!confDay || Number.isNaN(start.getTime())) return true
+  if (dayLabel !== formatDayLabel(confDay)) return true
+  const deadlineMinutes = start.getHours() * 60 + start.getMinutes() - 60
+  return timeToMinutes(time) <= deadlineMinutes
 }
 
 const formatLabel = (fmt?: string): string => {
@@ -261,6 +293,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
 
   const saveRehearsal = async (): Promise<void> => {
     if (!rehModal?.time) return
+    if (!isRehearsalSlotAllowed(rehModal.date, rehModal.time, event?.eventDate)) return
     const sp = teams.find((tm) => tm._id === rehModal.teamId)
     if (!sp) return
     await patchReadiness(rehModal.teamId, {
@@ -778,30 +811,45 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
           zIndex={100}
           align="center"
           justify="center"
-          p="30px"
+          p={{ base: '12px', md: '30px' }}
           backdropFilter="blur(6px)"
           onClick={() => setRehModal(null)}
         >
           <Box
             w="560px"
             maxW="100%"
+            maxH="100%"
+            overflowY="auto"
             bg={thColors.card}
             border={`1px solid ${thColors.border}`}
             borderRadius="18px"
-            p="24px"
+            p={{ base: '16px', md: '24px' }}
             boxShadow="0 40px 100px rgba(0,0,0,0.7)"
             onClick={(e) => e.stopPropagation()}
           >
-            <Flex justify="space-between" align="flex-start" gap="12px" mb="16px">
-              <Box minW={0}>
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              justify="space-between"
+              align={{ base: 'stretch', md: 'flex-start' }}
+              gap="10px"
+              mb="16px"
+            >
+              <Box minW={0} flex="1">
                 <Text fontFamily="heading" fontSize="16px" fontWeight="700" letterSpacing="-0.3px">
                   {rehModal.format === 'workshop' ? t('admin.readyTechReh') : t('admin.readyGenReh')}
                 </Text>
-                <Text fontSize="12.5px" color="rgba(255,255,255,0.55)" mt="4px">
+                <Text fontSize="12.5px" color="rgba(255,255,255,0.55)" mt="4px" lineHeight="1.4">
                   {rehModal.talk} · {rehModal.name}
                 </Text>
               </Box>
-              <Pill fontSize="11.5px" fontWeight="600" flexShrink={0} whiteSpace="nowrap">
+              <Pill
+                fontSize="11.5px"
+                fontWeight="600"
+                flexShrink={0}
+                alignSelf={{ base: 'flex-start', md: 'flex-start' }}
+                maxW="100%"
+                whiteSpace="normal"
+              >
                 {t('admin.readyHallByProgram')} · {rehModal.hall}
               </Pill>
             </Flex>
@@ -850,35 +898,46 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
             >
               {t('admin.readySlots')}
             </Text>
-            <Box display="grid" gridTemplateColumns="repeat(3,1fr)" gap="8px" mb="16px">
-              {CAL_TIMES.map((time) => {
+            <Box
+              display="grid"
+              gridTemplateColumns={{ base: 'repeat(2,1fr)', sm: 'repeat(3,1fr)' }}
+              gap="8px"
+              mb="16px"
+            >
+              {slotTimesForDay(rehModal.date, event?.eventDate).map((time) => {
                 const takenBy = occupiedSlots[`${rehModal.date}|${time}`]
+                const tooLate = !isRehearsalSlotAllowed(
+                  rehModal.date,
+                  time,
+                  event?.eventDate
+                )
+                const blocked = !!takenBy || tooLate
                 const selected = rehModal.time === time
                 return (
                   <Box
                     key={time}
                     as="button"
                     type="button"
-                    disabled={!!takenBy}
+                    disabled={blocked}
                     onClick={() =>
-                      !takenBy && setRehModal((m) => (m ? { ...m, time } : m))
+                      !blocked && setRehModal((m) => (m ? { ...m, time } : m))
                     }
                     bg={
-                      takenBy
+                      blocked
                         ? 'rgba(255,255,255,0.03)'
                         : selected
                           ? thColors.gradientGreen
                           : thColors.surface
                     }
                     border={
-                      takenBy
+                      blocked
                         ? '1px solid rgba(255,255,255,0.06)'
                         : selected
                           ? '1px solid transparent'
                           : '1px solid rgba(255,255,255,0.14)'
                     }
                     color={
-                      takenBy
+                      blocked
                         ? 'rgba(255,255,255,0.3)'
                         : selected
                           ? '#fff'
@@ -888,8 +947,8 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                     px="8px"
                     py="9px"
                     textAlign="center"
-                    cursor={takenBy ? 'not-allowed' : 'pointer'}
-                    opacity={takenBy ? 0.7 : 1}
+                    cursor={blocked ? 'not-allowed' : 'pointer'}
+                    opacity={blocked ? 0.7 : 1}
                   >
                     <Text fontSize="13px" fontWeight="700">
                       {time}
@@ -898,7 +957,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                       fontSize="9.5px"
                       mt="2px"
                       color={
-                        takenBy
+                        blocked
                           ? 'rgba(255,255,255,0.28)'
                           : selected
                             ? 'rgba(255,255,255,0.85)'
@@ -910,17 +969,23 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                     >
                       {takenBy
                         ? `${t('admin.readyBusy')} · ${takenBy.split(' ')[0]}`
-                        : selected
-                          ? t('admin.readySelected')
-                          : t('admin.readyFree')}
+                        : tooLate
+                          ? t('admin.readyTooLate')
+                          : selected
+                            ? t('admin.readySelected')
+                            : t('admin.readyFree')}
                     </Text>
                   </Box>
                 )
               })}
             </Box>
 
-            <Flex align="center" gap="10px">
-              <Text flex="1" fontSize="12px" color="rgba(255,255,255,0.6)">
+            <Flex
+              direction={{ base: 'column', md: 'row' }}
+              align={{ base: 'stretch', md: 'center' }}
+              gap="10px"
+            >
+              <Text flex="1" fontSize="12px" color="rgba(255,255,255,0.6)" lineHeight="1.4">
                 {t('admin.readyPicked')}:{' '}
                 <Text as="span" color={thColors.greenLight} fontWeight="700">
                   {rehModal.time
@@ -928,18 +993,27 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
                     : t('admin.readyNotPicked')}
                 </Text>
               </Text>
-              <GradientButton h="44px" px="20px" variant="ghost" onClick={() => setRehModal(null)}>
-                {t('common.cancel')}
-              </GradientButton>
-              <GradientButton
-                h="44px"
-                px="22px"
-                disabled={!rehModal.time}
-                opacity={rehModal.time ? 1 : 0.45}
-                onClick={() => void saveRehearsal()}
-              >
-                {t('admin.readyAssign')}
-              </GradientButton>
+              <Flex gap="10px" flexShrink={0} w={{ base: '100%', md: 'auto' }}>
+                <GradientButton
+                  h="44px"
+                  px="20px"
+                  flex={{ base: 1, md: 'unset' }}
+                  variant="ghost"
+                  onClick={() => setRehModal(null)}
+                >
+                  {t('common.cancel')}
+                </GradientButton>
+                <GradientButton
+                  h="44px"
+                  px="22px"
+                  flex={{ base: 1, md: 'unset' }}
+                  disabled={!rehModal.time}
+                  opacity={rehModal.time ? 1 : 0.45}
+                  onClick={() => void saveRehearsal()}
+                >
+                  {t('admin.readyAssign')}
+                </GradientButton>
+              </Flex>
             </Flex>
           </Box>
         </Flex>
