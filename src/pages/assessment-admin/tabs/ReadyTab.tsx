@@ -2,7 +2,13 @@ import React, { useMemo, useState } from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { AvatarInitials, GradientButton, Pill } from '../../../components/tehnohub'
 import { thColors } from '../../../theme'
-import { useGetChecklistsQuery, useGetHallsQuery, useGetTeamsQuery, useUpdateTeamMutation } from '../../../__data__/api'
+import {
+  useGetChecklistsQuery,
+  useGetEventQuery,
+  useGetHallsQuery,
+  useGetTeamsQuery,
+  useUpdateTeamMutation,
+} from '../../../__data__/api'
 import type {
   ReadinessChecklist,
   ReadinessWidgetKey,
@@ -56,13 +62,38 @@ const CAL_TIMES = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'
 
 const formatDayLabel = (d: Date): string => `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`
 
-const buildCalDays = (): string[] => {
-  const base = new Date()
-  return [-1, 0, 1].map((offset) => {
-    const d = new Date(base)
-    d.setDate(base.getDate() + offset)
+const toLocalEventDay = (eventDate: string): Date | null => {
+  const isoDay = eventDate.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (isoDay) {
+    return new Date(Number(isoDay[1]), Number(isoDay[2]) - 1, Number(isoDay[3]))
+  }
+  const parsed = new Date(eventDate)
+  if (Number.isNaN(parsed.getTime())) return null
+  return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate())
+}
+
+/** Week before conference day (7 days, conference day excluded). */
+const buildCalDays = (eventDate?: string): string[] => {
+  const confLocal = eventDate ? toLocalEventDay(eventDate) : null
+  const base = confLocal ?? new Date()
+  if (!confLocal) {
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(base)
+      d.setDate(base.getDate() + i)
+      return formatDayLabel(d)
+    })
+  }
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(confLocal)
+    d.setDate(confLocal.getDate() - (7 - i))
     return formatDayLabel(d)
   })
+}
+
+const pickDefaultCalDay = (days: string[]): string => {
+  const today = formatDayLabel(new Date())
+  if (days.includes(today)) return today
+  return days[0] || ''
 }
 
 const formatLabel = (fmt?: string): string => {
@@ -128,13 +159,14 @@ const countReady = (
 }
 
 export const ReadyTab: React.FC<Props> = ({ eventId }) => {
+  const { data: event } = useGetEventQuery(eventId)
   const { data: halls = [], refetch: refetchHalls } = useGetHallsQuery(eventId)
   const { data: teams = [], refetch: refetchTeams } = useGetTeamsQuery({ eventId, type: 'speaker' })
   const { data: checklists = [] } = useGetChecklistsQuery(eventId)
   const [updateTeam] = useUpdateTeamMutation()
   const [readySub, setReadySub] = useState<ReadySub>('board')
   const [rehModal, setRehModal] = useState<RehModalState | null>(null)
-  const calDays = useMemo(() => buildCalDays(), [])
+  const calDays = useMemo(() => buildCalDays(event?.eventDate), [event?.eventDate])
 
   const checklistByType = useMemo(() => {
     const map: Partial<Record<'talk' | 'workshop', ReadinessChecklist>> = {}
@@ -222,7 +254,7 @@ export const ReadyTab: React.FC<Props> = ({ eventId }) => {
       talk: sp.projectName || '',
       hall: hallName,
       format: sp.format === 'panel' || sp.format === 'workshop' ? sp.format : 'talk',
-      date: d.rehearsal.date || calDays[1] || calDays[0],
+      date: d.rehearsal.date || pickDefaultCalDay(calDays),
       time: d.rehearsal.time || null,
     })
   }
